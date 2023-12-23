@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RDF</title>
+    <style>
+        .clickable {cursor: pointer;}
+        .table-info {background-color: #f5f5f5;}
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          crossorigin="anonymous">
+    <script  src="https://code.jquery.com/jquery-3.6.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
+
+    <!-- UI specific JS code -->
+    <script src="js/engine.js"></script>
+
+    <!-- jQuery code to show the working of this method -->
+    <script>
+        $(document).ready(function () {
+            $("#searchText").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#reportTable tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            $('.dataTable').each(function () {
+                var t = $(this).DataTable({"paging":true,"ordering":true,"info":true})
+                t.order( [ 3, 'desc' ] ).draw();
+            });
+
+        });
+    </script>
+</head>
+<body>
+    <div class="container container-main">
