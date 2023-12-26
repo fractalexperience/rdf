@@ -16,11 +16,17 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
 
     <!-- UI specific JS code -->
-    <script src="js/engine.js"></script>
-
-    <!-- jQuery code to show the working of this method -->
+    <script src="../js/ui.js"></script>
+    <script src="../js/ums.js"></script>
+    <script src="../js/engine.js"></script>
+    <script src="../js/validators.js"></script>
+    <!-- JS Initialization -->
     <script>
+        var mlang;
+        var user;
         $(document).ready(function () {
+            ui_init();
+
             $("#searchText").on("keyup", function() {
                 var value = $(this).val().toLowerCase();
                 $("#reportTable tr").filter(function() {

@@ -1,0 +1,26 @@
+<div class="row" style="margin-top: 50px;">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-6">
+        <h4 mlang="user_settings">User settings</h4>
+        <form action="" id="form_user_settings" class="needs-validation" novalidate method="post">
+            <div class="form-group">
+                <label for="User_Full_Name" mlang="user_full_name">User full name:</label>
+                <input type="text" class="form-control" value="{user-name}"
+                       id="User_Full_Name" name="User_Full_Name" required>
+
+                <label for="User_Email" mlang="email">Email:</label>
+                <input type="text" class="form-control" value="{user-email}"
+                       id="User_Email" name="User_Email" required>
+
+            </div>
+            <div style="text-align: right; margin-top:10px;">
+                <button type="button" class="btn btn-primary"
+                        onclick="save_user_settings()"
+                        id="btn_save_settings" mlang="save_settings">Save user settings</button>
+            </div>
+        </form>
+        <div id="save_message" style="background-color: #f0fff0;"></div>
+
+    </div>
+    <div class="col-sm-3"></div>
+</div>

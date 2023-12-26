@@ -1,0 +1,16 @@
+{
+	"root": {
+		"bg": "",
+		"de": "",
+		"en": "",
+		"fr": "",
+		"it": ""
+	},
+	"rdf_template": {
+		"bg": "RDF Демонстрация",
+		"de": "RDF Demonstration",
+		"en": "<b>RDF</b><br/><small><small>(Resource Description Framework)</small></small><br/>A Lightweight implementation",
+		"fr": "RDF Démo",
+		"it": "RDF Demo"
+	}
+}
