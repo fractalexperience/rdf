@@ -13,7 +13,8 @@ function ui_init()
     });
     $.getJSON( "/user", function( user ) {
         var lang = user["lang"];
-        ui_mlang(lang);
+        var role = user["role"]
+
         if (user["authenticated"])
         {
             $("#btn_username").html(user["name"])
@@ -23,6 +24,12 @@ function ui_init()
         {
             $("#logged_out").show();
         }
+        // Inject menu
+        url = '/html/menu_'+role+'.html';
+        update_content('main_menu', url)
+
+        // Refresh multilanguage strings
+        ui_mlang(lang);
     });
 }
 
