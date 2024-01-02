@@ -20,16 +20,24 @@ class RdfSchema:
                 self.classes = {}
                 self.errors = []
                 current_class = None
+                current_namespace = None
                 for props in sh_raw:
+                    namespace = props.get('namespace')
                     code = props.get('code')
                     name = props.get('name')
+                    uri = props.get('uri')
                     if not name:
                         continue
                     if not code and current_class is None:
                         continue
                     cls = RdfClass(self, props)
+                    if namespace:
+                        current_namespace = namespace
+                    if not cls.namespace:
+                        cls.namespace = current_namespace
                     if code:
                         self.classes[code] = cls
+                        self.classes[uri] = cls
                         current_class = cls
                         continue
                     if current_class:
@@ -57,3 +65,25 @@ class RdfSchema:
             self.errors.append(f'Missing class reference for [{part.code}]')
         if not part.code and part.ref and part.ref not in self.classes:
             self.errors.append(f'Reference to unexisting class for [{part.code}]')
+
+    def to_html(self):
+        o = [f'<h1>RDF Schema</h1>'
+             f'<table id="reportTable" class="table table-hover table-bordered">'
+             '<tr>'
+             '<th>code</th><th>name</th><th>description</th>'
+             '<th>data_type</th><th>restriction</th><th>ref</th>'
+             '<th>required</th><th>multiple</th><th>key</th>'
+             '<th>show</th><th>uri</th>'
+             '</tr>']
+        for code in [k for k in self.classes.keys() if k.isnumeric()]:
+            cdef = self.classes.get(code)
+            cdef.to_html(o, "table-warning")
+            if not cdef.members:
+                continue
+            for mem in cdef.members.values():
+                mem.to_html(o, "table-light")
+
+        o.append('</table>')
+        return ''.join(o)
+
+

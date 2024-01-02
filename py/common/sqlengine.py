@@ -25,10 +25,10 @@ class SqlEngine:
         return conn
 
     def table_exists(self, tblname):
-        tbl = self.exec_sql_table('SHOW TABLES')
+        tbl = self.exec_table('SHOW TABLES')
         return any([s for s in tbl if tblname in s])  # tbl is a list of sets
 
-    def execute_sql_scalar(self, sql):
+    def exec_scalar(self, sql):
         if not sql:
             return None
         cur = self.execute(sql)
@@ -37,17 +37,15 @@ class SqlEngine:
         result = cur.fetchone()
         return result[0] if result else None
 
-    """ Executes a SQL statement. Note that this method does not return a result, so if the statement returns a rowset, 
-        you must use exec_sql_table() """
-
     def execute_sql(self, sql):
+        """ Executes a SQL statement. Note that this method does not return a result, so if the statement returns a rowset,
+            you must use exec_sql_table() """
         if not sql:
             return
         self.execute(sql)
 
-    """ Executes a file with multiple SQL statements. Statements must be separated by ';' """
-
     def execute_sql_file(self, filename):
+        """ Executes a file with multiple SQL statements. Statements must be separated by ';' """
         with open(filename, 'rt', encoding='utf-8') as f:
             sql = f.read()
             statements = [s.strip() for s in sql.split(';')]
@@ -58,7 +56,7 @@ class SqlEngine:
                     self.connection.rollback()
                     print('ERROR: ', ex)
 
-    def exec_sql_table(self, sql):
+    def exec_table(self, sql):
         """ Executes a SELECT statement and returns the result rowset as a table. """
         if not sql:
             return None
@@ -68,6 +66,12 @@ class SqlEngine:
     def exec_update(self, q):
         self.execute_sql(q)
         self.connection.commit()
+
+    def exec_insert(self, sql):
+        self.exec_update(sql)
+        q = "SELECT LAST_INSERT_ID();"
+        resulT_id = self.exec_scalar(q)
+        return resulT_id
 
     def execute(self, sql):
         """ Executes a statement using current connection and then returns the cursor. """
