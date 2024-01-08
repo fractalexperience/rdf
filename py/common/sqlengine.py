@@ -75,7 +75,6 @@ class SqlEngine:
 
     def execute(self, sql):
         """ Executes a statement using current connection and then returns the cursor. """
-        self.connect()
         try:
             cur = self.connection.cursor()
             cur.execute(sql)
