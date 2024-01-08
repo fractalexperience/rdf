@@ -19,6 +19,7 @@ class RdfClass:
         if self.members is None:
             self.members = {}
         self.members[mem.name] = mem
+        self.members[mem.ref] = mem
 
     def to_html(self, o, html_class):
         o.append(

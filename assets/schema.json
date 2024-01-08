@@ -1600,7 +1600,7 @@
 		"code": "",
 		"name": "Code",
 		"description": "3 character currency code - ISO4217",
-		"data_type": "",
+		"data_type": "property",
 		"restriction": "",
 		"ref": "14",
 		"required": "TRUE",
