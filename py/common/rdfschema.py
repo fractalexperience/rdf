@@ -1,5 +1,5 @@
 import json
-from rdf.py.common.rdfclass import RdfClass
+from rdfclass import RdfClass
 
 
 class RdfSchema:
