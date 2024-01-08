@@ -13,8 +13,7 @@ sqleng = SqlEngine(
 rdfeng = RdfEngine(sh, sqleng)
 tblname = 'root'
 
-h = '647554aed9923efbdd21b82d1a620342263f95ba'
-obj = rdfeng.read_object(tblname, h)
+obj = rdfeng.read_object(tblname, 12)
 print(json.dumps(obj, indent=4))
 
 # # List all organizations
