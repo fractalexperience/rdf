@@ -9,4 +9,4 @@
 DB_HOST = 'sv7203.mysql.pythonanywhere-services.com'
 DB_NAME = 'sv7203$rdf'
 DB_USER = 'sv7203'
-DB_PASS = 'qwerty~'
+DB_PASS = 'Poi09Uyt87'
