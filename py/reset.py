@@ -1,9 +1,9 @@
 import os
-from rdf.py.common.rdfengine import RdfEngine
-from rdf.py.common.rdfschema import RdfSchema
-import rdf.py.common.dbconfig as dbconfig
-from rdf.py.common.sqlengine import SqlEngine
-import rdf.py.common.util as util
+from common.rdfengine import RdfEngine
+from common.rdfschema import RdfSchema
+import common.dbconfig as dbconfig
+from common.sqlengine import SqlEngine
+import common.util as util
 
 location = os.path.join(os.getcwd(), '..', 'assets', 'schema.json')
 sh = RdfSchema(location)

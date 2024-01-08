@@ -3,7 +3,7 @@
 # DB_NAME = 'sv7203_rdf'
 # DB_USER = 'sv7203_rdf'
 # DB_PASS = 'Poi09Uyt87'
-#
+
 
 # Pythonanywhere database
 DB_HOST = 'sv7203.mysql.pythonanywhere-services.com'
