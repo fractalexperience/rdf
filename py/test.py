@@ -13,15 +13,15 @@ sqleng = SqlEngine(
 rdfeng = RdfEngine(sh, sqleng)
 tblname = 'root'
 
-obj = rdfeng.read_object(tblname, 'ca56656811568c780a1b57213fbd0b61b1f17278')
-print(json.dumps(obj, indent=4))
+# obj = rdfeng.read_object(tblname, 'ca56656811568c780a1b57213fbd0b61b1f17278')
+# print(json.dumps(obj, indent=4))
 
-# # List all organizations
-# objects = rdfeng.list_objects(tblname, 'org')
-# print(json.dumps(objects, indent=4))
-# # List all users
-# objects = rdfeng.list_objects(tblname, 'user')
-# print(json.dumps(objects, indent=4))
+# List all organizations
+objects = rdfeng.list_objects(tblname, 'org')
+print(json.dumps(objects, indent=4))
+# List all users
+objects = rdfeng.list_objects(tblname, 'user')
+print(json.dumps(objects, indent=4))
 
 
 # tbl = eng.exec_table('SHOW TABLES')

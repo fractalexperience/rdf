@@ -1,7 +1,7 @@
 import json
 import os
 print('Working folder: ', os.getcwd())
-from rdfclass import RdfClass
+from common.rdfclass import RdfClass
 
 
 class RdfSchema:
