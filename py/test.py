@@ -1,9 +1,9 @@
 import os
 import json
-from rdf.py.common import dbconfig
-from rdf.py.common.rdfschema import RdfSchema
-from rdf.py.common.rdfengine import RdfEngine
-from rdf.py.common.sqlengine import SqlEngine
+from common import dbconfig
+from common.rdfschema import RdfSchema
+from common.rdfengine import RdfEngine
+from common.sqlengine import SqlEngine
 
 
 location = os.path.join(os.getcwd(), '..', 'assets', 'schema.json')
