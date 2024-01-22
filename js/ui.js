@@ -63,8 +63,13 @@ function update_content(containerId, url, callbackFunction)
             return;
         }
         $('#'+containerId).html(data);
-        if (callbackFunction !== null) {
+        if (callbackFunction !== undefined && callbackFunction !== null) {
             callbackFunction();
         }
     });
+}
+
+/** Calls the "e" method with a given object hash */
+function o_edit(h) {
+    update_content("output", "e?h="+h, null)
 }

@@ -28,7 +28,7 @@ data = {
     'Database': tblname
 }
 org_id = rdfeng.store_rdf_object(tblname, 'org', data)
-
+print('Created master organization =>', org_id)
 
 data_sa = {
     'Email': 'rdf@fractalexperience.com',
@@ -39,6 +39,7 @@ data_sa = {
     'Password hash': util.get_sha1('123')
 }
 sa_id = rdfeng.store_rdf_object(tblname, 'user', data_sa)
+print('Created super admin user for master organization =>', sa_id)
 
 data_oa = {
     'Email': 'ardmin.rdf@fractalexperience.com',
@@ -49,6 +50,7 @@ data_oa = {
     'Password hash': util.get_sha1('123')
 }
 oa_id = rdfeng.store_rdf_object(tblname, 'user', data_oa)
+print('Created organization admin user for master organization =>', oa_id)
 
 data_dc = {
     'Email': 'contributor.rdf@fractalexperience.com',
@@ -59,6 +61,7 @@ data_dc = {
     'Password hash': util.get_sha1('123')
 }
 dc_id = rdfeng.store_rdf_object(tblname, 'user', data_dc)
+print('Created data contributor user for master organization =>', dc_id)
 
 # Demo organization
 demo_org_data = {
@@ -66,8 +69,10 @@ demo_org_data = {
     'Description': 'Organization, to be used for test/demonstration'
 }
 demo_org_id = rdfeng.store_rdf_object(tblname, 'org', demo_org_data)
+print('Created demo organization =>', demo_org_id)
+demo_org_db = rdfeng.get_autoincrement_id(tblname, 'Organization', 'Database', 'db', 4)
+print('Created database for demo organization => ', demo_org_db)
 
-demo_org_db = 'db' + f'{demo_org_id}'.zfill(4)
 rdfeng.create_rdf_table(demo_org_db)
 rdfeng.update_rdf_object(tblname, 'org', {'Database': demo_org_db}, demo_org_id)
 
@@ -79,7 +84,8 @@ data_oa = {
     'Role': 'OA',
     'Password hash': util.get_sha1('123')
 }
-oa_id = rdfeng.store_rdf_object(tblname, 'user', data_oa)
+demo_oa_id = rdfeng.store_rdf_object(tblname, 'user', data_oa)
+print('Created organization admin user for demo organization =>', demo_oa_id)
 
 data_dc = {
     'Email': 'demo_contributor.rdf@fractalexperience.com',
@@ -89,8 +95,8 @@ data_dc = {
     'Role': 'DC',
     'Password hash': util.get_sha1('123')
 }
-dc_id = rdfeng.store_rdf_object(tblname, 'user', data_dc)
-
+demo_dc_id = rdfeng.store_rdf_object(tblname, 'user', data_dc)
+print('Created data contributor user for demo organization =>', demo_dc_id)
 
 
 

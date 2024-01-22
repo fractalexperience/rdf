@@ -1,7 +1,6 @@
 import json
-import os
-print('Working folder: ', os.getcwd())
-from common.rdfclass import RdfClass
+from rdf.py.common.rdfclass import RdfClass
+import rdf.py.common.htmlutil as htmlutil
 
 
 class RdfSchema:
@@ -9,7 +8,9 @@ class RdfSchema:
         self.base = 'http://fractalexperience.com/rdf'
         self.location = location
         self.classes = None
-        self.allowed_types = ('string', 'integer', 'float', 'boolean', 'date', 'object', 'property', 'ref')
+        self.classes_by_uri = None
+        self.classes_by_name = None
+        self.allowed_types = ('string', 'integer', 'float', 'boolean', 'date', 'object', 'property', 'ref', 'thumbnail')
         self.errors = None
 
         self.init()
@@ -19,7 +20,7 @@ class RdfSchema:
         try:
             with open(self.location, 'r') as f:
                 sh_raw = json.load(f)
-                self.classes = {}
+                self.classes, self.classes_by_uri, self.classes_by_name = {}, {}, {}
                 self.errors = []
                 current_class = None
                 current_namespace = None
@@ -32,14 +33,22 @@ class RdfSchema:
                         continue
                     if not code and current_class is None:
                         continue
-                    cls = RdfClass(self, props)
+                    cls = RdfClass(self, current_class, props)
                     if namespace:
                         current_namespace = namespace
                     if not cls.namespace:
                         cls.namespace = current_namespace
                     if code:
                         self.classes[code] = cls
-                        self.classes[uri] = cls
+                        if uri in self.classes_by_uri:
+                            self.errors.append(f'Duplicate URI for class {name} and {self.classes_by_uri.get(uri)}')
+                        else:
+                            self.classes_by_uri[uri] = cls
+
+                        if name in self.classes_by_name:
+                            self.errors.append(f'Duplicate class names: {name}')
+                        else:
+                            self.classes_by_name[name] = cls
                         current_class = cls
                         continue
                     if current_class:
@@ -55,7 +64,7 @@ class RdfSchema:
             # If the class does not have members, check if there is a valid data type
             self.check_part(cls)
             if cls.members:
-                for name, mem in cls.members.items():
+                for code, mem in cls.members.items():
                     self.check_part(mem)
 
     def check_part(self, part):
@@ -67,16 +76,15 @@ class RdfSchema:
             self.errors.append(f'Missing class reference for [{part.code}]')
         if not part.code and part.ref and part.ref not in self.classes:
             self.errors.append(f'Reference to unexisting class for [{part.code}]')
+        if not (part.ndx or part.code):
+            self.errors.append(f'Missing index (ndx) for [{part.name}] inside {part.parent.name}')
+
+    def get_class(self, cn):
+        # Search either by URI, or by name - this may be reconsidered
+        return self.classes_by_uri.get(cn, self.classes_by_name.get(cn, self.classes.get(str(cn))))
 
     def to_html(self):
-        o = [f'<h1>RDF Schema</h1>'
-             f'<table id="reportTable" class="table table-hover table-bordered">'
-             '<tr>'
-             '<th>code</th><th>name</th><th>description</th>'
-             '<th>data_type</th><th>restriction</th><th>ref</th>'
-             '<th>required</th><th>multiple</th><th>key</th>'
-             '<th>show</th><th>uri</th>'
-             '</tr>']
+        o = []
         for code in [k for k in self.classes.keys() if k.isnumeric()]:
             cdef = self.classes.get(code)
             cdef.to_html(o, "table-warning")
@@ -84,8 +92,17 @@ class RdfSchema:
                 continue
             for mem in cdef.members.values():
                 mem.to_html(o, "table-light")
+        htmlutil.wrap_h(
+            o, ['code', 'name', 'ndx', 'description', 'data_type', 'restriction',
+                'ref', 'required', 'multiple', 'key', 'show', 'uri'], 'RDF Schema')
 
-        o.append('</table>')
-        return ''.join(o)
+        o2 = []
+        if self.errors:
+            cnt = 0
+            for e in self.errors:
+                cnt += 1
+                htmlutil.wrap_tr(o2, [cnt, ('class="table-danger"', e)])
+            htmlutil.wrap_h(o2, ['No.', 'Error message'], 'Errors')
+        return ''.join(o2 + o)
 
 

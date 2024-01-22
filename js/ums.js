@@ -72,3 +72,11 @@ function save_user_settings() {
 function handle_reset_password() {
     alert('to do');
 }
+
+function manage_organizations() {
+    update_content("output", "b?cn=org", null)
+}
+
+function manage_users() {
+    update_content("output", "b?cn=user", null)
+}
