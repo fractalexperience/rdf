@@ -1,6 +1,7 @@
 import os
 import json
 from common import dbconfig
+from common import util
 from common.rdfschema import RdfSchema
 from common.rdfengine import RdfEngine
 from common.sqlengine import SqlEngine
@@ -13,6 +14,25 @@ sqleng = SqlEngine(
 rdfeng = RdfEngine(sh, sqleng)
 tblname = 'root'
 
+# Create an enumeration of type "Location"
+tn = 'db0002'
+# rdfeng.o_save(tn, 'enum_location', {'Name': 'Basel'})
+# rdfeng.o_save(tn, 'enum_location', {'Name': 'Zurich'})
+# rdfeng.o_save(tn, 'enum_location', {'Name': 'Bern'})
+# rdfeng.o_save(tn, 'enum_location', {'Name': 'Locarno'})
+# rdfeng.o_save(tn, 'enum_location', {'Name': 'Geneva'})
+# # Update with the same name - should not duplicate the object
+# rdfeng.o_save(tn, 'enum_location', {'Name': 'Geneva'})
+# # List locations
+# locations = rdfeng.o_list(tn, 'enum_location')
+# print(json.dumps(locations, indent=4))
+# # Delete the second enumeration (Zurich) by passing the hash code externally generated
+# # (Because the only property "Name" of the enumeration is the key)
+# result = rdfeng.o_delete(tn, util.get_sha1('Zurich'))
+# print(result)
+obj = rdfeng.o_read(tn, util.get_sha1('Bern'))
+print(json.dumps(obj, indent=4))
+
 
 #
 # org_id = rdfeng.get_autoincrement_id(tblname, 'Organization', None, 'org', None)
@@ -22,12 +42,12 @@ tblname = 'root'
 # print(db_id)
 
 # print(rdfeng.r_data(tblname, 0, 100))
-#
-# obj = rdfeng.read_object(tblname, '5ce5e7683d301384b484717fc35ebb4dbd74a45d')
+# Read specific object
+# obj = rdfeng.o_read(tblname, '3d53b6fb7d14c5208664bea22164d68ede2c294c')
 # print(json.dumps(obj, indent=4))
 
 # # List all organizations
-# objects = rdfeng.list_objects(tblname, 'org')
+# objects = rdfeng.o_list(tblname, 'org')
 # print(json.dumps(objects, indent=4))
 
 # # List all users

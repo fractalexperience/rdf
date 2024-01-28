@@ -25,9 +25,14 @@ rdfeng.reset_rdf_table(tblname)
 data = {
     'Name': 'Owner organization',
     'Description': 'Organization, which owns the website',
-    'Database': tblname
+    'Database': tblname,
+    'Address': {'Address line 1': 'Owner - address line 1',
+                'Address line 2': 'Owner - address line 2',
+                'City': 'Owner - city',
+                'ZIP code': 'Owner - ZIP',
+                'Country': 'Owner - Country'}
 }
-org_id = rdfeng.store_rdf_object(tblname, 'org', data)
+org_id = rdfeng.o_save(tblname, 'org', data)
 print('Created master organization =>', org_id)
 
 data_sa = {
@@ -38,7 +43,7 @@ data_sa = {
     'Role': 'SA',
     'Password hash': util.get_sha1('123')
 }
-sa_id = rdfeng.store_rdf_object(tblname, 'user', data_sa)
+sa_id = rdfeng.o_save(tblname, 'user', data_sa)
 print('Created super admin user for master organization =>', sa_id)
 
 data_oa = {
@@ -49,7 +54,7 @@ data_oa = {
     'Role': 'OA',
     'Password hash': util.get_sha1('123')
 }
-oa_id = rdfeng.store_rdf_object(tblname, 'user', data_oa)
+oa_id = rdfeng.o_save(tblname, 'user', data_oa)
 print('Created organization admin user for master organization =>', oa_id)
 
 data_dc = {
@@ -60,21 +65,26 @@ data_dc = {
     'Role': 'DC',
     'Password hash': util.get_sha1('123')
 }
-dc_id = rdfeng.store_rdf_object(tblname, 'user', data_dc)
+dc_id = rdfeng.o_save(tblname, 'user', data_dc)
 print('Created data contributor user for master organization =>', dc_id)
 
 # Demo organization
 demo_org_data = {
     'Name': 'Demo organization',
-    'Description': 'Organization, to be used for test/demonstration'
+    'Description': 'Organization, to be used for test/demonstration',
+    'Address': {'Address line 1': 'Demo - address line 1',
+                'Address line 2': 'Demo - address line 2',
+                'City': 'Demo - city',
+                'ZIP code': 'Demo - ZIP',
+                'Country': 'Demo - Country'}
 }
-demo_org_id = rdfeng.store_rdf_object(tblname, 'org', demo_org_data)
+demo_org_id = rdfeng.o_save(tblname, 'org', demo_org_data)
 print('Created demo organization =>', demo_org_id)
 demo_org_db = rdfeng.get_autoincrement_id(tblname, 'Organization', 'Database', 'db', 4)
 print('Created database for demo organization => ', demo_org_db)
 
 rdfeng.create_rdf_table(demo_org_db)
-rdfeng.update_rdf_object(tblname, 'org', {'Database': demo_org_db}, demo_org_id)
+rdfeng.o_update(tblname, demo_org_id, {'Database': demo_org_db})
 
 data_oa = {
     'Email': 'demo_ardmin.rdf@fractalexperience.com',
@@ -84,7 +94,7 @@ data_oa = {
     'Role': 'OA',
     'Password hash': util.get_sha1('123')
 }
-demo_oa_id = rdfeng.store_rdf_object(tblname, 'user', data_oa)
+demo_oa_id = rdfeng.o_save(tblname, 'user', data_oa)
 print('Created organization admin user for demo organization =>', demo_oa_id)
 
 data_dc = {
@@ -95,7 +105,7 @@ data_dc = {
     'Role': 'DC',
     'Password hash': util.get_sha1('123')
 }
-demo_dc_id = rdfeng.store_rdf_object(tblname, 'user', data_dc)
+demo_dc_id = rdfeng.o_save(tblname, 'user', data_dc)
 print('Created data contributor user for demo organization =>', demo_dc_id)
 
 

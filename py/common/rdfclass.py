@@ -17,7 +17,7 @@ class RdfClass:
         self.key = props.get('key')
         self.show = props.get('show')
         self.uri = props.get('uri')
-        self.members = None
+        self.members = None  # By ndx
         self.members_by_name = None
         self.members_by_uri = None
 

@@ -16,6 +16,12 @@ def wrap_h(o, fields, title, attr=None):
 
 
 def wrap_td(o, cell):
+    if cell is None:
+        o.append('<td>&nbsp;</td>')
+        return
+    if cell == 'NULL':  # Special case for null values
+        o.append(f'<td class="table-secondary">{cell}</td>')
+        return
     if isinstance(cell, str) or isinstance(cell, int) or isinstance(cell, float):
         o.append(f'<td>{cell}</td>')
         return

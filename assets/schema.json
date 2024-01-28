@@ -1082,7 +1082,7 @@
 	{
 		"namespace": "",
 		"code": "",
-		"name": "Title",
+		"name": "Name",
 		"ndx": "1",
 		"description": "Title of the enumeration",
 		"data_type": "property",
@@ -1112,7 +1112,7 @@
 	{
 		"namespace": "",
 		"code": "",
-		"name": "Title",
+		"name": "Name",
 		"ndx": "1",
 		"description": "Title of the enumeration",
 		"data_type": "property",

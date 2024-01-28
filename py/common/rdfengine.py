@@ -44,24 +44,35 @@ class RdfEngine:
         """ tn => Table name, cn => class name, cd => Class definition """
         cdef = self.schema.get_class(cn)
         # List all instances together with their properties
-        q = (f"SELECT r1.id AS id, r1.h AS h, r2.p AS p, r2.o AS o, r2.v AS v "
+        q = (f"SELECT r1.id AS id, r1.h AS h, r1.s AS s, r2.p AS p, r2.o AS o, r2.v AS v "
              f"FROM {tn} AS r1 INNER JOIN {tn} as r2 ON r1.id=r2.s "
              f"WHERE r1.s={cdef.code} AND r1.p IS NULL AND r1.o IS NULL;")
         t = self.sqleng.exec_table(q)
         res = []
         curr_obj, curr_obj_id = None, None
         for r in t:
-            obj_id, obj_h, obj_p, obj_o, obj_v = r[0], r[1], r[2], r[3], r[4]
-            if curr_obj_id != obj_id:
-                curr_obj = {'id': obj_id, 'hash': obj_h}
-                res.append(curr_obj)
-                curr_obj_id = obj_id
+            rdf_id, rdf_h, rdf_s, rdf_p, rdf_o, rdf_v = r[0], r[1], r[2], r[3], r[4], r[5]
 
-            p_def = self.schema.classes.get(str(obj_p))
-            member = cdef.members.get(str(obj_p))
+            if curr_obj_id != rdf_id:
+                curr_obj = {'id': rdf_id, 'hash': rdf_h, 'code': rdf_s, 'type': cdef.name}
+                res.append(curr_obj)
+                curr_obj_id = rdf_id
+
+            p_def = self.schema.classes.get(str(rdf_p))
+            member = cdef.members.get(str(rdf_p))
             if p_def is None or member is None:
                 continue
-            curr_obj[member.name] = obj_o if obj_o else obj_v
+
+            if rdf_o is not None and rdf_v is None:  # Referred object
+                if member.data_type == 'property':  # Make recursion and retrieve full referred object
+                    child_obj = self.o_read(tn, rdf_o)
+                    rdf_v = child_obj
+                # There is a reference to separate object, but it is standalone and to avoid infinite recursions
+                # we just give the id
+                else:
+                    rdf_v = rdf_o
+
+            curr_obj[member.name] = rdf_v
 
         return res
 
@@ -69,24 +80,32 @@ class RdfEngine:
         """ Provides a basic render of RDF data based on a join with the schema. """
         tbl = self.sqleng.exec_table(f'SELECT * FROM {tblname} ORDER BY id LIMIT {start}, {limit}')
         o = []
-        current_cdef = None
+        cdefs_by_id = {}
         for row in tbl:
             row_id, rdf_s, rdf_p, rdf_o, rdf_v, rdf_h = row[0], row[1], row[2], row[3], row[4], row[5]
+
+            # Identify object instantiation
             cdef = self.schema.classes.get(str(rdf_s)) if rdf_p is None and rdf_o is None else None
             if cdef:
-                current_cdef = cdef  # Remember class definition for next iterations
+                cdefs_by_id[row_id] = cdef  # Remember class definition for next iterations
             cdef_str = f'[{rdf_s}] {cdef.name}' if cdef else rdf_s
 
-            # predef = self.schema.classes.get(str(pre))
-            pdef = current_cdef.members.get(str(rdf_p)) if current_cdef and current_cdef.members else None
-            pdef_str = f'[{rdf_p}] {pdef.name}' if pdef else rdf_p
+            if not cdef:
+                cdef = cdefs_by_id.get(rdf_s)
+            pdef = cdef.members.get(str(rdf_p)) if cdef and cdef.members else None
+
+            pdef_str = f'[{rdf_p}] {pdef.name}' if pdef else rdf_p if rdf_p else 'NULL'
 
             cls_id = 'class="table-warning"' if rdf_p is None and rdf_o is None else ''
             cls_s = '' if cdef else 'class="table-warning"'
-            obj_href = '' if rdf_o is None else f'<a href="#{rdf_o}">{rdf_o}</a>'
-            cls_obj = '' if rdf_o is None else ' class="table-warning"'
+            obj_href = 'NULL' if rdf_o is None else f'<a href="#{rdf_o}">{rdf_o}</a>'
+            cls_obj = ' class="table-secondary"' if rdf_o is None else ' class="table-warning"'
             attr = f'id="{row_id}" {cls_id}'
-            htmlutil.wrap_tr(o, [(attr, row_id), (cls_s, cdef_str), pdef_str, (cls_obj, obj_href), rdf_v, rdf_h])
+            htmlutil.wrap_tr(o, [(attr, row_id), (cls_s, cdef_str),
+                                 pdef_str,
+                                 (cls_obj, obj_href),
+                                 rdf_v if rdf_v else 'NULL',
+                                 rdf_h if rdf_h else 'NULL'])
 
         htmlutil.wrap_h(o, ['id', 'subject', 'predicate', 'object', 'value', 'hash'], 'RDF Data')
         return ''.join(o)
@@ -195,28 +214,32 @@ class RdfEngine:
 
     def get_object_hash(self, obj, cdef):
         # Instantiate class
-        key_parts = set(f'{cdef.code}')
-        all_parts = set(f'{cdef.code}')
+        key_parts = set()  # set(f'{cdef.code}')
+        # all_parts = set(f'{cdef.code}')
         # Find key and calculate hash
         for name, prop_def in cdef.members_by_name.items():
             prop_cls_def = self.schema.classes.get(prop_def.ref)
             if prop_cls_def is None:
                 continue
-            rdf_v = obj.get(prop_cls_def.name)
+            rdf_v = obj.get(prop_def.name)
             if rdf_v is None:
                 continue
             if prop_def.key and prop_def.key.lower() == 'true':
                 key_parts.add(rdf_v)
-            all_parts.add(rdf_v)
-        obj_key = '.'.join(key_parts if key_parts else all_parts)
+            # all_parts.add(rdf_v)
+        obj_key = '.'.join(key_parts if key_parts else [json.dumps(obj)])
         h = util.get_sha1(obj_key)
         return h
 
-    def store_rdf_object(self, tn, cn, data):
+    def o_save(self, tn, cn, data):
         """ Reads an object serialized in JSON and stores it in the given rdf table using a given schema. """
         obj = json.loads(data) if isinstance(data, str) else data
         cdef = self.schema.get_class(cn)
         h = self.get_object_hash(obj, cdef)
+        obj_id_found, cdef_found = self.o_seek(tn, h)
+        if obj_id_found:  # There is already an object with the same key
+            self.o_update(tn, h, data)
+            return
         # If predicate is NULL and object is NULL, this means object instantiation
         q = f"INSERT INTO {tn} (s, p, o, v, h) VALUES ('{cdef.code}', NULL, NULL, NULL, '{h}');"
         obj_id = self.sqleng.exec_insert(q)
@@ -233,26 +256,47 @@ class RdfEngine:
             if value is None:  # Non existing property
                 # print('ERROR: Non existing property in data:', name)
                 continue
-            rdf_v = 'NULL' if prop_def.data_type == 'ref' else value
-            rdf_o = value if prop_def.data_type == 'ref' else 'NULL'
 
             # Either o (object), or value must be NOT NULL
             # If o is NULL, this means we have a property with value = v
             # If we have o NOT NULL, this means there is an other related instantiated object, which is property
             # of the master object
-            q = f"INSERT INTO {tn} (s, p, o, v, h) VALUES ('{rdf_s}', {rdf_p}, {rdf_o}, '{rdf_v}', NULL);"
+            if prop_def.data_type == 'ref':  # we store a ref to an existing object
+                rdf_v, rdf_o = 'NULL', value
+            else:
+                if prop_cls_def.members:  # It is a nested compound object
+                    prop_obj_id = self.o_save(tn, prop_cls_def.name, value)  # Recursion
+                    rdf_v, rdf_o = 'NULL', prop_obj_id
+                else:  # Simple content string property
+                    rdf_v, rdf_o = value, 'NULL'
+
+            rdf_v = rdf_v if rdf_v == 'NULL' else f"'{rdf_v}'"
+            q = f"INSERT INTO {tn} (s, p, o, v, h) VALUES ({rdf_s}, {rdf_p}, {rdf_o}, {rdf_v}, NULL);"
             self.sqleng.exec_insert(q)
-            # print(q)
-            # print(prop_id, '=>', (rdf_o, rdf_v))
         return obj_id
 
-    def update_rdf_object(self, tblname, cn, data, obj_id):
+    def o_seek(self, tn, obj_id):
+        # Normally we will address object by hash, but it can be also internal id
+        field_id = 'id' if isinstance(obj_id, int) or obj_id.isnumeric() else 'h'
+        q = f"SELECT id, s FROM {tn} WHERE {field_id} = '{obj_id}'"
+        t = self.sqleng.exec_table(q)
+        if t is None or len(t) == 0:
+            return None, None
+
+        r = t[0]  # We expect only one row to be in the result set
+
+        obj_id_found = r[0]
+        obj_code = r[1]
+        cdef = self.schema.get_class(obj_code)
+        return obj_id_found, cdef
+
+    def o_update(self, tn, obj_id, data):
         if not data:
             return
-        cdef = self.schema.get_class(cn)
-        field = 'id' if isinstance(obj_id, int) or obj_id.isnumeric() else 'h'
-        q = f"SELECT id FROM {tblname} WHERE {field} = '{obj_id}'"
-        obj_id_found = self.sqleng.exec_scalar(q)
+        # cdef = self.schema.get_class(cn)
+        obj_id_found, cdef = self.o_seek(tn, obj_id)
+        if obj_id_found is None:
+            return
         # Check if there is an existing property of that type
         for p_name, p_value in data.items():
             mem = cdef.members_by_name.get(p_name)
@@ -260,16 +304,42 @@ class RdfEngine:
             data_type = mem.data_type
             rdf_o = 'NULL' if data_type == 'property' else p_value
             rdf_v = 'NULL' if data_type == 'ref' else p_value
-            q = f"SELECT * FROM {tblname} WHERE s={obj_id_found} AND p={rdf_p}"
+            q = f"SELECT * FROM {tn} WHERE s={obj_id_found} AND p={rdf_p}"
             prop_id = self.sqleng.exec_scalar(q)
             if prop_id:
                 if data_type == 'property':
-                    q = f"UPDATE {tblname} SET v='{rdf_v}' WHERE id={prop_id} "
+                    q = f"UPDATE {tn} SET v='{rdf_v}' WHERE id={prop_id} "
                 else:
-                    q = f"UPDATE {tblname} SET o={rdf_o} WHERE id={prop_id} "
+                    q = f"UPDATE {tn} SET o={rdf_o} WHERE id={prop_id} "
             else:
-                q = f"INSERT INTO {tblname} (s, p, o, v, h) VALUES({obj_id_found},{rdf_p},{rdf_o},'{rdf_v}',NULL)"
+                q = f"INSERT INTO {tn} (s, p, o, v, h) VALUES({obj_id_found},{rdf_p},{rdf_o},'{rdf_v}',NULL)"
             self.sqleng.exec_update(q)
+
+    def o_collect_ids(self, tn, obj_id, id_set):
+        """
+        Collects the ids of all properties for an object including nested compound objects of type "property"
+        IMPORTANT! obj_id is always the internal id of the object.
+        """
+        id_set.add(obj_id)
+        q = f"SELECT id, o FROM {tn} WHERE s={obj_id}"
+        t = self.sqleng.exec_table(q)
+        for r in t:
+            rdf_id = r[0]
+            rdf_o = r[1]
+            id_set.add(rdf_id)
+            if rdf_o:
+                self.o_collect_ids(tn, rdf_o, id_set)  # Recursion
+
+    def o_delete(self, tn, obj_id):
+        obj_id_found, cdef = self.o_seek(tn, obj_id)
+        if not obj_id_found:
+            return False, f'Object not found {obj_id}'
+        id_set = set()
+        self.o_collect_ids(tn, obj_id_found, id_set)
+        ids = ','.join([f'{i}' for i in id_set])
+        q = f"DELETE FROM {tn} WHERE id IN ({ids})"
+        self.sqleng.exec_update(q)
+        return True, 'ok'
 
     def get_autoincrement_id(self, tn, cn, pn, pref, zfill_len=6):
         """
