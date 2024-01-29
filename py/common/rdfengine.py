@@ -154,15 +154,15 @@ class RdfEngine:
         cdef = self.schema.get_class(obj.get('code'))
         if cdef is None:
             return f'<h2><span mlang="msg_unknown_object">Unknown object</span></h2>'
-        o = [f'<h4 mlang="user_settings">{cdef.name}</h4>']
         if cdef.members is None:
             return f'<h2><span mlang="msg_todo"></span></h2>'
+
+        o = []
         o.append(f'<form action="" id="form_object_edit" class="needs-validation" novalidate method="post"> '
                  f'<div class="form-group">')
-        for mem in cdef.members.values():
-            o.append(f'<label for="{mem.name}" mlang="{mem.name}">{mem.name}:</label>')
-            o.append(f'<input type="text" class="form-control" value="{mem.code}" id="{mem.name}" name="{mem.name}" '
-                     f'required>')
+
+        self.o_edit_members(o, tn, cdef, obj.get('data'))
+
         o.append('</div></form>')
 
         o.append(
@@ -178,6 +178,34 @@ class RdfEngine:
             f'</div>')
 
         return ''.join(o)
+
+    def o_edit_member(self, o, tn, mem, data):
+        mdef = self.schema.get_class(mem.ref)
+        val = data.get(mem.name) if data else None
+        if mdef.data_type == 'object':
+            if mem.data_type == 'property':
+                self.o_edit_members(o, tn, mdef, val.get('data') if val else None)
+            else:  # Independent reference
+                olst = self.o_list(tn, mem.name)
+                o.append(
+                    f'<label for="{mem.name}" mlang="{mem.name}" class="text-success">{mem.name}:</label>')
+                o.append(f'<select id="{mem.name}" mlang="{mem.name}" class="form-select">')
+                for ref_obj in olst:
+                    ref_h = ref_obj.get('hash')
+                    ref_n = ref_obj.get('Name')
+                    o.append(f'<option value="{ref_h}">{ref_n}</option>')
+                o.append('</select>')
+        else:
+            o.append(
+                f'<label for="{mem.name}" mlang="{mem.name}" class="text-primary">{mem.name}:</label>')
+            o.append(
+                f'<input type="text" class="form-control" value="{val}" id="{mem.name}" name="{mem.name}" '
+                f'required>')
+
+    def o_edit_members(self, o, tn, cdef, data):
+        o.append(f'<h4 mlang="user_settings">{cdef.name}</h4>')
+        for mem in cdef.members.values():
+            self.o_edit_member(o, tn, mem, data)
 
     def reset_rdf_table(self, tblname):
         if self.sqleng.table_exists(tblname):
@@ -212,7 +240,7 @@ class RdfEngine:
              f"COMMENT 'Primary identifier', AUTO_INCREMENT=0;")
         self.sqleng.exec_update(q)
 
-    def get_object_hash(self, obj, cdef):
+    def o_hash(self, obj, cdef):
         # Instantiate class
         key_parts = set()  # set(f'{cdef.code}')
         # all_parts = set(f'{cdef.code}')
@@ -235,7 +263,7 @@ class RdfEngine:
         """ Reads an object serialized in JSON and stores it in the given rdf table using a given schema. """
         obj = json.loads(data) if isinstance(data, str) else data
         cdef = self.schema.get_class(cn)
-        h = self.get_object_hash(obj, cdef)
+        h = self.o_hash(obj, cdef)
         obj_id_found, cdef_found = self.o_seek(tn, h)
         if obj_id_found:  # There is already an object with the same key
             self.o_update(tn, h, data)
