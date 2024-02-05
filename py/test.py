@@ -12,26 +12,34 @@ sh = RdfSchema(location)
 sqleng = SqlEngine(
     db_host=dbconfig.DB_HOST, db_name=dbconfig.DB_NAME, db_user=dbconfig.DB_USER, db_pass=dbconfig.DB_PASS)
 rdfeng = RdfEngine(sh, sqleng)
-tblname = 'root'
+tn = 'root'
 
-# Create an enumeration of type "Location"
-tn = 'db0002'
-# rdfeng.o_save(tn, 'enum_location', {'Name': 'Basel'})
-# rdfeng.o_save(tn, 'enum_location', {'Name': 'Zurich'})
-# rdfeng.o_save(tn, 'enum_location', {'Name': 'Bern'})
-# rdfeng.o_save(tn, 'enum_location', {'Name': 'Locarno'})
-# rdfeng.o_save(tn, 'enum_location', {'Name': 'Geneva'})
+# Get definition of a specific user
+obj = rdfeng.o_read(tn, util.get_sha1('user.admin'))
+print(json.dumps(obj, indent=4))
+org = rdfeng.o_read(tn, '1')
+print(json.dumps(org, indent=4))
+
+
+
+# # Create an enumeration of type "Location"
+# tn = 'db0002'
+# rdfeng.o_save(tn, 'inventory_location', {'Name': 'Basel'})
+# rdfeng.o_save(tn, 'inventory_location', {'Name': 'Zurich'})
+# rdfeng.o_save(tn, 'inventory_location', {'Name': 'Bern'})
+# rdfeng.o_save(tn, 'inventory_location', {'Name': 'Locarno'})
+# rdfeng.o_save(tn, 'inventory_location', {'Name': 'Geneva'})
 # # Update with the same name - should not duplicate the object
-# rdfeng.o_save(tn, 'enum_location', {'Name': 'Geneva'})
+# rdfeng.o_save(tn, 'inventory_location', {'Name': 'Geneva'})
 # # List locations
-# locations = rdfeng.o_list(tn, 'enum_location')
+# locations = rdfeng.o_list(tn, 'inventory_location')
 # print(json.dumps(locations, indent=4))
 # # Delete the second enumeration (Zurich) by passing the hash code externally generated
 # # (Because the only property "Name" of the enumeration is the key)
-# result = rdfeng.o_delete(tn, util.get_sha1('Zurich'))
+# result = rdfeng.o_delete(tn, util.get_sha1('inventory_location.Zurich'))
 # print(result)
-obj = rdfeng.o_read(tn, util.get_sha1('Bern'))
-print(json.dumps(obj, indent=4))
+# obj = rdfeng.o_read(tn, util.get_sha1('inventory_location.Bern'))
+# print(json.dumps(obj, indent=4))
 
 
 #

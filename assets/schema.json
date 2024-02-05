@@ -214,7 +214,7 @@
 		"code": "15",
 		"name": "Thumbnail preview",
 		"ndx": "",
-		"description": "Preview based on a hash code and MIME type",
+		"description": "Preview based on a hash code and MIME type - requires special handling in UI",
 		"data_type": "thumbnail",
 		"restriction": "",
 		"ref": "",
@@ -223,6 +223,21 @@
 		"key": "",
 		"show": "",
 		"uri": "thumbnail"
+	},
+	{
+		"namespace": "",
+		"code": "16",
+		"name": "Database",
+		"ndx": "",
+		"description": "Database table - normally associated with an organization - requires special handling in UI",
+		"data_type": "db_table",
+		"restriction": "",
+		"ref": "",
+		"required": "",
+		"multiple": "",
+		"key": "",
+		"show": "",
+		"uri": "db_table"
 	},
 	{
 		"namespace": "",
@@ -292,7 +307,7 @@
 		"description": "Database name (rdf table name)",
 		"data_type": "property",
 		"restriction": "",
-		"ref": "2",
+		"ref": "16",
 		"required": "",
 		"multiple": "",
 		"key": "",
@@ -385,7 +400,7 @@
 		"ref": "1",
 		"required": "TRUE",
 		"multiple": "",
-		"key": "TRUE",
+		"key": "",
 		"show": "TRUE",
 		"uri": ""
 	},
@@ -400,7 +415,7 @@
 		"ref": "2",
 		"required": "TRUE",
 		"multiple": "",
-		"key": "",
+		"key": "TRUE",
 		"show": "TRUE",
 		"uri": ""
 	},
@@ -623,7 +638,7 @@
 		"data_type": "property",
 		"restriction": "",
 		"ref": "1",
-		"required": "",
+		"required": "TRUE",
 		"multiple": "",
 		"key": "",
 		"show": "",
@@ -638,10 +653,40 @@
 		"data_type": "property",
 		"restriction": "",
 		"ref": "15",
-		"required": "",
+		"required": "TRUE",
 		"multiple": "",
 		"key": "",
 		"show": "TRUE",
+		"uri": ""
+	},
+	{
+		"namespace": "",
+		"code": "",
+		"name": "Width",
+		"ndx": "6",
+		"description": "Width of the image when displayed in page",
+		"data_type": "property",
+		"restriction": "",
+		"ref": "11",
+		"required": "TRUE",
+		"multiple": "",
+		"key": "",
+		"show": "",
+		"uri": ""
+	},
+	{
+		"namespace": "",
+		"code": "",
+		"name": "Height",
+		"ndx": "7",
+		"description": "Height of the image when displayed in page",
+		"data_type": "property",
+		"restriction": "",
+		"ref": "11",
+		"required": "TRUE",
+		"multiple": "",
+		"key": "",
+		"show": "",
 		"uri": ""
 	},
 	{
@@ -743,7 +788,7 @@
 		"data_type": "property",
 		"restriction": "",
 		"ref": "15",
-		"required": "",
+		"required": "TRUE",
 		"multiple": "",
 		"key": "",
 		"show": "TRUE",
@@ -1077,7 +1122,7 @@
 		"multiple": "",
 		"key": "",
 		"show": "",
-		"uri": "enum_location"
+		"uri": "inventory_location"
 	},
 	{
 		"namespace": "",
@@ -1107,7 +1152,7 @@
 		"multiple": "",
 		"key": "",
 		"show": "",
-		"uri": "enum_preamble"
+		"uri": "inventory_preamble"
 	},
 	{
 		"namespace": "",

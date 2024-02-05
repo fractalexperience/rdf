@@ -53,7 +53,30 @@ function handle_logout()
 
 /** Requests display of user settings dialog */
 function handle_settings() {
-    update_content('output', 'chunk?name=user_settings', null);
+    update_content('output', 'chunk?name=user_settings', function() {
+        $.get('user', function(data, status) {
+                if (status === 'success') {
+                    var user = JSON.parse(data);
+                    if (user === null || !user["authenticated"]) {
+                        msg += 'Lot authenticated!';
+                        $('#login_message').html(msg);
+                    } else {
+                        $('#User_Full_Name').val(user.name);
+                        $('#User_Email').val(user.email);
+                        $('#User_Full_Name').attr('p', 'Name');
+                        $('#User_Email').attr('p', 'Email');
+                        $('#User_Full_Name').attr('h', user.hash);
+                        $('#User_Email').attr('h', user.hash);
+                    }
+                } else {
+                    alert("ERROR: " + status);
+                }
+        });
+    })
+}
+
+function save_user_settings() {
+    o_save();
 }
 
 /** Requests displays of change password dialog */
@@ -65,9 +88,6 @@ function change_password() {
     alert('to do');
 }
 
-function save_user_settings() {
-    alert('to do');
-}
 
 function handle_reset_password() {
     alert('to do');

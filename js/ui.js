@@ -73,3 +73,27 @@ function update_content(containerId, url, callbackFunction)
 function o_edit(h) {
     update_content("output", "e?h="+h, null)
 }
+
+function o_save() {
+    var objects = {};
+    $("[h]").each(function(index){
+        var h = this.getAttribute('h');
+        var p = this.getAttribute('p');
+        var v = $(this).val();
+        o = objects[h];
+        if (o === undefined) {
+            o = {};
+            objects[h] = o;
+        }
+        o[p] = v;
+    });
+    var url = 's';
+    s = JSON.stringify(objects);
+    $.post(url, {data: s}, function(data, status){
+        if (status === 'success') {
+            alert(data);
+        } else {
+            alert("ERROR: " + status);
+        }
+    });
+}

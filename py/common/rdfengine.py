@@ -9,9 +9,10 @@ class RdfEngine:
         self.schema = schema
 
     def o_read(self, tblname, obj_id, depth=0):
+        if obj_id is None:
+            return None
         if depth > 99:  # Not too deep recursion
-            return
-
+            return None
         frag = f"r1.id={obj_id}" if isinstance(obj_id, int) or obj_id.isnumeric() else f"r1.h='{obj_id}'"
         q = ('SELECT r1.id AS obj_id, r1.h AS obj_h, r1.s AS code, r2.id AS prop_id, r2.p AS p, r2.o AS o, r2.v AS v '
              f'FROM {tblname} as r1 INNER JOIN {tblname} as r2 on r1.id=r2.s '
@@ -35,9 +36,13 @@ class RdfEngine:
             if obj_o is None:
                 data[member.name] = obj_v
                 continue
-            obj_child = self.o_read(tblname, obj_o, depth + 1)
-            data[member.name] = obj_child
-
+            if member.data_type == 'property':
+                obj_child = self.o_read(tblname, obj_o, depth + 1)
+                data[member.name] = obj_child
+            else:
+                # If we have a reference, we do not do the recursion in order to save processing time.
+                # This can be done later if needed.
+                data[member.name] = obj_o
         return obj
 
     def o_list(self, tn, cn):
@@ -256,8 +261,14 @@ class RdfEngine:
                 key_parts.add(rdf_v)
             # all_parts.add(rdf_v)
         obj_key = '.'.join(key_parts if key_parts else [json.dumps(obj)])
-        h = util.get_sha1(obj_key)
+        h = util.get_sha1(f'{cdef.uri}.{obj_key}')
         return h
+
+    def o_save_h(self, tn, data):
+        """ Version of save method, where data is a collection of objects each indexed by its hash code. """
+        objects = json.loads(data) if isinstance(data, str) else data
+        for h, obj in objects.items():
+            TODO !!!
 
     def o_save(self, tn, cn, data):
         """ Reads an object serialized in JSON and stores it in the given rdf table using a given schema. """

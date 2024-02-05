@@ -10,7 +10,11 @@ class RdfSchema:
         self.classes = None
         self.classes_by_uri = None
         self.classes_by_name = None
-        self.allowed_types = ('string', 'integer', 'float', 'boolean', 'date', 'object', 'property', 'ref', 'thumbnail')
+        self.allowed_types = (
+            'string', 'integer', 'float', 'boolean', 'date',
+            'object', 'property', 'ref',
+            # These here require special handling in UI
+            'thumbnail', 'db_table')
         self.errors = None
 
         self.init()
