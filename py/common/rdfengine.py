@@ -14,7 +14,14 @@ class RdfEngine:
         if depth > 99:  # Not too deep recursion
             return None
         frag = f"r1.id={obj_id}" if isinstance(obj_id, int) or obj_id.isnumeric() else f"r1.h='{obj_id}'"
-        q = ('SELECT r1.id AS obj_id, r1.h AS obj_h, r1.s AS code, r2.id AS prop_id, r2.p AS p, r2.o AS o, r2.v AS v '
+        q = ('SELECT '
+             'r1.id AS obj_id, '
+             'r1.h AS obj_h, '
+             'r1.s AS code, '
+             'r2.id AS prop_id, '
+             'r2.p AS p, '
+             'r2.o AS o, '
+             'r2.v AS v '
              f'FROM {tblname} as r1 INNER JOIN {tblname} as r2 on r1.id=r2.s '
              f'WHERE {frag};')
         t = self.sqleng.exec_table(q)
@@ -28,21 +35,21 @@ class RdfEngine:
         data = {}
         obj['data'] = data
         for r in t:
-            obj_p, obj_o, obj_v = r[4], r[5], r[6]
-            p_def = self.schema.classes.get(str(obj_p))
-            member = clsdef.members.get(str(obj_p))
+            rdf_id, rdf_p, rdf_o, rdf_v = r[3], r[4], r[5], r[6]
+            p_def = self.schema.classes.get(str(rdf_p))
+            member = clsdef.members.get(str(rdf_p))
             if p_def is None or member is None:
                 continue
-            if obj_o is None:
-                data[member.name] = obj_v
+            if rdf_o is None:
+                data[member.name] = (rdf_v, rdf_id)
                 continue
             if member.data_type == 'property':
-                obj_child = self.o_read(tblname, obj_o, depth + 1)
+                obj_child = self.o_read(tblname, rdf_o, depth + 1)
                 data[member.name] = obj_child
             else:
                 # If we have a reference, we do not do the recursion in order to save processing time.
                 # This can be done later if needed.
-                data[member.name] = obj_o
+                data[member.name] = (rdf_o, rdf_id)
         return obj
 
     def o_list(self, tn, cn):
@@ -264,11 +271,51 @@ class RdfEngine:
         h = util.get_sha1(f'{cdef.uri}.{obj_key}')
         return h
 
+    def o_save_i(self, tn, data):
+        """
+        Version of save method, where we have a list of tuples, where eah tuple has 3 members:
+        0: property id
+        1: hash code of the master object
+        2: Property value
+
+        if property id is NULL or empty, this means we add new record for that property
+        if property value is empty, the property is deleted. 9This might be improved eventually)
+        """
+        objects = json.loads(data) if isinstance(data, str) else data
+        msg = None
+        for t in objects:
+            p, h, i, v = t[0], t[1], t[2], t[3]
+            if i:
+                # Only replace the value
+                q = f'UPDATE {tn} SET v={self.sqleng.resolve_sql_value(v)} WHERE id={i}'
+                self.sqleng.exec_update(q)
+                msg = 'Data saved'
+                continue
+
+            q = f"SELECT id,s FROM {tn} WHERE h='{h}'"
+            t = self.sqleng.exec_table(q)
+            if not t:
+                return f'ERROR: Cannot find object instance [{h}]'  # Should not happen
+
+            obj_id = t[0]
+            cls_code = t[1]
+            cdef = self.schema.get_class(cls_code)
+            if not cdef.members:
+                return 'ERROR: Cannot find class '+cls_code  # Should not happen
+            mem = cdef.members_by_name.get(p)
+            q = (f"INSERT INTO {tn} (s,p,o,v,h) "
+                 f"VALUES ({obj_id}, {mem.code}, NULL, {self.sqleng.resolve_sql_value(v)}, '{h}')")
+            self.sqleng.exec_update(q)
+            msg = 'Data saved'
+
+        return msg
+
+
     def o_save_h(self, tn, data):
         """ Version of save method, where data is a collection of objects each indexed by its hash code. """
         objects = json.loads(data) if isinstance(data, str) else data
-        for h, obj in objects.items():
-            TODO !!!
+        # for h, obj in objects.items():
+        #     TODO !!!
 
     def o_save(self, tn, cn, data):
         """ Reads an object serialized in JSON and stores it in the given rdf table using a given schema. """

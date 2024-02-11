@@ -61,12 +61,17 @@ function handle_settings() {
                         msg += 'Lot authenticated!';
                         $('#login_message').html(msg);
                     } else {
-                        $('#User_Full_Name').val(user.name);
-                        $('#User_Email').val(user.email);
+                        $('#User_Full_Name').val(user.name.split('|')[0]);
+                        $('#User_Email').val(user.email.split('|')[0]);
+
                         $('#User_Full_Name').attr('p', 'Name');
                         $('#User_Email').attr('p', 'Email');
+
                         $('#User_Full_Name').attr('h', user.hash);
                         $('#User_Email').attr('h', user.hash);
+
+                        $('#User_Full_Name').attr('i', user.name.includes('|') ? user.name.split('|')[1] : null);
+                        $('#User_Email').attr('i', user.email.includes('|') ? user.email.split('|')[1] : null);
                     }
                 } else {
                     alert("ERROR: " + status);

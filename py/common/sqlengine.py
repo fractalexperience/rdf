@@ -84,3 +84,9 @@ class SqlEngine:
             self.connection.rollback()
             return None
         # Other exceptions will should be caught from upper levels code
+
+    @staticmethod
+    def resolve_sql_value(v):
+        if v is None:
+            return "'NONE'"
+        return "'" + str(v).replace(chr(0xc2), ' ').replace('', '').replace('\'', '\'\'') + "'"

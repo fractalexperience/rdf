@@ -1,7 +1,6 @@
 
 /** Reads current user and then initializes some UI parts based on user settings. */
-function ui_init()
-{
+function ui_init() {
     $.getJSON( "../assets/mlang.json", function( ml ) {
         var items = [];
         data = ml["root"];
@@ -12,22 +11,18 @@ function ui_init()
         $("#pane_mlang").html(items.join( "" ));
     });
     $.getJSON( "/user", function( user ) {
-        var lang = user["lang"];
-        var role = user["role"]
-
-        if (user["authenticated"])
-        {
-            $("#btn_username").html(user["name"])
+        var lang = user["lang"].split('|')[0];
+        var role = user["role"].split('|')[0];
+        var username = user["name"].split('|')[0];
+        if (user["authenticated"]) {
+            $("#btn_username").html(username);
             $("#logged_in").show();
-        }
-        else
-        {
+        } else {
             $("#logged_out").show();
         }
         // Inject menu
         url = '/html/menu_'+role+'.html';
         update_content('main_menu', url)
-
         // Refresh multilanguage strings
         ui_mlang(lang);
     });
@@ -75,20 +70,17 @@ function o_edit(h) {
 }
 
 function o_save() {
-    var objects = {};
+    var objects = [];
     $("[h]").each(function(index){
         var h = this.getAttribute('h');
         var p = this.getAttribute('p');
+        var i = this.getAttribute('i');
         var v = $(this).val();
-        o = objects[h];
-        if (o === undefined) {
-            o = {};
-            objects[h] = o;
-        }
-        o[p] = v;
+        objects.push([p,h,i,v]);
     });
     var url = 's';
     s = JSON.stringify(objects);
+    alert(s);
     $.post(url, {data: s}, function(data, status){
         if (status === 'success') {
             alert(data);
