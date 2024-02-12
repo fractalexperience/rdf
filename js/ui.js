@@ -57,11 +57,24 @@ function update_content(containerId, url, callbackFunction)
             $('#'+containerId).html('<div style="background-color: Red; color: White;">Error: Cannot read from '+url+'</div>');
             return;
         }
-        $('#'+containerId).html(data);
+        $('#'+containerId).html(format_message(data));
         if (callbackFunction !== undefined && callbackFunction !== null) {
             callbackFunction();
         }
     });
+}
+
+function show_message(m)
+{
+    $('#message').html(format_message(m));
+}
+
+function format_message(m) {
+    if (m.toLowerCase().startsWith('error'))
+        return '<div style="background-color: #f0a0a0;">'+m+'</div>';
+    if (m.toLowerCase().startsWith('>'))
+        return '<div style="background-color: #a0f0a0;">'+m.substring(1,m.length)+'</div>';
+    return m;
 }
 
 /** Calls the "e" method with a given object hash */
@@ -80,12 +93,11 @@ function o_save() {
     });
     var url = 's';
     s = JSON.stringify(objects);
-    alert(s);
     $.post(url, {data: s}, function(data, status){
         if (status === 'success') {
-            alert(data);
+            show_message(data);
         } else {
-            alert("ERROR: " + status);
+            alert("Error: " + status);
         }
     });
 }

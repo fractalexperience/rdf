@@ -7,6 +7,7 @@ class RdfEngine:
     def __init__(self, schema, sqleng):
         self.sqleng = sqleng
         self.schema = schema
+        self.special_handling_classes = {'img', 'db_table', 'hash', 'user_role'}
 
     def o_read(self, tblname, obj_id, depth=0):
         if obj_id is None:
@@ -168,15 +169,10 @@ class RdfEngine:
             return f'<h2><span mlang="msg_unknown_object">Unknown object</span></h2>'
         if cdef.members is None:
             return f'<h2><span mlang="msg_todo"></span></h2>'
-
-        o = []
-        o.append(f'<form action="" id="form_object_edit" class="needs-validation" novalidate method="post"> '
-                 f'<div class="form-group">')
-
-        self.o_edit_members(o, tn, cdef, obj.get('data'))
-
+        o = [f'<form action="" id="form_object_edit" class="needs-validation" novalidate method="post"> '
+             f'<div class="form-group">']
+        self.o_edit_members(o, tn, cdef, obj)
         o.append('</div></form>')
-
         o.append(
             f'<div style="text-align: right; margin-top:10px;">'
             f'<button type="button" class="btn btn-primary" style="margin-right: 10px;" '
@@ -191,12 +187,24 @@ class RdfEngine:
 
         return ''.join(o)
 
-    def o_edit_member(self, o, tn, mem, data):
+    def o_edit_members(self, o, tn, cdef, obj):
+        o.append(f'<h4 mlang="user_settings">{cdef.name}</h4>')
+        for mem in cdef.members.values():
+            self.o_edit_member(o, tn, mem, obj)
+
+    def o_edit_member(self, o, tn, mem, obj):
+        data = obj.get('data') if obj else {}
+        h = obj.get('hash') if obj else None
         mdef = self.schema.get_class(mem.ref)
+
+        # Write specific methods for these
+        if mdef.uri in self.special_handling_classes:
+            return
+
         val = data.get(mem.name) if data else None
         if mdef.data_type == 'object':
             if mem.data_type == 'property':
-                self.o_edit_members(o, tn, mdef, val.get('data') if val else None)
+                self.o_edit_members(o, tn, mdef, val if val else None)
             else:  # Independent reference
                 olst = self.o_list(tn, mem.name)
                 o.append(
@@ -208,16 +216,24 @@ class RdfEngine:
                     o.append(f'<option value="{ref_h}">{ref_n}</option>')
                 o.append('</select>')
         else:
-            o.append(
-                f'<label for="{mem.name}" mlang="{mem.name}" class="text-primary">{mem.name}:</label>')
-            o.append(
-                f'<input type="text" class="form-control" value="{val}" id="{mem.name}" name="{mem.name}" '
-                f'required>')
+            self.o_edit_prop(o, mem, val, h)
 
-    def o_edit_members(self, o, tn, cdef, data):
-        o.append(f'<h4 mlang="user_settings">{cdef.name}</h4>')
-        for mem in cdef.members.values():
-            self.o_edit_member(o, tn, mem, data)
+    def o_edit_prop(self, o, mem, val, h):
+        """
+        :param o: Output list
+        :param mem: Ptoperty class
+        :param val: Value of the property
+        :param h: Hash code of the master object
+        :return: None
+        """
+        valstr = val[0] if val and isinstance(val, tuple) else ''
+        pid = val[1] if val and isinstance(val, tuple) else ''
+        o.append(
+            f'<label for="{mem.name}" mlang="{mem.name}" class="text-primary">{mem.name}:</label>')
+        o.append(
+            f'<input type="text" class="form-control" value="{valstr}" id="{mem.name}" name="{mem.name}" '
+            f' h="{h}" i="{pid}" p="{mem.name}" '
+            f'required>')
 
     def reset_rdf_table(self, tblname):
         if self.sqleng.table_exists(tblname):
@@ -283,33 +299,42 @@ class RdfEngine:
         """
         objects = json.loads(data) if isinstance(data, str) else data
         msg = None
+        cdefs = {}
         for t in objects:
             p, h, i, v = t[0], t[1], t[2], t[3]
+
+            tcdef = cdefs.get(h)
+            if tcdef is None:
+                q = f"SELECT id,s FROM {tn} WHERE h='{h}'"
+                tobj = self.sqleng.exec_table(q)
+                if not tobj or len(tobj)<1:
+                    msg = f'ERROR: Cannot find object instance [{h}]', None  # Should not happen
+                    continue
+
+                obj_id = tobj[0][0]
+                cls_code = tobj[0][1]
+                cdef = self.schema.get_class(cls_code)
+                if not cdef.members:
+                    msg = 'ERROR: Cannot find class '+cls_code, None  # Should not happen
+                    continue
+                tcdef = (cdef, obj_id)
+                cdefs[h] = tcdef
+
+            cdef = tcdef[0]
+            obj_id = tcdef[1]
             if i:
                 # Only replace the value
                 q = f'UPDATE {tn} SET v={self.sqleng.resolve_sql_value(v)} WHERE id={i}'
                 self.sqleng.exec_update(q)
-                msg = 'Data saved'
+                msg = '>Data saved'
                 continue
 
-            q = f"SELECT id,s FROM {tn} WHERE h='{h}'"
-            t = self.sqleng.exec_table(q)
-            if not t:
-                return f'ERROR: Cannot find object instance [{h}]'  # Should not happen
-
-            obj_id = t[0]
-            cls_code = t[1]
-            cdef = self.schema.get_class(cls_code)
-            if not cdef.members:
-                return 'ERROR: Cannot find class '+cls_code  # Should not happen
             mem = cdef.members_by_name.get(p)
             q = (f"INSERT INTO {tn} (s,p,o,v,h) "
-                 f"VALUES ({obj_id}, {mem.code}, NULL, {self.sqleng.resolve_sql_value(v)}, '{h}')")
+                 f"VALUES ({obj_id}, {mem.ndx}, NULL, {self.sqleng.resolve_sql_value(v)}, NULL)")
             self.sqleng.exec_update(q)
-            msg = 'Data saved'
-
-        return msg
-
+            msg = '>Data saved'
+        return msg, set([cdef[0].uri for cdef in cdefs.values()])
 
     def o_save_h(self, tn, data):
         """ Version of save method, where data is a collection of objects each indexed by its hash code. """
