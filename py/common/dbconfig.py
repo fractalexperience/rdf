@@ -6,7 +6,6 @@
 
 
 # # Pythonanywhere database - remote
-# # DB_HOST = '127.0.0.1'
 # DB_HOST = 'localhost'
 # DB_NAME = 'sv7203$rdf'
 # DB_USER = 'sv7203'

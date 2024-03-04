@@ -1,4 +1,4 @@
-# import mysql.connector
+import mysql.connector
 import MySQLdb
 import sshtunnel
 
@@ -61,21 +61,29 @@ class SqlEngine:
 
     def connect(self):
         if self.ssh_host is None:
-            mysql_port = 3306
+            config = {
+                'user': self.db_user,
+                'password': self.db_pass,
+                'host': self.db_host,
+                'database': self.db_name,
+                'raise_on_warnings': True
+            }
+            conn = mysql.connector.connect(**config)
+            return conn
         else:
             self.tunnel = sshtunnel.SSHTunnelForwarder(
                 self.ssh_host, ssh_username=self.ssh_user, ssh_password=self.ssh_pass,
                 remote_bind_address=(self.ssh_bind_addr, 3306))
             self.tunnel.start()
             mysql_port = self.tunnel.local_bind_port
-        config = {
-            'user': self.db_user,
-            'passwd': self.db_pass,
-            'host': self.db_host,
-            'db': self.db_name,
-            'port': mysql_port
-        }
-        self.connection = MySQLdb.connect(**config)
+            config = {
+                'user': self.db_user,
+                'passwd': self.db_pass,
+                'host': self.db_host,
+                'db': self.db_name,
+                'port': mysql_port
+            }
+            self.connection = MySQLdb.connect(**config)
 
     def table_exists(self, tblname):
         tbl = self.exec_table('SHOW TABLES')
