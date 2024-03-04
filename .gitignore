@@ -4,7 +4,7 @@ __pycache__/
 *$py.class
 
 # RDF stuff
-/py/common/dbconfig.py
+py/common/dbconfig.py
 
 # C extensions
 *.so

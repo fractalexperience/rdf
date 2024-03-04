@@ -7,7 +7,7 @@ from common.rdfengine import RdfEngine
 from common.sqlengine import SqlEngine
 
 
-location = os.path.join(os.getcwd(), '..', 'assets', 'schema.json')
+location = os.path.join(os.getcwd(), 'rdf', 'assets', 'schema.json')
 sh = RdfSchema(location)
 sqleng = SqlEngine(
     db_host=dbconfig.DB_HOST, db_name=dbconfig.DB_NAME, db_user=dbconfig.DB_USER, db_pass=dbconfig.DB_PASS,
