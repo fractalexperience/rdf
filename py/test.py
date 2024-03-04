@@ -17,10 +17,10 @@ rdfeng = RdfEngine(sh, sqleng)
 tn = 'root'
 
 # Get definition of a specific user
-obj = rdfeng.o_read(tn, util.get_sha1('user.admin'))
+obj = rdfeng.o_read(tn, util.get_sha1('user.sa'))
 print(json.dumps(obj, indent=4))
-org = rdfeng.o_read(tn, '1')
-print(json.dumps(org, indent=4))
+# org = rdfeng.o_read(tn, '1')
+# print(json.dumps(org, indent=4))
 
 # # Create an enumeration of type "Location"
 # tn = 'db0002'
