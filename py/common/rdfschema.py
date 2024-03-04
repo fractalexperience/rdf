@@ -1,6 +1,6 @@
 import json
-from rdf.py.common.rdfclass import RdfClass
-import rdf.py.common.htmlutil as htmlutil
+from rdfclass import RdfClass
+import htmlutil as htmlutil
 
 
 class RdfSchema:
