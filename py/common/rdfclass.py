@@ -1,4 +1,4 @@
-import rdf.py.common.htmlutil as htmlutil
+import common.htmlutil as htmlutil
 
 class RdfClass:
     def __init__(self, schema, parent, props):

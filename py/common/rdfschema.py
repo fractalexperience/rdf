@@ -1,6 +1,6 @@
 import json
-from rdfclass import RdfClass
-import htmlutil as htmlutil
+from common.rdfclass import RdfClass
+import common.htmlutil as htmlutil
 
 
 class RdfSchema:

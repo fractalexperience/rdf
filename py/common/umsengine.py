@@ -1,5 +1,5 @@
 import json
-import rdf.py.common.util as util
+import common.util as util
 
 
 class UmsEngine:

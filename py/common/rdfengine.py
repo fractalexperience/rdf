@@ -1,6 +1,6 @@
 import json
-import rdf.py.common.util as util
-import rdf.py.common.htmlutil as htmlutil
+import common.util as util
+import common.htmlutil as htmlutil
 
 
 class RdfEngine:
