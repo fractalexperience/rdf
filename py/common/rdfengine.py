@@ -7,7 +7,7 @@ class RdfEngine:
     def __init__(self, schema, sqleng):
         self.sqleng = sqleng
         self.schema = schema
-        self.special_handling_classes = {'img', 'db_table', 'hash', 'user_role'}
+        self.special_handling_classes = {'img', 'db_table', 'hash', 'user_role', 'lang'}
 
     def o_read(self, tblname, obj_id, depth=0):
         if obj_id is None:
@@ -53,7 +53,34 @@ class RdfEngine:
                 data[member.name] = (rdf_o, rdf_id)
         return obj
 
-    def o_list(self, tn, cn):
+    def o_rep(self, tn, cn, fi=None):
+        cdef = self.schema.get_class(cn)
+        if not cdef:
+            return f'<h1 style="color: Red;">Class not defined: {cn}</h1>'
+
+        olst = self.o_list(tn, cn, fi)
+        o = [f'<h1>{cdef.name}</h1>'
+             '<table class="table table-bordered">', '<tr>']
+        for ndx, mem in cdef.members.items():
+            mdef = self.schema.get_class(mem.ref)
+            if not mdef or mdef.data_type == 'object':
+                continue
+            o.append(f'<td>{mem.name}</td>')
+
+        o.append('</tr>')
+        for obj in olst:
+            o.append('<tr>')
+            for ndx, mem in cdef.members.items():
+                mdef = self.schema.get_class(mem.ref)
+                if not mdef or mdef.data_type == 'object':
+                    continue
+                v = obj.get(mem.name, '')
+                o.append(f'<td>{v}</td>')
+            o.append('</tr>')
+        o.append('</table>')
+        return ''.join(o)
+
+    def o_list(self, tn, cn, fi=None):
         """ tn => Table name, cn => class name, cd => Class definition """
         cdef = self.schema.get_class(cn)
         # List all instances together with their properties
@@ -159,44 +186,69 @@ class RdfEngine:
             htmlutil.wrap_tr(o, obj_row, f'onclick="o_edit(\'{h}\')"')
 
         htmlutil.wrap_table(o)
+        o.insert(0, f'<div style="margin-top: 10px;">'
+                    f'<button id="btn_new" class="btn btn-primary" onclick="o_new(\'{cdef.uri}\')" mlang="o_save">'
+                    f'New {cdef.name}'
+                    f'</button>'
+                    f'</div>')
+
         return ''.join(o)
 
-    def o_edit(self, tn, h):
+    def o_edit(self, tn, h_u):
         """ Generates an edit form for an object. It is identified by its hash code. """
-        obj = self.o_read(tn, h, depth=0)
-        cdef = self.schema.get_class(obj.get('code'))
+        if util.is_sha1(h_u):
+            obj = self.o_read(tn, h_u, depth=0)
+            cdef = self.schema.get_class(obj.get('code'))
+        else:
+            obj = None
+            cdef = self.schema.get_class(h_u)
         if cdef is None:
             return f'<h2><span mlang="msg_unknown_object">Unknown object</span></h2>'
         if cdef.members is None:
             return f'<h2><span mlang="msg_todo"></span></h2>'
-        o = [f'<form action="" id="form_object_edit" class="needs-validation" novalidate method="post"> '
-             f'<div class="form-group">']
-        self.o_edit_members(o, tn, cdef, obj)
+        o = []
+        self.o_edit_header(o)
+        self.o_edit_members(o, tn, [cdef], obj)
+        self.o_edit_footer(o, cdef)
+        return ''.join(o)
+
+    def o_edit_header(self, o):
+        o.append(
+            f'<form action="" id="form_object_edit" class="needs-validation" novalidate method="post"> '
+            f'<div class="form-group">')
+
+    def o_edit_footer(self, o, cdef):
         o.append('</div></form>')
         o.append(
             f'<div style="text-align: right; margin-top:10px;">'
             f'<button type="button" class="btn btn-primary" style="margin-right: 10px;" '
-            f'onclick="o_save()" id="btn_o_save" mlang="o_save">'
+            f'onclick="o_save(function() {{update_content(\'output\', \'b?cn={cdef.uri}\', null)}})" id="btn_o_save" mlang="o_save">'
             f'Save data'
             f'</button>' 
+            
+            f'<button type="button" class="btn btn-danger" style="margin-right: 10px;" '
+            f'onclick="update_content(\'output\',\'d?cn={cdef.uri}\')" id="btn_o_delete" mlang="o_delete">'
+            f'Cancel'
+            f'</button>'
+                      
             f'<button type="button" class="btn btn-primary" style="margin-right: 10px;" '
             f'onclick="update_content(\'output\',\'b?cn={cdef.uri}\')" id="btn_o_cancel" mlang="o_cancel">'
             f'Cancel'
             f'</button>'
+            
             f'</div>')
 
-        return ''.join(o)
-
-    def o_edit_members(self, o, tn, cdef, obj):
-        o.append(f'<h4 mlang="user_settings">{cdef.name}</h4>')
+    def o_edit_members(self, o, tn, stack, obj=None):
+        if not stack:
+            return
+        cdef = stack[-1]
+        o.append(f'<h4 mlang="o_edit_members">{cdef.name}</h4>')
         for mem in cdef.members.values():
-            self.o_edit_member(o, tn, mem, obj)
+            self.o_edit_member(o, tn, mem, stack, obj)
 
-    def o_edit_member(self, o, tn, mem, obj):
+    def o_edit_member(self, o, tn, mem, stack, obj):
         data = obj.get('data') if obj else {}
-        h = obj.get('hash') if obj else None
         mdef = self.schema.get_class(mem.ref)
-
         # Write specific methods for these
         if mdef.uri in self.special_handling_classes:
             return
@@ -204,7 +256,9 @@ class RdfEngine:
         val = data.get(mem.name) if data else None
         if mdef.data_type == 'object':
             if mem.data_type == 'property':
-                self.o_edit_members(o, tn, mdef, val if val else None)
+                pass
+                # This should be a separate "Add property" button
+                # self.o_edit_members(o, tn, stack + [mdef], val if val else None)
             else:  # Independent reference
                 olst = self.o_list(tn, mem.name)
                 o.append(
@@ -216,23 +270,26 @@ class RdfEngine:
                     o.append(f'<option value="{ref_h}">{ref_n}</option>')
                 o.append('</select>')
         else:
-            self.o_edit_prop(o, mem, val, h)
+            self.o_edit_prop(o, mem, val, stack, obj)
 
-    def o_edit_prop(self, o, mem, val, h):
+    def o_edit_prop(self, o, mem, val, stack, obj):
         """
         :param o: Output list
         :param mem: Ptoperty class
         :param val: Value of the property
-        :param h: Hash code of the master object
+        :param cdef: Class definition
+        :param obj: Object instance (if any), None for new object
         :return: None
         """
+        h = obj.get('hash') if obj else ''
         valstr = val[0] if val and isinstance(val, tuple) else ''
         pid = val[1] if val and isinstance(val, tuple) else ''
         o.append(
             f'<label for="{mem.name}" mlang="{mem.name}" class="text-primary">{mem.name}:</label>')
+        u = '.'.join([cdef.uri for cdef in stack])
         o.append(
             f'<input type="text" class="form-control" value="{valstr}" id="{mem.name}" name="{mem.name}" '
-            f' h="{h}" i="{pid}" p="{mem.name}" '
+            f' h="{h}" i="{pid}" p="{mem.name}" u="{u}" '
             f'required>')
 
     def reset_rdf_table(self, tblname):
@@ -289,52 +346,70 @@ class RdfEngine:
 
     def o_save_i(self, tn, data):
         """
-        Version of save method, where we have a list of tuples, where eah tuple has 3 members:
+        Version of save method, where we have a list of tuples, where eah tuple has the following members:
         0: property id
         1: hash code of the master object
         2: Property value
+        3: Parent class URI
 
         if property id is NULL or empty, this means we add new record for that property
         if property value is empty, the property is deleted. 9This might be improved eventually)
+
+        :param tn: Database table to operate with
+        :param data: Data collection
         """
         objects = json.loads(data) if isinstance(data, str) else data
         msg = None
         cdefs = {}
+        new_objects = {}
         for t in objects:
-            p, h, i, v = t[0], t[1], t[2], t[3]
-
-            tcdef = cdefs.get(h)
-            if tcdef is None:
-                q = f"SELECT id,s FROM {tn} WHERE h='{h}'"
-                tobj = self.sqleng.exec_table(q)
-                if not tobj or len(tobj)<1:
-                    msg = f'ERROR: Cannot find object instance [{h}]', None  # Should not happen
-                    continue
-
-                obj_id = tobj[0][0]
-                cls_code = tobj[0][1]
-                cdef = self.schema.get_class(cls_code)
-                if not cdef.members:
-                    msg = 'ERROR: Cannot find class '+cls_code, None  # Should not happen
-                    continue
-                tcdef = (cdef, obj_id)
-                cdefs[h] = tcdef
-
-            cdef = tcdef[0]
-            obj_id = tcdef[1]
-            if i:
-                # Only replace the value
-                q = f'UPDATE {tn} SET v={self.sqleng.resolve_sql_value(v)} WHERE id={i}'
-                self.sqleng.exec_update(q)
-                msg = '>Data saved'
+            p, h, i, v, u = t[0], t[1], t[2], t[3], t[4]
+            if not h and not u:
                 continue
+            if not h and u:
+                new_objects.setdefault(u, []).append(t)
+                continue
+            msg = self.o_save_i_prop(tn, t, cdefs)
 
-            mem = cdef.members_by_name.get(p)
-            q = (f"INSERT INTO {tn} (s,p,o,v,h) "
-                 f"VALUES ({obj_id}, {mem.ndx}, NULL, {self.sqleng.resolve_sql_value(v)}, NULL)")
-            self.sqleng.exec_update(q)
-            msg = '>Data saved'
+        # Here we instantiate new objects
+        for uri, tpls in new_objects.items():
+            data = dict(zip([t[0] for t in tpls], [t[3] for t in tpls]))
+            self.o_save(tn, uri, data)
+            msg = '>Object created'
+
         return msg, set([cdef[0].uri for cdef in cdefs.values()])
+
+    def o_save_i_prop(self, tn, t, cdefs):
+        p, h, i, v, u = t[0], t[1], t[2], t[3], t[4]
+        # Here we save data for already instantiated objects
+        tcdef = cdefs.get(h)
+        if tcdef is None:
+            q = f"SELECT id,s FROM {tn} WHERE h='{h}'"
+            tobj = self.sqleng.exec_table(q)
+            if not tobj or len(tobj) < 1:
+                return f'ERROR: Cannot find object instance [{h}]', None  # Should not happen
+            obj_id = tobj[0][0]
+            cls_code = tobj[0][1]
+            cdef = self.schema.get_class(cls_code)
+            if not cdef.members:
+                return 'ERROR: Cannot find class ' + cls_code, None  # Should not happen
+            tcdef = (cdef, obj_id)
+            cdefs[h] = tcdef
+
+        cdef = tcdef[0]
+        obj_id = tcdef[1]
+        if i:
+            # Only replace the value
+            q = f'UPDATE {tn} SET v={self.sqleng.resolve_sql_value(v)} WHERE id={i}'
+            self.sqleng.exec_update(q)
+            return '>Data saved'
+
+        mem = cdef.members_by_name.get(p)
+        q = (f"INSERT INTO {tn} (s,p,o,v,h) "
+             f"VALUES ({obj_id}, {mem.ndx}, NULL, {self.sqleng.resolve_sql_value(v)}, NULL)")
+        self.sqleng.exec_update(q)
+        msg = '>Data saved'
+        return msg
 
     def o_save_h(self, tn, data):
         """ Version of save method, where data is a collection of objects each indexed by its hash code. """

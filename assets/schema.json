@@ -241,6 +241,21 @@
 	},
 	{
 		"namespace": "",
+		"code": "17",
+		"name": "Lang",
+		"ndx": "",
+		"description": "2 character language code available in multi-language system",
+		"data_type": "lang",
+		"restriction": "",
+		"ref": "",
+		"required": "",
+		"multiple": "",
+		"key": "",
+		"show": "",
+		"uri": "lang"
+	},
+	{
+		"namespace": "",
 		"code": "",
 		"name": "",
 		"ndx": "",
@@ -477,6 +492,21 @@
 		"multiple": "",
 		"key": "",
 		"show": "",
+		"uri": ""
+	},
+	{
+		"namespace": "",
+		"code": "",
+		"name": "Language",
+		"ndx": "8",
+		"description": "Preferred language for the user interface",
+		"data_type": "property",
+		"restriction": "",
+		"ref": "17",
+		"required": "",
+		"multiple": "",
+		"key": "",
+		"show": "TRUE",
 		"uri": ""
 	},
 	{

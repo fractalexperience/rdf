@@ -10,7 +10,9 @@ from common.sqlengine import SqlEngine
 location = os.path.join(os.getcwd(), '..', 'assets', 'schema.json')
 sh = RdfSchema(location)
 sqleng = SqlEngine(
-    db_host=dbconfig.DB_HOST, db_name=dbconfig.DB_NAME, db_user=dbconfig.DB_USER, db_pass=dbconfig.DB_PASS)
+    db_host=dbconfig.DB_HOST, db_name=dbconfig.DB_NAME, db_user=dbconfig.DB_USER, db_pass=dbconfig.DB_PASS,
+    ssh_host=dbconfig.SSH_HOST, ssh_user=dbconfig.DB_USER, ssh_pass=dbconfig.SSH_PASS,
+    ssh_bind_addr=dbconfig.SSH_BIND_ADDRESS)
 rdfeng = RdfEngine(sh, sqleng)
 tn = 'root'
 
@@ -19,8 +21,6 @@ obj = rdfeng.o_read(tn, util.get_sha1('user.admin'))
 print(json.dumps(obj, indent=4))
 org = rdfeng.o_read(tn, '1')
 print(json.dumps(org, indent=4))
-
-
 
 # # Create an enumeration of type "Location"
 # tn = 'db0002'

@@ -124,3 +124,14 @@ function manage_users() {
     show_message('');
     update_content("output", "b?cn=user", null)
 }
+
+function sa_list_orgs() {
+    show_message('');
+    update_content("output", "r?cn=org", null)
+}
+
+function sa_list_users() {
+    show_message('');
+    update_content("output", "r?cn=user", null)
+}
+

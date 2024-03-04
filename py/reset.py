@@ -13,7 +13,9 @@ if sh.errors:
     exit()
 
 sqleng = SqlEngine(
-    db_host=dbconfig.DB_HOST, db_name=dbconfig.DB_NAME, db_user=dbconfig.DB_USER, db_pass=dbconfig.DB_PASS)
+    db_host=dbconfig.DB_HOST, db_name=dbconfig.DB_NAME, db_user=dbconfig.DB_USER, db_pass=dbconfig.DB_PASS,
+    ssh_host=dbconfig.SSH_HOST, ssh_user=dbconfig.DB_USER, ssh_pass=dbconfig.SSH_PASS,
+    ssh_bind_addr=dbconfig.SSH_BIND_ADDRESS)
 
 tblname = 'root'
 
@@ -41,7 +43,8 @@ data_sa = {
     'Username': 'sa',
     'Organization': org_id,
     'Role': 'SA',
-    'Password hash': util.get_sha1('123')
+    'Password hash': util.get_sha1('123'),
+    'Language': 'de'
 }
 sa_id = rdfeng.o_save(tblname, 'user', data_sa)
 print('Created super admin user for master organization =>', sa_id)
@@ -52,7 +55,8 @@ data_oa = {
     'Username': 'admin',
     'Organization': org_id,
     'Role': 'OA',
-    'Password hash': util.get_sha1('123')
+    'Password hash': util.get_sha1('123'),
+    'Language': 'de'
 }
 oa_id = rdfeng.o_save(tblname, 'user', data_oa)
 print('Created organization admin user for master organization =>', oa_id)
@@ -63,7 +67,8 @@ data_dc = {
     'Username': 'contributor',
     'Organization': org_id,
     'Role': 'DC',
-    'Password hash': util.get_sha1('123')
+    'Password hash': util.get_sha1('123'),
+    'Language': 'de'
 }
 dc_id = rdfeng.o_save(tblname, 'user', data_dc)
 print('Created data contributor user for master organization =>', dc_id)
@@ -92,7 +97,8 @@ data_oa = {
     'Username': 'demo_oa',
     'Organization': demo_org_id,
     'Role': 'OA',
-    'Password hash': util.get_sha1('123')
+    'Password hash': util.get_sha1('123'),
+    'Language': 'en'
 }
 demo_oa_id = rdfeng.o_save(tblname, 'user', data_oa)
 print('Created organization admin user for demo organization =>', demo_oa_id)
@@ -103,7 +109,8 @@ data_dc = {
     'Username': 'demo_dc',
     'Organization': demo_org_id,
     'Role': 'DC',
-    'Password hash': util.get_sha1('123')
+    'Password hash': util.get_sha1('123'),
+    'Language': 'en'
 }
 demo_dc_id = rdfeng.o_save(tblname, 'user', data_dc)
 print('Created data contributor user for demo organization =>', demo_dc_id)

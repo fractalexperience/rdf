@@ -82,20 +82,28 @@ function o_edit(h) {
     update_content("output", "e?h="+h, null)
 }
 
-function o_save() {
+function o_new(uri) {
+    update_content("output", "n?uri="+uri, null)
+}
+
+function o_save(callback) {
     var objects = [];
     $("[h]").each(function(index){
         var h = this.getAttribute('h');
         var p = this.getAttribute('p');
         var i = this.getAttribute('i');
+        var u = this.getAttribute('u');
         var v = $(this).val();
-        objects.push([p,h,i,v]);
+        objects.push([p,h,i,v,u]);
     });
     var url = 's';
     s = JSON.stringify(objects);
     $.post(url, {data: s}, function(data, status){
         if (status === 'success') {
             show_message(data);
+            if (callback !== null) {
+                callback();
+            }
         } else {
             alert("Error: " + status);
         }
