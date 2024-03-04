@@ -16,7 +16,7 @@
 # SSH_BIND_ADDRESS = 'sv7203.mysql.pythonanywhere-services.com'
 
 # Pythonanywhere database - local
-DB_HOST = 'localhost'
+DB_HOST = 'sv7203.mysql.pythonanywhere-services.com'
 DB_NAME = 'sv7203$rdf'
 DB_USER = 'sv7203'
 DB_PASS = 'Poi09Uyt87'
