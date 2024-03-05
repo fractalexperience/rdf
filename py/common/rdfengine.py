@@ -118,7 +118,10 @@ class RdfEngine:
 
     def r_data(self, tblname, start, limit):
         """ Provides a basic render of RDF data based on a join with the schema. """
-        tbl = self.sqleng.exec_table(f'SELECT * FROM {tblname} ORDER BY id LIMIT {start}, {limit}')
+        q = f'SELECT * FROM {tblname} ORDER BY id LIMIT {start}, {limit}'
+        tbl = self.sqleng.exec_table(q)
+        if not tbl:
+            return f'<h1 style="color: Red;">Cannot execute tatement</h1><br/>{q}'
         o = []
         cdefs_by_id = {}
         for row in tbl:
