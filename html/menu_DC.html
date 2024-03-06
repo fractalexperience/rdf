@@ -1,7 +1,18 @@
 <div class="btn-group" style="margin-right: 5px; margin-left: 5px;">
     <button type="button" class="btn btn-light"
-            onclick="edit_data()"
+            onclick="update_content('output', 'b?cn=item', null)"
             id="btn_edit_data" mlang="btn_edit_data">Edit data</button>
+
+
+    <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" style="margin-right: 5px;">
+        <span class="caret"></span>
+    </button>
+
+    <div class="dropdown-menu" id="enumerations_dropdown">
+        <!--a class="dropdown-item" href="javascript:update_content('output', 'b?cn=inventory_location', null)" id="dc_edit_location" mlang="dc_edit_location">Location</a>
+        <a class="dropdown-item" href="javascript:update_content('output', 'b?cn=inventory_location', null)" id="dc_edit_preamble" mlang="dc_edit_preamble">Preamble</a-->
+    </div>
+
 </div>
 <div class="btn-group" style="margin-right: 5px; margin-left: 5px;">
     <button type="button" class="btn btn-light"
@@ -13,3 +24,21 @@
             onclick="dc_expert_search()"
             id="btn_dc_expert_search" mlang="btn_dc_expert_search">Expert search</button>
 </div>
+
+<script>
+// Update enumerations drop down
+$.get('l?cn=enumerations', function(data, status) {
+    if (status === 'success') {
+        var enums = JSON.parse(data);
+        var arrayLength = enums.length;
+        s = '';
+        for (var i = 0; i < arrayLength; i++) {
+            e = enums[i];
+            s += '<a class="dropdown-item" href="javascript:update_content(\'output\', \'b?cn='+e[0]+'\', null)" id="dc_edit_'+e[0]+'" mlang="dc_edit_'+e[0]+'">'+e[1]+'</a>'
+        }
+        $('#enumerations_dropdown').html(s);
+    } else {
+        alert("ERROR: " + status);
+    }
+});
+</script>

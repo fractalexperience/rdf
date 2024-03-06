@@ -82,6 +82,10 @@ class RdfEngine:
 
     def o_list(self, tn, cn, fi=None):
         """ tn => Table name, cn => class name, cd => Class definition """
+        if cn == 'enumerations':
+            return list(sorted([(cdef.uri, cdef.name) for code, cdef in self.schema.classes.items()
+                           if cdef.members and len(cdef.members) == 1], key=lambda t: t[1]))
+
         cdef = self.schema.get_class(cn)
         # List all instances together with their properties
         q = (f"SELECT r1.id AS id, r1.h AS h, r1.s AS s, r2.p AS p, r2.o AS o, r2.v AS v "
@@ -164,8 +168,8 @@ class RdfEngine:
         if not self.sqleng.table_exists(tn):
             return f'<h1>Database table does not exist {tn}</h1>'
         js = self.o_list(tn, cn)
-        if not js:
-            return f'<h1>No objects found of type {cn}</h1>'
+        # if not js:
+        #     return f'<h1>No objects found of type {cn}</h1>'
         cdef = self.schema.get_class(cn)
         # This should be improved - we should be able to instantiate even a simple type
         if not cdef.members:
@@ -231,10 +235,10 @@ class RdfEngine:
             
             f'<button type="button" class="btn btn-danger" style="margin-right: 10px;" '
             f'onclick="update_content(\'output\',\'d?cn={cdef.uri}\')" id="btn_o_delete" mlang="o_delete">'
-            f'Cancel'
+            f'Delete'
             f'</button>'
                       
-            f'<button type="button" class="btn btn-primary" style="margin-right: 10px;" '
+            f'<button type="button" class="btn btn-info" style="margin-right: 10px;" '
             f'onclick="update_content(\'output\',\'b?cn={cdef.uri}\')" id="btn_o_cancel" mlang="o_cancel">'
             f'Cancel'
             f'</button>'

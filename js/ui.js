@@ -22,7 +22,7 @@ function ui_init() {
         }
         // Inject menu
         url = '/html/menu_'+role+'.html';
-        update_content('main_menu', url)
+        update_content('main_menu', url);
         // Refresh multilanguage strings
         ui_mlang(lang);
     });

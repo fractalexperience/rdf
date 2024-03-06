@@ -58,7 +58,7 @@ function handle_settings() {
             if (status === 'success') {
                 var user = JSON.parse(data);
                 if (user === null || !user["authenticated"]) {
-                    msg += 'Lot authenticated!';
+                    msg += 'Not authenticated!';
                     $('#login_message').html(msg);
                 } else {
                     $('#User_Full_Name').val(user.name.split('|')[0]);
