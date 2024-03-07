@@ -267,7 +267,7 @@ class RdfEngine:
                 # This should be a separate "Add property" button
                 # self.o_edit_members(o, tn, stack + [mdef], val if val else None)
             else:  # Independent reference
-                olst = self.o_list(tn, mem.name)
+                olst = self.o_list(tn, mem.ref)
                 o.append(
                     f'<label for="{mem.name}" mlang="{mem.name}" class="text-success">{mem.name}:</label>')
                 o.append(f'<select id="{mem.name}" mlang="{mem.name}" class="form-select">')

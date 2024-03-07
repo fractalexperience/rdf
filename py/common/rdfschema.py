@@ -79,7 +79,7 @@ class RdfSchema:
         if not part.code and not part.ref:
             self.errors.append(f'Missing class reference for [{part.code}]')
         if not part.code and part.ref and part.ref not in self.classes:
-            self.errors.append(f'Reference to unexisting class for [{part.code}]')
+            self.errors.append(f'Reference to non-existing class for [{part.code}]')
         if not (part.ndx or part.code):
             self.errors.append(f'Missing index (ndx) for [{part.name}] inside {part.parent.name}')
 
@@ -87,15 +87,15 @@ class RdfSchema:
         # Search either by URI, or by name - this may be reconsidered
         return self.classes_by_uri.get(cn, self.classes_by_name.get(cn, self.classes.get(str(cn))))
 
-    def to_html(self):
+    def r_html(self):
         o = []
         for code in [k for k in self.classes.keys() if k.isnumeric()]:
             cdef = self.classes.get(code)
-            cdef.to_html(o, "table-warning")
+            cdef.r_html(o, "table-warning")
             if not cdef.members:
                 continue
             for mem in cdef.members.values():
-                mem.to_html(o, "table-light")
+                mem.r_html(o, "table-light")
         htmlutil.wrap_h(
             o, ['code', 'name', 'ndx', 'description', 'data_type', 'restriction',
                 'ref', 'required', 'multiple', 'key', 'show', 'uri'], 'RDF Schema')

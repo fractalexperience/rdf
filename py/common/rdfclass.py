@@ -37,7 +37,7 @@ class RdfClass:
         else:
             self.members[mem.ndx] = mem
 
-    def to_html(self, o, html_class):
+    def r_html(self, o, html_class):
         attr = f'class="{html_class}" id="{self.code}"'
         htmlutil.wrap_tr(o, [
             ('style="text-align: right;"', self.code), self.name, self.ndx,
