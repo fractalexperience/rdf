@@ -8,5 +8,5 @@ def get_sha1(s):
 
 
 def is_sha1(s):
-    return len(dom_hex - set(s)) == 0
+    return len(s) == 40 and len(set(s) - dom_hex) == 0
 

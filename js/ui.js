@@ -86,6 +86,28 @@ function o_new(uri) {
     update_content("output", "n?uri="+uri, null)
 }
 
+function o_delete(callback) {
+    if (!confirm('Are you sure ?'))
+        return;
+    var objects = [];
+    $("[h]").each(function(index){
+        var h = this.getAttribute('h');
+        objects.push(h);
+    });
+    var url = 'd';
+    s = JSON.stringify(objects);
+    $.post(url, {data: s}, function(data, status){
+        if (status === 'success') {
+            show_message(data);
+            if (callback !== null) {
+                callback();
+            }
+        } else {
+            alert("Error: " + status);
+        }
+    });
+}
+
 function o_save(callback) {
     var objects = [];
     $("[h]").each(function(index){

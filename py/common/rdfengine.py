@@ -234,7 +234,7 @@ class RdfEngine:
             f'</button>' 
             
             f'<button type="button" class="btn btn-danger" style="margin-right: 10px;" '
-            f'onclick="update_content(\'output\',\'d?cn={cdef.uri}\')" id="btn_o_delete" mlang="o_delete">'
+            f'onclick="o_delete(function() {{update_content(\'output\', \'b?cn={cdef.uri}\', null)}})" id="btn_o_delete" mlang="o_delete">'
             f'Delete'
             f'</button>'
                       
@@ -523,6 +523,13 @@ class RdfEngine:
             if rdf_o:
                 self.o_collect_ids(tn, rdf_o, id_set)  # Recursion
 
+    def o_delete_batch(self, tn, data):
+        lst = data if isinstance(data, list) else json.loads(data)
+        msg = None
+        for obj_id in lst:
+            result, msg = self.o_delete(tn, obj_id)
+        return msg
+
     def o_delete(self, tn, obj_id):
         obj_id_found, cdef = self.o_seek(tn, obj_id)
         if not obj_id_found:
@@ -532,7 +539,7 @@ class RdfEngine:
         ids = ','.join([f'{i}' for i in id_set])
         q = f"DELETE FROM {tn} WHERE id IN ({ids})"
         self.sqleng.exec_update(q)
-        return True, 'ok'
+        return True, 'Object deleted'
 
     def get_autoincrement_id(self, tn, cn, pn, pref, zfill_len=6):
         """
