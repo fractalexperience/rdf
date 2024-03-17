@@ -27,7 +27,8 @@
 
 <script>
 // Update enumerations drop down
-$.get('l?cn=enumerations', function(data, status) {
+//$.get('l?cn=enumerations', function(data, status) {
+$.get('l?q=item^', function(data, status) {
     if (status === 'success') {
         var enums = JSON.parse(data);
         var arrayLength = enums.length;

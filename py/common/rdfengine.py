@@ -8,6 +8,16 @@ class RdfEngine:
         self.sqleng = sqleng
         self.schema = schema
         self.special_handling_classes = {'img', 'db_table', 'hash', 'user_role', 'lang'}
+        self.methods_input = {
+            'string': self.input_string,
+            'text': self.input_text,
+            'date': self.input_date,
+            'integer': self.input_int,
+            'float': self.input_float,
+            'boolean': self.input_boolean,
+            'email': self.input_email,
+        }
+
 
     def o_read(self, tblname, obj_id, depth=0):
         if obj_id is None:
@@ -53,12 +63,12 @@ class RdfEngine:
                 data[member.name] = (rdf_o, rdf_id)
         return obj
 
-    def o_rep(self, tn, cn, fi=None):
+    def o_rep(self, tn, cn):
         cdef = self.schema.get_class(cn)
         if not cdef:
             return f'<h1 style="color: Red;">Class not defined: {cn}</h1>'
 
-        olst = self.o_list(tn, cn, fi)
+        olst = self.o_list(tn, cn)
         o = [f'<h1>{cdef.name}</h1>'
              '<table class="table table-bordered">', '<tr>']
         for ndx, mem in cdef.members.items():
@@ -80,18 +90,44 @@ class RdfEngine:
         o.append('</table>')
         return ''.join(o)
 
-    def o_list(self, tn, cn, fi=None):
-        """ tn => Table name, cn => class name, cd => Class definition """
-        if cn == 'enumerations':
+    def o_query(self, tn, q):
+        if q == 'enumerations':  # List rnumerations only - complex type objects having only one member
             return list(sorted([(cdef.uri, cdef.name) for code, cdef in self.schema.classes.items()
-                           if cdef.members and len(cdef.members) == 1], key=lambda t: t[1]))
+                                if cdef.members and len(cdef.members) == 1], key=lambda t: t[1]))
+        if q == 'complex':  # List objects having complex type
+            return list(sorted([(cdef.uri, cdef.name) for code, cdef in self.schema.classes.items()
+                                if cdef.members and len(cdef.members) > 0], key=lambda t: t[1]))
+        if q == 'simple':  # List objects having complex type
+            return list(sorted([(cdef.uri, cdef.name) for code, cdef in self.schema.classes.items()
+                                if cdef.members and len(cdef.members) == 0], key=lambda t: t[1]))
+        if '^' in q:
+            result = []
+            cn = q.replace('^', '')
+            cdefs = [c for c in self.schema.classes.values() if (cn == '*' or c.uri in cn.split(',')) and c.members]
+            for cdef in cdefs:
+                self.get_standalone_members(cdef, result)
+            return result
 
+        return self.o_list(tn, q)  # Plain list of classes
+
+    def get_standalone_members(self, cdef, result):
+        if cdef is None or not cdef.members:
+            return
+        for mem in cdef.members.values():
+            mdef = self.schema.get_class(mem.ref)
+            if mem.data_type == 'property':
+                self.get_standalone_members(mdef, result)
+                continue
+            result.append((mdef.uri, mem.name))
+
+    def o_list(self, tn, cn):
+        """ tn => Table name, cn => class name, cd => Class definition """
         cdef = self.schema.get_class(cn)
         # List all instances together with their properties
-        q = (f"SELECT r1.id AS id, r1.h AS h, r1.s AS s, r2.p AS p, r2.o AS o, r2.v AS v "
-             f"FROM {tn} AS r1 INNER JOIN {tn} as r2 ON r1.id=r2.s "
-             f"WHERE r1.s={cdef.code} AND r1.p IS NULL AND r1.o IS NULL;")
-        t = self.sqleng.exec_table(q)
+        sql = (f"SELECT r1.id AS id, r1.h AS h, r1.s AS s, r2.p AS p, r2.o AS o, r2.v AS v "
+               f"FROM {tn} AS r1 INNER JOIN {tn} as r2 ON r1.id=r2.s "
+               f"WHERE r1.s={cdef.code} AND r1.p IS NULL AND r1.o IS NULL;")
+        t = self.sqleng.exec_table(sql)
         res = []
         curr_obj, curr_obj_id = None, None
         for r in t:
@@ -216,7 +252,7 @@ class RdfEngine:
         o = []
         self.o_edit_header(o)
         self.o_edit_members(o, tn, [cdef], obj)
-        self.o_edit_footer(o, cdef)
+        self.o_edit_footer(o, cdef, h_u)
         return ''.join(o)
 
     def o_edit_header(self, o):
@@ -224,26 +260,22 @@ class RdfEngine:
             f'<form action="" id="form_object_edit" class="needs-validation" novalidate method="post"> '
             f'<div class="form-group">')
 
-    def o_edit_footer(self, o, cdef):
-        o.append('</div></form>')
-        o.append(
-            f'<div style="text-align: right; margin-top:10px;">'
-            f'<button type="button" class="btn btn-primary" style="margin-right: 10px;" '
-            f'onclick="o_save(function() {{update_content(\'output\', \'b?cn={cdef.uri}\', null)}})" id="btn_o_save" mlang="o_save">'
-            f'Save data'
-            f'</button>' 
-            
-            f'<button type="button" class="btn btn-danger" style="margin-right: 10px;" '
-            f'onclick="o_delete(function() {{update_content(\'output\', \'b?cn={cdef.uri}\', null)}})" id="btn_o_delete" mlang="o_delete">'
-            f'Delete'
-            f'</button>'
-                      
-            f'<button type="button" class="btn btn-info" style="margin-right: 10px;" '
-            f'onclick="update_content(\'output\',\'b?cn={cdef.uri}\')" id="btn_o_cancel" mlang="o_cancel">'
-            f'Cancel'
-            f'</button>'
-            
-            f'</div>')
+    def o_edit_footer(self, o, cdef, h_u):
+        is_new = util.is_sha1(h_u)
+        frag_btn_save = (f'<button type="button" class="btn btn-primary" style="margin-right: 10px;" '
+                         f'onclick="o_save(function() {{update_content(\'output\', \'b?cn={cdef.uri}\', null)}})" '
+                         f'id="btn_o_save" mlang="o_save">Save data</button>')
+        frag_btn_del = (f'<button type="button" class="btn btn-danger" style="margin-right: 10px;" '
+                        f'onclick="o_delete(function() {{update_content(\'output\', \'b?cn={cdef.uri}\', null)}})" '
+                        f'id="btn_o_delete" mlang="o_delete">Delete</button>') if is_new else ''
+        frag_btn_cancel = (f'<button type="button" class="btn btn-info" style="margin-right: 10px;" '
+                           f'onclick="update_content(\'output\',\'b?cn={cdef.uri}\')" '
+                           f'id="btn_o_cancel" mlang="o_cancel">Cancel</button>')
+        o.append('</div></form><div style="text-align: right; margin-top:10px;">')
+        o.append(frag_btn_save)
+        o.append(frag_btn_del)
+        o.append(frag_btn_cancel)
+        o.append('</div>')
 
     def o_edit_members(self, o, tn, stack, obj=None):
         if not stack:
@@ -294,10 +326,14 @@ class RdfEngine:
         o.append(
             f'<label for="{mem.name}" mlang="{mem.name}" class="text-primary">{mem.name}:</label>')
         u = '.'.join([cdef.uri for cdef in stack])
-        o.append(
-            f'<input type="text" class="form-control" value="{valstr}" id="{mem.name}" name="{mem.name}" '
-            f' h="{h}" i="{pid}" p="{mem.name}" u="{u}" '
-            f'required>')
+        mdef = self.schema.get_class(mem.ref)
+        method_input = self.methods_input.get(mdef.data_type, self.methods_input.get('string'))
+        o.append(method_input(mem, valstr, h, pid, u))
+
+        # o.append(
+        #     f'<input type="text" class="form-control" value="{valstr}" id="{mem.name}" name="{mem.name}" '
+        #     f' h="{h}" i="{pid}" p="{mem.name}" u="{u}" '
+        #     f'required>')
 
     def reset_rdf_table(self, tblname):
         if self.sqleng.table_exists(tblname):
@@ -566,3 +602,31 @@ class RdfEngine:
         if zfill_len is not None:
             ai_id = ai_id.zfill(zfill_len)
         return f'{pref}{ai_id}'
+
+        # INPUT METHODS
+    def input_string(self, mem, valstr, h, pid, u):
+        return f'<input type="text" class="form-control" value="{valstr}" id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" required>'
+        # INPUT METHODS
+
+    def input_text(self, mem, valstr, h, pid, u):
+        return f'<textarea type="text" class="form-control" rows="2" value="{valstr}" id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" required></textarea>'
+
+    def input_date(self, mem, valstr, h, pid, u):
+        return f'<input type="date" class="form-control" style="width: 150px;" value="{valstr}" id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" required>'
+
+    def input_int(self, mem, valstr, h, pid, u):
+        return f'<input type="number" step="1" class="form-control" style="width: 150px;" value="{valstr}" id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" required>'
+
+    def input_float(self, mem, valstr, h, pid, u):
+        return f'<input type="number" step="any" class="form-control" style="width: 150px;" value="{valstr}" id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" required>'
+
+    def input_boolean(self, mem, valstr, h, pid, u):
+        frag_checked = 'checked' if valstr.lower() == 'true' else ''
+        return (f'<div class="form-check form-switch">'
+                f'<input type="checkbox" {frag_checked}" class="form-check-input" value="{valstr}" id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" required>'
+                f'</div>')
+
+    def input_email(self, mem, valstr, h, pid, u):
+        return f'<input type="email" class="form-control" style="width: 150px;" value="{valstr}" id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" required>'
+
+
