@@ -10,9 +10,11 @@ class RdfSchema:
         self.classes = None
         self.classes_by_uri = None
         self.classes_by_name = None
+
+        # TODO - Set this from outside when initializing schema
         self.allowed_types = (
             'string', 'integer', 'float', 'boolean', 'date',
-            'object', 'property', 'ref',
+            'object', 'property', 'ref', 'email', 'text',
             # These here require special handling in UI
             'thumbnail', 'db_table', 'lang')
         self.errors = None

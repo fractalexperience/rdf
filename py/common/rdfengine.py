@@ -7,7 +7,7 @@ class RdfEngine:
     def __init__(self, schema, sqleng):
         self.sqleng = sqleng
         self.schema = schema
-        self.special_handling_classes = {'img', 'db_table', 'hash', 'user_role', 'lang'}
+        self.special_handling_classes = {'img', 'db_table', 'hash', 'user_role', 'lang', 'text', 'email'}
         self.methods_input = {
             'string': self.input_string,
             'text': self.input_text,
@@ -115,10 +115,13 @@ class RdfEngine:
             return
         for mem in cdef.members.values():
             mdef = self.schema.get_class(mem.ref)
-            if mem.data_type == 'property':
-                self.get_standalone_members(mdef, result)
+            if not mdef.members:
                 continue
-            result.append((mdef.uri, mem.name))
+            # if mem.data_type == 'property':
+            #     continue
+            self.get_standalone_members(mdef, result)
+            if mdef.data_type == 'object' and mem.data_type == 'ref':
+                result.append((mdef.uri, mem.name))
 
     def o_list(self, tn, cn):
         """ tn => Table name, cn => class name, cd => Class definition """
