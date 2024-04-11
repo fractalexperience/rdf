@@ -3563,10 +3563,10 @@
 		"data_type": "property",
 		"restriction": "",
 		"ref": "1",
-		"required": "",
+		"required": "TRUE",
 		"multiple": "",
-		"key": "",
-		"show": "",
+		"key": "TRUE",
+		"show": "TRUE",
 		"uri": ""
 	},
 	{

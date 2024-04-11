@@ -97,18 +97,73 @@ class RdfEngine:
         if q == 'complex':  # List objects having complex type
             return list(sorted([(cdef.uri, cdef.name) for code, cdef in self.schema.classes.items()
                                 if cdef.members and len(cdef.members) > 0], key=lambda t: t[1]))
-        if q == 'simple':  # List objects having complex type
+        if q == 'simple':  # List objects having simple type
             return list(sorted([(cdef.uri, cdef.name) for code, cdef in self.schema.classes.items()
-                                if cdef.members and len(cdef.members) == 0], key=lambda t: t[1]))
-        if '^' in q:
+                                if cdef.members is None], key=lambda t: t[1]))
+
+        if '.all' in q:
+            """ Collects all properties for the given class, or list of classes. """
             result = []
-            cn = q.replace('^', '')
+            cn = q.replace('$', '').replace('.all', '')
+            cdefs = [c for c in self.schema.classes.values() if (cn == '*' or c.uri in cn.split(',')) and c.members]
+            for cdef in cdefs:
+                self.get_all_properties(cdef, result)
+            return result
+
+        if '$' in q or '.optional' in q:
+            """ Collects these members, which are: 
+            - Not standalone - i.e. of type property
+            - Not mandatory """
+            result = []
+            cn = q.replace('$', '').replace('.optional', '')
+            cdefs = [c for c in self.schema.classes.values() if (cn == '*' or c.uri in cn.split(',')) and c.members]
+            for cdef in cdefs:
+                self.get_optional_properties(cdef, result)
+            return result
+
+        if '.mandatory' in q:
+            """ Collects mandatory members """
+            result = []
+            cn = q.replace('$', '').replace('.mandatory', '')
+            cdefs = [c for c in self.schema.classes.values() if (cn == '*' or c.uri in cn.split(',')) and c.members]
+            for cdef in cdefs:
+                self.get_mandatory_properties(cdef, result)
+            return result
+
+        if '^' in q or '.standalone':
+            """ Collects standalone members for the given class. This means these members, which are of type ref 
+            (are instantiated separately) and only referred from class instances."""
+            result = []
+            cn = q.replace('^', '').replace('.standalone', '')
             cdefs = [c for c in self.schema.classes.values() if (cn == '*' or c.uri in cn.split(',')) and c.members]
             for cdef in cdefs:
                 self.get_standalone_members(cdef, result)
             return result
 
         return self.o_list(tn, q)  # Plain list of classes
+
+    def get_all_properties(self, cdef, result):
+        if cdef is None or not cdef.members:
+            return
+        for mem in cdef.members.values():
+            mdef = self.schema.get_class(mem.ref)
+            result.append((mdef.uri, mem.name))
+
+    def get_optional_properties(self, cdef, result):
+        if cdef is None or not cdef.members:
+            return
+        for mem in cdef.members.values():
+            mdef = self.schema.get_class(mem.ref)
+            if mem.data_type == 'property' and not mem.required:
+                result.append((mdef.uri, mem.name))
+
+    def get_mandatory_properties(self, cdef, result):
+        if cdef is None or not cdef.members:
+            return
+        for mem in cdef.members.values():
+            mdef = self.schema.get_class(mem.ref)
+            if mem.data_type == 'property' and mem.required:
+                result.append((mdef.uri, mem.name))
 
     def get_standalone_members(self, cdef, result):
         if cdef is None or not cdef.members:
@@ -302,15 +357,27 @@ class RdfEngine:
                 # This should be a separate "Add property" button
                 # self.o_edit_members(o, tn, stack + [mdef], val if val else None)
             else:  # Independent reference
+                h = obj.get('hash') if obj else ''
+                valstr = val[0] if val and isinstance(val, tuple) else ''
+                pid = val[1] if val and isinstance(val, tuple) else ''
+                u = '.'.join([cdef.uri for cdef in stack])
                 olst = self.o_list(tn, mem.ref)
+                o.append('<div class="row align-items-start">')
+                o.append('<div class="col-2" style="text-align: right;">')
                 o.append(
                     f'<label for="{mem.name}" mlang="{mem.name}" class="text-success">{mem.name}:</label>')
-                o.append(f'<select id="{mem.name}" mlang="{mem.name}" class="form-select">')
+                o.append('</div>')
+                o.append('<div class="col-10">')
+                o.append(f'<select id="{mem.name}" mlang="{mem.name}" class="form-select" h="{h}" i="{pid}" p="{mem.name}" u="{u}" >')
+                o.append('<option value="">---</option>')
                 for ref_obj in olst:
                     ref_h = ref_obj.get('hash')
                     ref_n = ref_obj.get('Name')
-                    o.append(f'<option value="{ref_h}">{ref_n}</option>')
+                    is_selected = ' selected' if ref_h == valstr else ''
+                    o.append(f'<option value="{ref_h}"{is_selected}>{ref_n}</option>')
                 o.append('</select>')
+                o.append('</div>')
+                o.append('</div>')
         else:
             self.o_edit_prop(o, mem, val, stack, obj)
 
@@ -326,13 +393,18 @@ class RdfEngine:
         h = obj.get('hash') if obj else ''
         valstr = val[0] if val and isinstance(val, tuple) else ''
         pid = val[1] if val and isinstance(val, tuple) else ''
+        o.append('<div class="row align-items-start">')
+        o.append('<div class="col-2" style="text-align: right;">')
         o.append(
             f'<label for="{mem.name}" mlang="{mem.name}" class="text-primary">{mem.name}:</label>')
+        o.append('</div>')
         u = '.'.join([cdef.uri for cdef in stack])
         mdef = self.schema.get_class(mem.ref)
         method_input = self.methods_input.get(mdef.data_type, self.methods_input.get('string'))
+        o.append('<div class="col-10">')
         o.append(method_input(mem, valstr, h, pid, u))
-
+        o.append('</div>')
+        o.append('</div>')
         # o.append(
         #     f'<input type="text" class="form-control" value="{valstr}" id="{mem.name}" name="{mem.name}" '
         #     f' h="{h}" i="{pid}" p="{mem.name}" u="{u}" '
@@ -612,7 +684,7 @@ class RdfEngine:
         # INPUT METHODS
 
     def input_text(self, mem, valstr, h, pid, u):
-        return f'<textarea type="text" class="form-control" rows="2" value="{valstr}" id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" required></textarea>'
+        return f'<textarea type="text" class="form-control" rows="2" id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" required>{valstr}</textarea>'
 
     def input_date(self, mem, valstr, h, pid, u):
         return f'<input type="date" class="form-control" style="width: 150px;" value="{valstr}" id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" required>'
