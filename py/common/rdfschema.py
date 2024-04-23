@@ -99,7 +99,7 @@ class RdfSchema:
             for mem in cdef.members.values():
                 mem.r_html(o, "table-light")
         htmlutil.wrap_h(
-            o, ['code', 'name', 'ndx', 'description', 'data_type', 'restriction',
+            o, ['code', 'inherits', 'name', 'ndx', 'description', 'data_type', 'restriction',
                 'ref', 'required', 'multiple', 'key', 'show', 'uri'], 'RDF Schema')
 
         o2 = []

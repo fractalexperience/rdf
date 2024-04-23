@@ -64,6 +64,27 @@ function update_content(containerId, url, callbackFunction)
     });
 }
 
+/** Append a sub-form for a nested compound object insidean existing form */
+function add_property_panel(uri, parent_id, multiple, callbackFunction) {
+    // Check if there is a div panel with the id corresponding to the given uri
+    var p = $('#'+uri);
+    if (p.length !== 0 && !multiple) {
+        alert('Class '+uri+' already instantiated!');
+        return;
+    }
+    var url = 'f?o='+uri
+    $.get(url, function(data, status) {
+        if (status !== 'success') {
+            alert('Error: Cannot read from '+url);
+            return;
+        }
+        $(data).appendTo($("#"+parent_id));
+        if (callbackFunction !== undefined && callbackFunction !== null) {
+            callbackFunction();
+        }
+    });
+}
+
 function show_message(m)
 {
     $('#message').html(format_message(m));

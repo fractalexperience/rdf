@@ -295,41 +295,66 @@ class RdfEngine:
 
         return ''.join(o)
 
-    def o_edit(self, tn, h_u):
-        """ Generates an edit form for an object. It is identified by its hash code. """
+    def get_obj_and_cdef(self, tn, h_u):
+        """ Reads an object (from the given table) and class definition (from schema)
+         corresponding to a hash or uri identifier. """
         if util.is_sha1(h_u):
             obj = self.o_read(tn, h_u, depth=0)
             cdef = self.schema.get_class(obj.get('code'))
         else:
             obj = None
             cdef = self.schema.get_class(h_u)
+        return obj, cdef
+
+    def r_frag(self, tn, o, p):
+        """ Renders an entry form fragment for a given object (or class to be instantiated)
+        h_u: Hash or uri for the object/class
+        h_p: Has of the parent if any """
+        obj, cdef = self.get_obj_and_cdef(tn, o)
+        obj_parent, cdef_parent = self.get_obj_and_cdef(tn, p)
+        return self.o_get_html(tn, obj, cdef, obj_parent)
+
+    def o_edit(self, tn, h_u):
+        """ Generates an edit form for an object. It is identified by its hash code. """
+        obj, cdef = self.get_obj_and_cdef(tn, h_u)
         if cdef is None:
             return f'<h2><span mlang="msg_unknown_object">Unknown object</span></h2>'
         if cdef.members is None:
             return f'<h2><span mlang="msg_todo"></span></h2>'
-        o = []
-        self.o_edit_header(o)
-        self.o_edit_members(o, tn, [cdef], obj)
-        self.o_edit_footer(o, cdef, h_u)
+
+        o = [f'<form action="" id="form_object_edit" class="needs-validation" novalidate method="post"> ']
+        # Always start from root
+        frag_div = self.o_get_html(tn, obj, cdef)
+        # ---
+        o.append(frag_div)
+        self.o_edit_footer(o, obj, cdef)
         return ''.join(o)
 
-    def o_edit_header(self, o):
-        o.append(
-            f'<form action="" id="form_object_edit" class="needs-validation" novalidate method="post"> '
-            f'<div class="form-group">')
+    def o_get_html(self, tn, obj, cdef, parent_obj=None):
+        """ Creates a HTML div element to be embedded in editing form for the given object. """
+        o = []
+        div_id = obj.get('hash') if obj else cdef.uri
+        parent_id = parent_obj.get('hash') if parent_obj else ''
+        o.append(f'<div class="form-group" id="{div_id}" p="{parent_id}">')
+        self.o_edit_members(o, tn, [cdef], obj)
+        o.append('</div>')
+        return ''.join(o)
 
-    def o_edit_footer(self, o, cdef, h_u):
-        is_new = util.is_sha1(h_u)
+    def o_edit_footer(self, o, obj, cdef):
         frag_btn_save = (f'<button type="button" class="btn btn-primary" style="margin-right: 10px;" '
                          f'onclick="o_save(function() {{update_content(\'output\', \'b?cn={cdef.uri}\', null)}})" '
                          f'id="btn_o_save" mlang="o_save">Save data</button>')
+
         frag_btn_del = (f'<button type="button" class="btn btn-danger" style="margin-right: 10px;" '
                         f'onclick="o_delete(function() {{update_content(\'output\', \'b?cn={cdef.uri}\', null)}})" '
-                        f'id="btn_o_delete" mlang="o_delete">Delete</button>') if is_new else ''
+                        f'id="btn_o_delete" mlang="o_delete">Delete</button>') if obj else ''
+
         frag_btn_cancel = (f'<button type="button" class="btn btn-info" style="margin-right: 10px;" '
                            f'onclick="update_content(\'output\',\'b?cn={cdef.uri}\')" '
                            f'id="btn_o_cancel" mlang="o_cancel">Cancel</button>')
-        o.append('</div></form><div style="text-align: right; margin-top:10px;">')
+
+        o.append('</form>'
+                 '<div style="text-align: right; margin-top:10px;">')
         o.append(frag_btn_save)
         o.append(frag_btn_del)
         o.append(frag_btn_cancel)
@@ -339,9 +364,42 @@ class RdfEngine:
         if not stack:
             return
         cdef = stack[-1]
-        o.append(f'<h4 mlang="o_edit_members">{cdef.name}</h4>')
+        o.append('<div class="row align-items-start" style="background-color: #e3f2fd;">')
+        o.append(f'<div class="col-9"><h4 mlang="o_edit_members">{cdef.name}</h4></div>')
+        if obj is not None:
+            self.add_property_button(o, tn, cdef, obj)
+        o.append('</div>')
+
         for mem in cdef.members.values():
             self.o_edit_member(o, tn, mem, stack, obj)
+
+    def add_property_button(self, o, tn, cdef, obj):
+        if not obj:
+            return
+        olst = self.o_query(tn, f'{cdef.uri}$')
+        if olst:
+            # Add property button
+            o.append('<div class="col-3" style="text-align: right;">'
+                     '<div class="btn-group">'
+                     '<button type="button" class="btn btn-primary" '
+                     'id="btn_append_property" '
+                     'mlang="btn_append_property">Append property</button> '
+                     '<button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" '
+                     'data-bs-toggle="dropdown"> '
+                     '<span class="caret"></span> '
+                     '</button> '
+                     '<div class="dropdown-menu" id="properties_dropdown">')
+
+        for it in olst:
+            pdef = self.schema.get_class(it[0])
+            if it[1] not in obj.get('data', {}) or (pdef.multiple and pdef.multiple.lower() == 'true'):
+                is_multiple = 'true' if pdef.multiple else 'false'
+                o.append(f'<a class="dropdown-item" '
+                         f'href="javascript:add_property_panel(\'{it[0]}\', \'{obj.get('hash')}\', {is_multiple})" '
+                         f'id="add_prop_{it[0]}" mlang="add_prop_{it[0]}">{it[1]}</a>')
+        o.append('</div>')
+        o.append('</div>')
+        o.append('</div>')
 
     def o_edit_member(self, o, tn, mem, stack, obj):
         data = obj.get('data') if obj else {}
@@ -362,19 +420,19 @@ class RdfEngine:
                 pid = val[1] if val and isinstance(val, tuple) else ''
                 u = '.'.join([cdef.uri for cdef in stack])
                 olst = self.o_list(tn, mem.ref)
-                o.append('<div class="row align-items-start">')
+                o.append('<div class="row align-items-start" style="background-color: #e3f2fd;">')
                 o.append('<div class="col-2" style="text-align: right;">')
                 o.append(
                     f'<label for="{mem.name}" mlang="{mem.name}" class="text-success">{mem.name}:</label>')
                 o.append('</div>')
                 o.append('<div class="col-10">')
                 o.append(f'<select id="{mem.name}" mlang="{mem.name}" class="form-select" h="{h}" i="{pid}" p="{mem.name}" u="{u}" >')
-                o.append('<option value="">---</option>')
+                o.append('<option value=""> ... </option>')
                 for ref_obj in olst:
                     ref_h = ref_obj.get('hash')
                     ref_n = ref_obj.get('Name')
-                    is_selected = ' selected' if ref_h == valstr else ''
-                    o.append(f'<option value="{ref_h}"{is_selected}>{ref_n}</option>')
+                    is_selected = ' selected="true"' if ref_h == valstr else ''
+                    o.append(f'<option value="{ref_h}"{is_selected}>{util.escape_xml(ref_n)}</option>')
                 o.append('</select>')
                 o.append('</div>')
                 o.append('</div>')
@@ -393,7 +451,7 @@ class RdfEngine:
         h = obj.get('hash') if obj else ''
         valstr = val[0] if val and isinstance(val, tuple) else ''
         pid = val[1] if val and isinstance(val, tuple) else ''
-        o.append('<div class="row align-items-start">')
+        o.append('<div class="row align-items-start" style="background-color: #e3f2fd;">')
         o.append('<div class="col-2" style="text-align: right;">')
         o.append(
             f'<label for="{mem.name}" mlang="{mem.name}" class="text-primary">{mem.name}:</label>')
@@ -405,10 +463,6 @@ class RdfEngine:
         o.append(method_input(mem, valstr, h, pid, u))
         o.append('</div>')
         o.append('</div>')
-        # o.append(
-        #     f'<input type="text" class="form-control" value="{valstr}" id="{mem.name}" name="{mem.name}" '
-        #     f' h="{h}" i="{pid}" p="{mem.name}" u="{u}" '
-        #     f'required>')
 
     def reset_rdf_table(self, tblname):
         if self.sqleng.table_exists(tblname):
@@ -680,28 +734,34 @@ class RdfEngine:
 
         # INPUT METHODS
     def input_string(self, mem, valstr, h, pid, u):
-        return f'<input type="text" class="form-control" value="{valstr}" id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" required>'
-        # INPUT METHODS
+        return (f'<input type="text" class="form-control" value="{valstr}" id="{mem.name}" '
+                f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />')
 
     def input_text(self, mem, valstr, h, pid, u):
-        return f'<textarea type="text" class="form-control" rows="2" id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" required>{valstr}</textarea>'
+        return (f'<textarea type="text" class="form-control" rows="2" id="{mem.name}" '
+                f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}">{valstr}</textarea>')
 
     def input_date(self, mem, valstr, h, pid, u):
-        return f'<input type="date" class="form-control" style="width: 150px;" value="{valstr}" id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" required>'
+        return (f'<input type="date" class="form-control" style="width: 150px;" value="{valstr}" id="{mem.name}" '
+                f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />')
 
     def input_int(self, mem, valstr, h, pid, u):
-        return f'<input type="number" step="1" class="form-control" style="width: 150px;" value="{valstr}" id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" required>'
+        return (f'<input type="number" step="1" class="form-control" style="width: 150px;" value="{valstr}" '
+                f'id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />')
 
     def input_float(self, mem, valstr, h, pid, u):
-        return f'<input type="number" step="any" class="form-control" style="width: 150px;" value="{valstr}" id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" required>'
+        return (f'<input type="number" step="any" class="form-control" style="width: 150px;" value="{valstr}" '
+                f'id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />')
 
     def input_boolean(self, mem, valstr, h, pid, u):
         frag_checked = 'checked' if valstr.lower() == 'true' else ''
         return (f'<div class="form-check form-switch">'
-                f'<input type="checkbox" {frag_checked}" class="form-check-input" value="{valstr}" id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" required>'
+                f'<input type="checkbox" {frag_checked} class="form-check-input" value="{valstr}" id="{mem.name}" '
+                f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />'
                 f'</div>')
 
     def input_email(self, mem, valstr, h, pid, u):
-        return f'<input type="email" class="form-control" style="width: 150px;" value="{valstr}" id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" required>'
+        return (f'<input type="email" class="form-control" style="width: 150px;" value="{valstr}" id="{mem.name}" '
+                f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />')
 
 

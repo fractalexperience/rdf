@@ -5,6 +5,7 @@ class RdfClass:
         self.schema = schema
         self.parent = parent
         self.code = props.get('code')
+        self.inherits = props.get('inherits')  # Parent class
         self.namespace = props.get('namespace')
         self.name = props.get('name')
         self.ndx = props.get('ndx')
@@ -40,7 +41,8 @@ class RdfClass:
     def r_html(self, o, html_class):
         attr = f'class="{html_class}" id="{self.code}"'
         htmlutil.wrap_tr(o, [
-            ('style="text-align: right;"', self.code), self.name, self.ndx,
+            ('style="text-align: right;"', self.code), ('style="text-align: right;"', self.inherits),
+            self.name, self.ndx,
             self.description, self.data_type, ('style="color: Blue;"', f'<samp>{self.restriction}</samp>'),
             f'<a href="#{self.ref}">{self.ref}</a>', self.required, self.multiple, self.key, self.show, self.namespace
         ], attr)
