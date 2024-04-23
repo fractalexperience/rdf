@@ -395,7 +395,7 @@ class RdfEngine:
             if it[1] not in obj.get('data', {}) or (pdef.multiple and pdef.multiple.lower() == 'true'):
                 is_multiple = 'true' if pdef.multiple else 'false'
                 o.append(f'<a class="dropdown-item" '
-                         f'href="javascript:add_property_panel(\'{it[0]}\', \'{obj.get('hash')}\', {is_multiple})" '
+                         f'href="javascript:add_property_panel(\'{it[0]}\', \'{obj.get("hash")}\', {is_multiple})" '
                          f'id="add_prop_{it[0]}" mlang="add_prop_{it[0]}">{it[1]}</a>')
         o.append('</div>')
         o.append('</div>')
