@@ -18,7 +18,6 @@ class RdfEngine:
             'email': self.input_email,
         }
 
-
     def o_read(self, tblname, obj_id, depth=0):
         if obj_id is None:
             return None
@@ -262,28 +261,18 @@ class RdfEngine:
         if not self.sqleng.table_exists(tn):
             return f'<h1>Database table does not exist {tn}</h1>'
         js = self.o_list(tn, cn)
-        # if not js:
-        #     return f'<h1>No objects found of type {cn}</h1>'
         cdef = self.schema.get_class(cn)
         # This should be improved - we should be able to instantiate even a simple type
         if not cdef.members:
             return f'<h1>Class {cn} is a property</h1>'
 
         o = []
-        fields_show, fields_all = [], []
-        for mem_ndx in cdef.members.keys():
-            mem = cdef.members.get(mem_ndx)
-            fields_all.append(mem)
-            if mem.show.lower() == 'true':
-                fields_show.append(mem)
-            # htmlutil.wrap_tr(o, [mem_ndx, mem.name, mem.data_type, mem.show, mem.ref])
-
-        fields = fields_show if fields_show else fields_all
+        fields = self.get_fields_to_show(cdef)
+        htmlutil.wrap_tr(o, [f.name for f in fields], 'class="table-info"')
         for obj in js:
             obj_row = []
             h = obj.get('hash')
-            for mem in fields:
-                obj_row.append(obj.get(mem.name))
+            self.o_populate_field_values(tn, obj, obj_row)
             htmlutil.wrap_tr(o, obj_row, f'onclick="o_edit(\'{h}\')"')
 
         htmlutil.wrap_table(o)
@@ -294,6 +283,38 @@ class RdfEngine:
                     f'</div>')
 
         return ''.join(o)
+
+    def o_populate_field_values(self, tn, obj, o):
+        if obj is None:
+            o.append('-')
+            return
+        cdef = self.schema.get_class(obj.get('code'))
+        fields = self.get_fields_to_show(cdef)
+        for mem in fields:
+            prop_val = obj.get(mem.name)
+            prop_val_resolved = prop_val[0] if isinstance(prop_val, tuple) else prop_val
+            if mem.data_type == 'ref' and util.is_sha1(prop_val):
+                # Referred standalone object
+                prop_obj = self.o_read(tn, prop_val)
+                if prop_obj is not None:
+                    data = prop_obj.get('data') if 'data' in prop_obj else prop_obj
+                    data['code'] = mem.ref
+                    self.o_populate_field_values(tn, data, o)
+                else:
+                    o.append(prop_val_resolved)
+                continue
+            o.append(prop_val_resolved)
+
+    def get_fields_to_show(self, cdef):
+        if cdef is None:
+            return None
+        fields_show, fields_all = [], []
+        for mem_ndx in cdef.members.keys():
+            mem = cdef.members.get(mem_ndx)
+            fields_all.append(mem)
+            if mem.show.lower() == 'true':
+                fields_show.append(mem)
+        return fields_show if fields_show else fields_all
 
     def get_obj_and_cdef(self, tn, h_u):
         """ Reads an object (from the given table) and class definition (from schema)
@@ -377,26 +398,32 @@ class RdfEngine:
         if not obj:
             return
         olst = self.o_query(tn, f'{cdef.uri}$')
-        if olst:
-            # Add property button
-            o.append('<div class="col-3" style="text-align: right;">'
-                     '<div class="btn-group">'
-                     '<button type="button" class="btn btn-primary" '
-                     'id="btn_append_property" '
-                     'mlang="btn_append_property">Append property</button> '
-                     '<button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" '
-                     'data-bs-toggle="dropdown"> '
-                     '<span class="caret"></span> '
-                     '</button> '
-                     '<div class="dropdown-menu" id="properties_dropdown">')
-
+        if not olst:
+            return
+        o_temp, cnt = [], 0
         for it in olst:
             pdef = self.schema.get_class(it[0])
             if it[1] not in obj.get('data', {}) or (pdef.multiple and pdef.multiple.lower() == 'true'):
                 is_multiple = 'true' if pdef.multiple else 'false'
-                o.append(f'<a class="dropdown-item" '
-                         f'href="javascript:add_property_panel(\'{it[0]}\', \'{obj.get("hash")}\', {is_multiple})" '
-                         f'id="add_prop_{it[0]}" mlang="add_prop_{it[0]}">{it[1]}</a>')
+                o_temp.append(f'<a class="dropdown-item" '
+                              f'href="javascript:add_property_panel(\'{it[0]}\', \'{obj.get("hash")}\', {is_multiple})" '
+                              f'id="add_prop_{it[0]}" mlang="add_prop_{it[0]}">{it[1]}</a>')
+                cnt += 1
+        if cnt == 0:
+            return
+
+        # Add property button
+        o.append('<div class="col-3" style="text-align: right;">'
+                 '<div class="btn-group">'
+                 '<button type="button" class="btn btn-primary" '
+                 'id="btn_append_property" '
+                 'mlang="btn_append_property">Append property</button> '
+                 '<button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" '
+                 'data-bs-toggle="dropdown"> '
+                 '<span class="caret"></span> '
+                 '</button> '
+                 '<div class="dropdown-menu" id="properties_dropdown">')
+        o.append(''.join(o_temp))
         o.append('</div>')
         o.append('</div>')
         o.append('</div>')
@@ -426,7 +453,8 @@ class RdfEngine:
                     f'<label for="{mem.name}" mlang="{mem.name}" class="text-success">{mem.name}:</label>')
                 o.append('</div>')
                 o.append('<div class="col-10">')
-                o.append(f'<select id="{mem.name}" mlang="{mem.name}" class="form-select" h="{h}" i="{pid}" p="{mem.name}" u="{u}" >')
+                o.append(
+                    f'<select id="{mem.name}" mlang="{mem.name}" class="form-select" h="{h}" i="{pid}" p="{mem.name}" u="{u}" >')
                 o.append('<option value=""> ... </option>')
                 for ref_obj in olst:
                     ref_h = ref_obj.get('hash')
@@ -733,6 +761,7 @@ class RdfEngine:
         return f'{pref}{ai_id}'
 
         # INPUT METHODS
+
     def input_string(self, mem, valstr, h, pid, u):
         return (f'<input type="text" class="form-control" value="{valstr}" id="{mem.name}" '
                 f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />')
@@ -763,5 +792,3 @@ class RdfEngine:
     def input_email(self, mem, valstr, h, pid, u):
         return (f'<input type="email" class="form-control" style="width: 150px;" value="{valstr}" id="{mem.name}" '
                 f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />')
-
-
