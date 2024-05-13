@@ -21,6 +21,8 @@ class RdfClass:
         self.members = None  # By ndx
         self.members_by_name = None
         self.members_by_uri = None
+        self.idx_mem_ndx = {}
+        self.idx_memuri_ndx = {}
 
     def add_member(self, mem):
         if self.members is None:
@@ -37,6 +39,8 @@ class RdfClass:
             self.schema.errors.append(f'Duplicate property index <b>{mem.ndx}</b> for property <b>{mem.name}</b> in class <b>{self.name}</b>')
         else:
             self.members[mem.ndx] = mem
+
+        self.idx_mem_ndx[mem.name] = mem.ndx
 
     def r_html(self, o, html_class):
         attr = f'class="{html_class}" id="{self.code}"'

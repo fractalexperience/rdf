@@ -60,6 +60,14 @@ class RdfSchema:
                     if current_class:
                         current_class.add_member(cls)
 
+            for name, cdef in self.classes.items():
+                if not cdef.members:
+                    continue
+                for key, mem in cdef.members.items():
+                    cdef.idx_mem_ndx[mem.name] = mem.ndx
+                    mdef = self.get_class(mem.ref)
+                    cdef.idx_memuri_ndx[mdef.uri] = mem.ndx
+
         except Exception as ex:
             print(ex)
 

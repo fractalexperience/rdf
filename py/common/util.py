@@ -1,4 +1,5 @@
 import hashlib
+import datetime
 
 dom_hex = set('0123456789abcdef')
 
@@ -20,4 +21,7 @@ def escape_xml(s):
         .replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;') \
         .replace("'", '&apos;').replace('"', '&quot;')
 
+
+def get_id_sha1():
+    return get_sha1(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"))
 

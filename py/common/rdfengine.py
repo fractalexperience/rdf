@@ -17,13 +17,14 @@ class RdfEngine:
             'boolean': self.input_boolean,
             'email': self.input_email,
         }
+        self.bgcolors = {0: '#FFFFFF', 1: '#EBF5FB', 2: '#AED6F1', 3: '#85C1E9', 4: '#5DADE2', 5: '#3498DB'}
 
     def o_read(self, tblname, obj_id, depth=0):
         if obj_id is None:
             return None
         if depth > 99:  # Not too deep recursion
             return None
-        frag = f"r1.id={obj_id}" if isinstance(obj_id, int) or obj_id.isnumeric() else f"r1.h='{obj_id}'"
+        frag = f"r1.id={obj_id}" if isinstance(obj_id, int) or str(obj_id).isnumeric() else f"r1.h='{obj_id}'"
         q = ('SELECT '
              'r1.id AS obj_id, '
              'r1.h AS obj_h, '
@@ -33,33 +34,37 @@ class RdfEngine:
              'r2.o AS o, '
              'r2.v AS v '
              f'FROM {tblname} as r1 INNER JOIN {tblname} as r2 on r1.id=r2.s '
-             f'WHERE {frag};')
+             f'WHERE {frag};')  # This ordering might be removed for the purpose of speed
         t = self.sqleng.exec_table(q)
         if t is None or len(t) == 0:
             return None
 
         r = t[0]  # There should be only one object with that hash code or id
         obj_id, obj_h, obj_code = r[0], r[1], r[2]
-        clsdef = self.schema.classes.get(str(obj_code))
-        obj = {'id': obj_id, 'hash': obj_h, 'code': obj_code, 'type': clsdef.name}
+        cdef = self.schema.classes.get(str(obj_code))
+        obj = {'id': obj_id, 'hash': obj_h, 'code': obj_code, 'type': cdef.name}
         data = {}
         obj['data'] = data
         for r in t:
             rdf_id, rdf_p, rdf_o, rdf_v = r[3], r[4], r[5], r[6]
-            p_def = self.schema.classes.get(str(rdf_p))
-            member = clsdef.members.get(str(rdf_p))
-            if p_def is None or member is None:
+            mdef = self.schema.classes.get(str(rdf_p))
+            mem = cdef.members.get(str(rdf_p))
+            if mem is None:
                 continue
+            mdef = self.schema.get_class(mem.ref)
+            if mdef is None:
+                continue
+
             if rdf_o is None:
-                data[member.name] = (rdf_v, rdf_id)
+                data[mem.name] = (rdf_v, rdf_id)
                 continue
-            if member.data_type == 'property':
+            if mem.data_type == 'property':
                 obj_child = self.o_read(tblname, rdf_o, depth + 1)
-                data[member.name] = obj_child
+                data[mem.name] = obj_child
             else:
                 # If we have a reference, we do not do the recursion in order to save processing time.
                 # This can be done later if needed.
-                data[member.name] = (rdf_o, rdf_id)
+                data[mem.name] = (rdf_o, rdf_id)
         return obj
 
     def o_rep(self, tn, cn):
@@ -182,7 +187,7 @@ class RdfEngine:
         cdef = self.schema.get_class(cn)
         # List all instances together with their properties
         sql = (f"SELECT r1.id AS id, r1.h AS h, r1.s AS s, r2.p AS p, r2.o AS o, r2.v AS v "
-               f"FROM {tn} AS r1 INNER JOIN {tn} as r2 ON r1.id=r2.s "
+               f"FROM {tn} AS r1 LEFT JOIN {tn} as r2 ON r1.id=r2.s "
                f"WHERE r1.s={cdef.code} AND r1.p IS NULL AND r1.o IS NULL;")
         t = self.sqleng.exec_table(sql)
         res = []
@@ -293,9 +298,10 @@ class RdfEngine:
         for mem in fields:
             prop_val = obj.get(mem.name)
             prop_val_resolved = prop_val[0] if isinstance(prop_val, tuple) else prop_val
-            if mem.data_type == 'ref' and util.is_sha1(prop_val):
+
+            if mem.data_type == 'ref' and isinstance(prop_val, int):
                 # Referred standalone object
-                prop_obj = self.o_read(tn, prop_val)
+                prop_obj = self.o_read(tn, prop_val_resolved)
                 if prop_obj is not None:
                     data = prop_obj.get('data') if 'data' in prop_obj else prop_obj
                     data['code'] = mem.ref
@@ -303,6 +309,7 @@ class RdfEngine:
                 else:
                     o.append(prop_val_resolved)
                 continue
+
             o.append(prop_val_resolved)
 
     def get_fields_to_show(self, cdef):
@@ -354,11 +361,7 @@ class RdfEngine:
     def o_get_html(self, tn, obj, cdef, parent_obj=None):
         """ Creates a HTML div element to be embedded in editing form for the given object. """
         o = []
-        div_id = obj.get('hash') if obj else cdef.uri
-        parent_id = parent_obj.get('hash') if parent_obj else ''
-        o.append(f'<div class="form-group" id="{div_id}" p="{parent_id}">')
         self.o_edit_members(o, tn, [cdef], obj)
-        o.append('</div>')
         return ''.join(o)
 
     def o_edit_footer(self, o, obj, cdef):
@@ -385,7 +388,12 @@ class RdfEngine:
         if not stack:
             return
         cdef = stack[-1]
-        o.append('<div class="row align-items-start" style="background-color: #e3f2fd;">')
+        div_id = obj.get('hash') if obj else cdef.uri
+        i = obj.get('id') if obj else ''
+        u = cdef.uri if cdef else ''
+        bgc = self.bgcolors.get(len(stack), self.bgcolors.get(0))
+        o.append(f'<div class="form-group rdf-container" id="{div_id}" i="{i}" u="{u}">')
+        o.append(f'<div class="row align-items-start" style="padding-bottom: 20px;background-color: {bgc};">')
         o.append(f'<div class="col-9"><h4 mlang="o_edit_members">{cdef.name}</h4></div>')
         if obj is not None:
             self.add_property_button(o, tn, cdef, obj)
@@ -393,6 +401,8 @@ class RdfEngine:
 
         for mem in cdef.members.values():
             self.o_edit_member(o, tn, mem, stack, obj)
+
+        o.append('</div>')
 
     def add_property_button(self, o, tn, cdef, obj):
         if not obj:
@@ -438,34 +448,45 @@ class RdfEngine:
         val = data.get(mem.name) if data else None
         if mdef.data_type == 'object':
             if mem.data_type == 'property':
-                pass
-                # This should be a separate "Add property" button
-                # self.o_edit_members(o, tn, stack + [mdef], val if val else None)
+                # ---
+                sub_data = data.get(mem.name)
+                if not sub_data:
+                    return
+                stack.append(mdef)
+                self.o_edit_members(o, tn, stack, sub_data)
+                stack.pop(len(stack)-1)
+                # ---
             else:  # Independent reference
-                h = obj.get('hash') if obj else ''
-                valstr = val[0] if val and isinstance(val, tuple) else ''
-                pid = val[1] if val and isinstance(val, tuple) else ''
-                u = '.'.join([cdef.uri for cdef in stack])
-                olst = self.o_list(tn, mem.ref)
-                o.append('<div class="row align-items-start" style="background-color: #e3f2fd;">')
-                o.append('<div class="col-2" style="text-align: right;">')
-                o.append(
-                    f'<label for="{mem.name}" mlang="{mem.name}" class="text-success">{mem.name}:</label>')
-                o.append('</div>')
-                o.append('<div class="col-10">')
-                o.append(
-                    f'<select id="{mem.name}" mlang="{mem.name}" class="form-select" h="{h}" i="{pid}" p="{mem.name}" u="{u}" >')
-                o.append('<option value=""> ... </option>')
-                for ref_obj in olst:
-                    ref_h = ref_obj.get('hash')
-                    ref_n = ref_obj.get('Name')
-                    is_selected = ' selected="true"' if ref_h == valstr else ''
-                    o.append(f'<option value="{ref_h}"{is_selected}>{util.escape_xml(ref_n)}</option>')
-                o.append('</select>')
-                o.append('</div>')
-                o.append('</div>')
+                self.o_edit_prop_independent(o, tn, mem, val, stack, obj)
         else:
             self.o_edit_prop(o, mem, val, stack, obj)
+
+    def o_edit_prop_independent(self, o, tn, mem, val, stack, obj):
+        h = obj.get('hash') if obj else ''
+        valstr = val[0] if val and isinstance(val, tuple) else ''
+        pid = val[1] if val and isinstance(val, tuple) else ''
+        # u = '.'.join([cdef.uri for cdef in stack])
+        mdef = self.schema.get_class(mem.ref)
+        u = mdef.uri
+        olst = self.o_list(tn, mem.ref)
+        bgc = self.bgcolors.get(len(stack), self.bgcolors.get(0))
+        o.append(f'<div class="row align-items-start" style="background-color: {bgc};">'
+                 f'<div class="col-2" style="text-align: right;">'
+                 f'<label for="{mem.name}" mlang="{mem.name}" class="text-success">{mem.name}</label>'
+                 f'</div>'
+                 f'<div class="col-10">'
+                 f'<select id="{mem.name}" mlang="{mem.name}" '
+                 f'class="form-select rdf-property" i="{pid}" p="{mem.name}" u="{u}" >'
+                 f'<option value=""> ... </option>')
+        for ref_obj in olst:
+            ref_h = ref_obj.get('hash')
+            ref_n = ref_obj.get('Name')
+            ref_id = ref_obj.get('id')
+            is_selected = ' selected="true"' if ref_id == valstr else ''
+            o.append(f'<option value="{ref_h}"{is_selected}>{util.escape_xml(ref_n)}</option>')
+        o.append('</select>'
+                 '</div>'
+                 '</div>')
 
     def o_edit_prop(self, o, mem, val, stack, obj):
         """
@@ -479,13 +500,15 @@ class RdfEngine:
         h = obj.get('hash') if obj else ''
         valstr = val[0] if val and isinstance(val, tuple) else ''
         pid = val[1] if val and isinstance(val, tuple) else ''
-        o.append('<div class="row align-items-start" style="background-color: #e3f2fd;">')
+        bgc = self.bgcolors.get(len(stack), self.bgcolors.get(0))
+        o.append(f'<div class="row align-items-start" style="background-color: {bgc};">')
         o.append('<div class="col-2" style="text-align: right;">')
         o.append(
-            f'<label for="{mem.name}" mlang="{mem.name}" class="text-primary">{mem.name}:</label>')
+            f'<label for="{mem.name}" mlang="{mem.name}" class="text-primary">{mem.name}</label>')
         o.append('</div>')
-        u = '.'.join([cdef.uri for cdef in stack])
+        # u = '.'.join([cdef.uri for cdef in stack])
         mdef = self.schema.get_class(mem.ref)
+        u = mdef.uri
         method_input = self.methods_input.get(mdef.data_type, self.methods_input.get('string'))
         o.append('<div class="col-10">')
         o.append(method_input(mem, valstr, h, pid, u))
@@ -661,6 +684,76 @@ class RdfEngine:
             self.sqleng.exec_insert(q)
         return obj_id
 
+    def o_save_recursive(self, tn, data, cdef=None, parent_id=None):
+        """ Version of save, where we have data as nested objects. """
+        obj = json.loads(data) if isinstance(data, str) else data
+        # Container identifier - it is the has of the object, if it is already instantiated, otherwise the class uri
+        uri_or_hash = obj.get('id')
+        # Internal database id if any
+        p = obj.get('p')  # Property name
+        i = obj.get('i')
+        u = obj.get('u')
+        mdef = cdef.members_by_name.get(p) if cdef else self.schema.get_class(u)
+        ndx = cdef.idx_mem_ndx.get(p) if cdef else None
+        data_type = mdef.data_type if mdef else None
+        obj_data = obj.get('data')
+
+        if not obj_data:
+            self.o_save_leaf(tn, ndx, data_type, obj, parent_id)
+            print('Saving leaf', obj)
+            return 'Data saved', [u]
+
+        if not i and uri_or_hash != 'root':
+            i = self.o_save_instantiate(tn, uri_or_hash)
+            if not mdef:
+                mdef = self.schema.get_class(uri_or_hash)
+            if parent_id:
+                # Save the new instantiated object as a property in the parent record
+                ndx = cdef.idx_memuri_ndx.get(mdef.uri) if cdef else None
+                if ndx:
+                    q = f"INSERT INTO {tn} (s, p, o, v, h) VALUES({parent_id},{ndx},'{i}',NULL,NULL)"
+                    self.sqleng.exec_insert(q)
+
+        for nested_obj in obj_data:
+            self.o_save_recursive(tn, nested_obj, mdef, i)
+
+        return 'Data saved', [u]
+
+    def o_save_instantiate(self, tn, uri):
+        """ Instantiates a new compound object and returns the new id. """
+        cdef = self.schema.get_class(uri)
+        if not cdef:
+            print('ERROR: Class not found ', uri)
+            return
+        h = util.get_id_sha1()
+        q = f"INSERT INTO {tn} (s, p, o, v, h) VALUES({cdef.code},NULL,NULL,NULL,'{h}')"
+        obj_id = self.sqleng.exec_insert(q)
+        return obj_id
+
+    def o_save_leaf(self, tn, ndx, data_type, obj, parent_id):
+        """ Saving single property """
+        if not ndx:
+            return
+        p = obj.get('p')  # Property name
+        i = obj.get('i')  # Internal id
+        v = obj.get('v')  # String value
+        u = obj.get('u')  # Property uri
+        # Find internal id of the referenced object if data_type = ref
+
+        if data_type == 'ref':
+            v = self.sqleng.exec_scalar(f"SELECT id FROM {tn} WHERE h='{v}'")
+
+        if i:
+            q = f"UPDATE {tn} SET o='{v}', v=NULL WHERE id={i}" if data_type == 'ref' \
+                else f'UPDATE {tn} SET o=NULL, v={self.sqleng.resolve_sql_value(v)} WHERE id={i}'
+            self.sqleng.exec_update(q)
+            return
+
+        q = f"INSERT INTO {tn} (s, p, o, v, h) VALUES({parent_id},{ndx},'{v}',NULL,NULL)" \
+            if data_type == 'ref' \
+            else f"INSERT INTO {tn} (s, p, o, v, h) VALUES({parent_id},{ndx},NULL,{self.sqleng.resolve_sql_value(v)},NULL)"
+        self.sqleng.exec_insert(q)
+
     def o_seek(self, tn, obj_id):
         # Normally we will address object by hash, but it can be also internal id
         field_id = 'id' if isinstance(obj_id, int) or obj_id.isnumeric() else 'h'
@@ -760,35 +853,33 @@ class RdfEngine:
             ai_id = ai_id.zfill(zfill_len)
         return f'{pref}{ai_id}'
 
-        # INPUT METHODS
-
+    # INPUT METHODS
     def input_string(self, mem, valstr, h, pid, u):
-        return (f'<input type="text" class="form-control" value="{valstr}" id="{mem.name}" '
-                f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />')
+        return (f'<input type="text" class="form-control rdf-property" value="{valstr}" id="{mem.name}" '
+                f'name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
 
     def input_text(self, mem, valstr, h, pid, u):
-        return (f'<textarea type="text" class="form-control" rows="2" id="{mem.name}" '
-                f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}">{valstr}</textarea>')
+        return (f'<textarea type="text" class="form-control rdf-property" rows="2" id="{mem.name}" '
+                f'name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}">{valstr}</textarea>')
 
     def input_date(self, mem, valstr, h, pid, u):
-        return (f'<input type="date" class="form-control" style="width: 150px;" value="{valstr}" id="{mem.name}" '
-                f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />')
+        return (f'<input type="date" class="form-control rdf-property" style="width: 150px;" value="{valstr}" '
+                f'id="{mem.name}" name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
 
     def input_int(self, mem, valstr, h, pid, u):
-        return (f'<input type="number" step="1" class="form-control" style="width: 150px;" value="{valstr}" '
-                f'id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />')
+        return (f'<input type="number" step="1" class="form-control rdf-property" style="width: 150px;" value="{valstr}" '
+                f'id="{mem.name}" name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
 
     def input_float(self, mem, valstr, h, pid, u):
-        return (f'<input type="number" step="any" class="form-control" style="width: 150px;" value="{valstr}" '
-                f'id="{mem.name}" name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />')
+        return (f'<input type="number" step="any" class="form-control rdf-property" style="width: 150px;" value="{valstr}" '
+                f'id="{mem.name}" name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
 
     def input_boolean(self, mem, valstr, h, pid, u):
         frag_checked = 'checked' if valstr.lower() == 'true' else ''
         return (f'<div class="form-check form-switch">'
-                f'<input type="checkbox" {frag_checked} class="form-check-input" value="{valstr}" id="{mem.name}" '
-                f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />'
+                f'<input type="checkbox" {frag_checked} class="form-check-input rdf-property" value="{valstr}" id="{mem.name}" '
+                f'name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />'
                 f'</div>')
-
     def input_email(self, mem, valstr, h, pid, u):
-        return (f'<input type="email" class="form-control" style="width: 150px;" value="{valstr}" id="{mem.name}" '
+        return (f'<input type="email" class="form-control rdf-property" style="width: 150px;" value="{valstr}" id="{mem.name}" '
                 f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />')

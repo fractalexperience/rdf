@@ -111,9 +111,11 @@ function o_delete(callback) {
     if (!confirm('Are you sure ?'))
         return;
     var objects = [];
-    $("[h]").each(function(index){
-        var h = this.getAttribute('h');
-        objects.push(h);
+
+    $('div').each(function(idx) {
+        if ($(this).hasClass('rdf-container')) {
+            objects.push(this.getAttribute('id'));
+        }
     });
     var url = 'd';
     s = JSON.stringify(objects);
@@ -129,7 +131,120 @@ function o_delete(callback) {
     });
 }
 
-function o_save(callback) {
+function o_save(e=null, stack=[], lvl=0, callback=null) {
+    // Init
+    if (e === null) {
+        e = $('#form_object_edit');
+    }
+    if (stack.length == 0) {
+         stack.push({id: 'root', i: null, data:[]});
+         //console.log('Initializing stack ...', stack.length);
+    }
+    c = stack[stack.length-1];
+
+    if ($(e).hasClass('rdf-property')) {
+        var u = $(e).attr('u');
+        var p = $(e).attr('p');
+        var i = $(e).attr('i');
+        var v = $(e).attr('type') == 'checkbox' ? $(e).prop('checked') :  $(e).val();
+        //console.log('level='+lvl, 'container=',c.id, ' u='+u+', p='+p+', i='+i+', v=', v);
+        c.data.push({p:p,i:i,v:v,u:u});
+    }
+
+    if ($(e).hasClass('rdf-container')) {
+        var id = $(e).attr('id');
+        var i = $(e).attr('i');
+        var u = $(e).attr('u');
+        nc = {id: id, i: i, u: u, lvl: lvl, data: []};
+        c.data.push(nc);
+        stack.push(nc);
+        //console.log('Pushing in stack new container ...', stack.length, ' level: ', lvl);
+    }
+
+    // Loop
+    var l = $(e).children();
+    if (l.length !== 0) {
+       for (var i=0; i < l.length; i++) {
+            // Recursion
+            o_save(l[i], stack, lvl+1, callback);
+       }
+    }
+
+    if ($(e).hasClass('rdf-container')) {
+        stack.pop();
+        //console.log('Removing old container ...', stack.length, ' level: ', lvl);
+    }
+
+    // Finalize
+    if (lvl == 0) {
+        s = JSON.stringify(c);
+        //alert(s);
+        url = 's';
+        $.post(url, {data: s}, function(data, status){
+            if (status === 'success') {
+                show_message(data);
+                if (callback !== null) {
+                    callback();}
+            } else {
+                alert("Error: " + status);}
+        });
+    }
+}
+
+
+function o_save_old_2(e=null, c=null, lvl=0, callback=null) {
+    // Init
+    if (e === null) {
+        e = $('#form_object_edit');
+    }
+    if (c === null) {
+         c = {id: 'root', i: null, data:[]};
+    }
+    nc = c;
+    if ($(e).hasClass('rdf-container')) {
+        var id = $(e).attr('id');
+        var i = $(e).attr('i');
+        var u = $(e).attr('u');
+        nc = {id: id, i: i, u: u, lvl: lvl, data: []};
+        console.log('Container: id='+id+', i='+i+', u=', u);
+        c.data.push(nc);
+    }
+    if ($(e).hasClass('rdf-property')) {
+        var u = $(e).attr('u');
+        var p = $(e).attr('p');
+        var i = $(e).attr('i');
+        var v = $(e).attr('type') == 'checkbox' ? $(e).prop('checked') :  $(e).val();
+        console.log('u='+u+', p='+p+', i='+i+', v=', v);
+        nc.data.push({p:p,i:i,v:v,u:u});
+    }
+    // Loop
+    var l = $(e).children();
+    if (l.length !== 0) {
+
+       for (var i=0; i < l.length; i++) {
+            // Recursion
+            o_save(l[i], nc, lvl+1, callback);
+       }
+    }
+    // Finalize
+    if (lvl == 0) {
+        s = JSON.stringify(c);
+        alert(s);
+        url = 's';
+        /*
+        $.post(url, {data: s}, function(data, status){
+            if (status === 'success') {
+                show_message(data);
+                if (callback !== null) {
+                    callback();}
+            } else {
+                alert("Error: " + status);}
+        });
+        */
+    }
+}
+
+function o_save_old(callback) {
     var objects = [];
     $("[h]").each(function(index){
         var h = this.getAttribute('h');
@@ -140,6 +255,29 @@ function o_save(callback) {
         objects.push([p,h,i,v,u]);
     });
     var url = 's';
+    s = JSON.stringify(objects);
+    alert(s);
+    $.post(url, {data: s}, function(data, status){
+        if (status === 'success') {
+            show_message(data);
+            if (callback !== null) {
+                callback();
+            }
+        } else {
+            alert("Error: " + status);
+        }
+    });
+}
+
+function o_delete_old(callback) {
+    if (!confirm('Are you sure ?'))
+        return;
+    var objects = [];
+    $("[h]").each(function(index){
+        var h = this.getAttribute('h');
+        objects.push(h);
+    });
+    var url = 'd';
     s = JSON.stringify(objects);
     $.post(url, {data: s}, function(data, status){
         if (status === 'success') {
