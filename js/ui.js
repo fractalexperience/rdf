@@ -87,6 +87,8 @@ function add_property_panel(uri, parent_id, multiple, callbackFunction) {
 
 function show_message(m)
 {
+    $('#message').show();
+    $('#message').fadeOut(5000);
     $('#message').html(format_message(m));
 }
 
@@ -138,19 +140,17 @@ function o_save(e=null, stack=[], lvl=0, callback=null) {
     }
     if (stack.length == 0) {
          stack.push({id: 'root', i: null, data:[]});
-         //console.log('Initializing stack ...', stack.length);
+         console.log('Initializing stack ...', stack.length);
     }
     c = stack[stack.length-1];
-
-    if ($(e).hasClass('rdf-property')) {
+    if ($(e).hasClass('rdf-property') && $(e).hasClass('rdf-changed')) {
         var u = $(e).attr('u');
         var p = $(e).attr('p');
         var i = $(e).attr('i');
         var v = $(e).attr('type') == 'checkbox' ? $(e).prop('checked') :  $(e).val();
-        //console.log('level='+lvl, 'container=',c.id, ' u='+u+', p='+p+', i='+i+', v=', v);
         c.data.push({p:p,i:i,v:v,u:u});
+        console.log('level='+lvl, 'container=',c.id, ' u='+u+', p='+p+', i='+i+', v=', v);
     }
-
     if ($(e).hasClass('rdf-container')) {
         var id = $(e).attr('id');
         var i = $(e).attr('i');
@@ -158,33 +158,33 @@ function o_save(e=null, stack=[], lvl=0, callback=null) {
         nc = {id: id, i: i, u: u, lvl: lvl, data: []};
         c.data.push(nc);
         stack.push(nc);
-        //console.log('Pushing in stack new container ...', stack.length, ' level: ', lvl);
+        console.log('Pushing in stack new container ...', stack.length, ' level: ', lvl, ' u=', u);
     }
 
     // Loop
     var l = $(e).children();
     if (l.length !== 0) {
        for (var i=0; i < l.length; i++) {
-            // Recursion
-            o_save(l[i], stack, lvl+1, callback);
+           // console.log('Recursin - level', lvl+1)
+            o_save(l[i], stack, lvl+1, callback); // Recursion
        }
     }
 
     if ($(e).hasClass('rdf-container')) {
         stack.pop();
-        //console.log('Removing old container ...', stack.length, ' level: ', lvl);
+        console.log('Removing old container ...', stack.length, ' level: ', lvl);
     }
 
     // Finalize
     if (lvl == 0) {
-        s = JSON.stringify(c);
-        //alert(s);
+        s = JSON.stringify(stack[0]);
+        alert(s);
+
         url = 's';
         $.post(url, {data: s}, function(data, status){
             if (status === 'success') {
                 show_message(data);
-                if (callback !== null) {
-                    callback();}
+                if (callback !== null) { callback();}
             } else {
                 alert("Error: " + status);}
         });

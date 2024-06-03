@@ -16,8 +16,7 @@ sqleng = SqlEngine(
 rdfeng = RdfEngine(sh, sqleng)
 tn = 'root'
 
-# obj = rdfeng.o_read('db0002', 'f85fad4a01784a52a6393534d6e271b7be9f3fdf')
-obj = rdfeng.o_read('db0002', 'f45aaa60bdb5ee0ddbfae2197b554eff2c3da309')
+obj = rdfeng.cms.o_read('root', 'd9dd30999835d7254a9b0ad6b23f846dbcd8c41b')
 print(json.dumps(obj, indent=4))
 
 # # Get definition of a specific user
