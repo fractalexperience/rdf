@@ -101,7 +101,7 @@ class RdfCms:
         ndx = mem.ndx
         if mem.multiple and mem.multiple.lower() == 'true':
             # Only insert, because multiple properties of that type are allowed
-            q = f"INSERT INTO {tn} (s, p, o, v, h) VALUES({pid},{ndx},'{v}',NULL,NULL)"
+            q = f"INSERT INTO {tn} (s, p, o, v, h) VALUES({pid},{ndx},NULL,{self.sqleng.resolve_sql_value(v)},NULL)"
             i = self.sqleng.exec_insert(q)
             return i, None, True, f'Property added {cname} to {puri}'
         if cid:
@@ -156,8 +156,16 @@ class RdfCms:
                 continue
 
             if rdf_o is None:
-                data[mem.name] = (rdf_v, rdf_id)
-                continue
+                if mem.name not in data:
+                    data[mem.name] = (rdf_v, rdf_id)
+                    continue
+                val_existing = data.get(mem.name)
+                if isinstance(val_existing, tuple):
+                    data[mem.name] = [val_existing, (rdf_v, rdf_id)]
+                    continue
+                if isinstance(val_existing, list):
+                    val_existing.append((rdf_v, rdf_id))
+                    continue
             if mem.data_type == 'property':
                 obj_child = self.o_read(tblname, rdf_o, depth + 1)
                 data[mem.name] = obj_child

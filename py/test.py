@@ -14,9 +14,8 @@ sqleng = SqlEngine(
     ssh_host=dbconfig.SSH_HOST, ssh_user=dbconfig.DB_USER, ssh_pass=dbconfig.SSH_PASS,
     ssh_bind_addr=dbconfig.SSH_BIND_ADDRESS)
 rdfeng = RdfEngine(sh, sqleng)
-tn = 'root'
 
-obj = rdfeng.cms.o_read('root', 'd9dd30999835d7254a9b0ad6b23f846dbcd8c41b')
+obj = rdfeng.cms.o_read('db0002', '1c8d8c4f45f6920431c5bed92ff9a0fff7164e6b')
 print(json.dumps(obj, indent=4))
 
 # # Get definition of a specific user

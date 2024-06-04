@@ -9,7 +9,9 @@ class RdfEngine:
         self.sqleng = sqleng
         self.schema = schema
         self.cms = rdfcms.RdfCms(self.schema, self.sqleng)
-        self.special_handling_classes = {'img', 'db_table', 'hash', 'user_role', 'lang', 'text', 'email'}
+        # self.special_handling_classes = {
+        #     'img', 'db_table', 'hash', 'user_role', 'lang', 'text', 'email', 'image', 'media'}
+
         self.methods_input = {
             'string': self.input_string,
             'text': self.input_text,
@@ -18,6 +20,11 @@ class RdfEngine:
             'float': self.input_float,
             'boolean': self.input_boolean,
             'email': self.input_email,
+            'image': self.input_image,
+            'media': self.input_media,
+            'lang': self.input_lang,
+            'user_role': self.input_role,
+            'db_table': self.input_db_table,
         }
         self.bgcolors = {0: '#FFFFFF', 1: '#EBF5FB', 2: '#AED6F1', 3: '#85C1E9', 4: '#5DADE2', 5: '#3498DB'}
 
@@ -337,12 +344,21 @@ class RdfEngine:
             cdef = self.schema.get_class(h_u)
         return obj, cdef
 
-    def r_frag(self, tn, o, p):
+    def r_frag(self, tn, o, p, n):
         """ Renders an entry form fragment for a given object (or class to be instantiated)
-        h_u: Hash or uri for the object/class
-        h_p: Has of the parent if any """
+        o: URI of the property
+        p: URI of the parent class
+        n: Name of the property
+        """
         obj, cdef = self.get_obj_and_cdef(tn, o)
-        obj_parent, cdef_parent = self.get_obj_and_cdef(tn, p)
+        obj_parent, pdef = self.get_obj_and_cdef(tn, p)
+        mem = pdef.members_by_name.get(n)
+        val = obj.get('v') if obj else None
+        if cdef.members is None:
+            o = []
+            self.o_edit_prop(o, mem, val, [cdef], obj)
+            return ''.join(o)
+
         return self.o_get_html(tn, obj, cdef, obj_parent)
 
     def o_edit(self, tn, h_u):
@@ -355,13 +371,13 @@ class RdfEngine:
 
         o = [f'<form action="" id="form_object_edit" class="needs-validation" novalidate method="post"> ']
         # Always start from root
-        frag_div = self.o_get_html(tn, obj, cdef)
+        frag_div = self.o_get_html(tn, obj, cdef, None)
         # ---
         o.append(frag_div)
         self.o_edit_footer(o, obj, cdef)
         return ''.join(o)
 
-    def o_get_html(self, tn, obj, cdef, parent_obj=None):
+    def o_get_html(self, tn, obj, cdef, pdef):
         """ Creates a HTML div element to be embedded in editing form for the given object. """
         o = []
         self.o_edit_members(o, tn, [cdef], obj)
@@ -398,6 +414,13 @@ class RdfEngine:
         div_id = obj.get('hash') if obj else cdef.uri
         i = obj.get('id') if obj else ''
         u = cdef.uri if cdef else ''
+
+        if cdef.members is None:
+            # if pdef:
+            #     mem = pdef.members_by_name.get(cdef.name)
+            #     self.o_edit_member(o, tn, mem, stack, obj)
+            return
+
         bgc = self.bgcolors.get(len(stack), self.bgcolors.get(0))
         o.append(f'<div class="form-group rdf-container" id="{div_id}" i="{i}" u="{u}">')
         o.append(f'<div class="row align-items-start" style="padding-bottom: 20px;background-color: {bgc};">')
@@ -414,18 +437,28 @@ class RdfEngine:
     def add_property_button(self, o, tn, cdef, obj):
         if not obj:
             return
-        olst = self.o_query(tn, f'{cdef.uri}$')
-        if not olst:
+        if not cdef:
             return
+        if not cdef.members:
+            return
+        obj_data = obj.get('data', {})
         o_temp, cnt = [], 0
-        for it in olst:
-            pdef = self.schema.get_class(it[0])
-            if it[1] not in obj.get('data', {}) or (pdef.multiple and pdef.multiple.lower() == 'true'):
-                is_multiple = 'true' if pdef.multiple else 'false'
-                o_temp.append(f'<a class="dropdown-item" '
-                              f'href="javascript:add_property_panel(\'{it[0]}\', \'{obj.get("hash")}\', {is_multiple})" '
-                              f'id="add_prop_{it[0]}" mlang="add_prop_{it[0]}">{it[1]}</a>')
-                cnt += 1
+        for mem in cdef.members.values():
+            # pdef = self.schema.get_class(it[0])
+            allow_multiple = mem.multiple.lower() == 'true'
+            mdef = self.schema.get_class(mem.ref)
+            uri = mdef.uri if mdef else None
+            if mem.name in obj_data and not allow_multiple:
+                continue
+            if mem.data_type == 'ref':
+                continue  # This needs to be improved !!! It is a legal case to add multiple references
+            frag_multiple = 'true' if allow_multiple else 'false'
+            o_temp.append(
+                f'<a class="dropdown-item" '
+                f'href="javascript:add_property_panel(\'{uri}\', \'{cdef.uri}\', \'{mem.name}\', \'{obj.get("hash")}\', {frag_multiple})" '
+                f'id="add_prop_{mem.name}" mlang="add_prop_{mem.name}" '
+                f'p="{mem.name}" u="{cdef.uri}" i="{obj.get('id')}">{mem.name}</a>')
+            cnt += 1
         if cnt == 0:
             return
 
@@ -448,10 +481,7 @@ class RdfEngine:
     def o_edit_member(self, o, tn, mem, stack, obj):
         data = obj.get('data') if obj else {}
         mdef = self.schema.get_class(mem.ref)
-        # Write specific methods for these
-        if mdef.uri in self.special_handling_classes:
-            return
-
+        allow_multiple = mem and mem.multiple.lower() == 'true'
         val = data.get(mem.name) if data else None
         if mdef.data_type == 'object':
             if mem.data_type == 'property':
@@ -466,7 +496,10 @@ class RdfEngine:
             else:  # Independent reference
                 self.o_edit_prop_independent(o, tn, mem, val, stack, obj)
         else:
-            self.o_edit_prop(o, mem, val, stack, obj)
+            if val is not None or not allow_multiple:
+                # If property is defined once, it should be displayed even empty.
+                # If it defined to allowed multiple occurrences, then it should be added from "Add property"
+                self.o_edit_prop(o, mem, val, stack, obj)
 
     def o_edit_prop_independent(self, o, tn, mem, val, stack, obj):
         h = obj.get('hash') if obj else ''
@@ -498,11 +531,19 @@ class RdfEngine:
                  '</div>')
 
     def o_edit_prop(self, o, mem, val, stack, obj):
+        if isinstance(val, list):
+            for v in val:
+                self.o_edit_prop_single(o, mem, v, stack, obj)
+            return
+        # Normal case
+        self.o_edit_prop_single(o, mem, val, stack, obj)
+
+    def o_edit_prop_single(self, o, mem, val, stack, obj):
         """
         :param o: Output list
         :param mem: Ptoperty class
         :param val: Value of the property
-        :param cdef: Class definition
+        :param stack: list of the involved classes
         :param obj: Object instance (if any), None for new object
         :return: None
         """
@@ -515,7 +556,6 @@ class RdfEngine:
         o.append(
             f'<label for="{mem.name}" mlang="{mem.name}" class="text-primary">{mem.name}</label>')
         o.append('</div>')
-        # u = '.'.join([cdef.uri for cdef in stack])
         mdef = self.schema.get_class(mem.ref)
         u = mdef.uri
         method_input = self.methods_input.get(mdef.data_type, self.methods_input.get('string'))
@@ -886,3 +926,19 @@ class RdfEngine:
             f'<input type="email" class="form-control rdf-property" style="width: 150px;" value="{valstr}" id="{mem.name}" '
             f'oninput="$(this).addClass(\'rdf-changed\')" '
             f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />')
+
+    def input_image(self, mem, valstr, h, pid, u):
+            return f'<h1>TODO: Input image {mem.name}</h1>'
+
+    def input_media(self, mem, valstr, h, pid, u):
+        return f'<h1>TODO: Input media {mem.name}</h1>'
+
+    def input_lang(self, mem, valstr, h, pid, u):
+        return f'<h1>TODO: Input lang {mem.name}</h1>'
+
+    def input_role(self, mem, valstr, h, pid, u):
+        return f'<h1>TODO: Input role {mem.name}</h1>'
+
+    def input_db_table(self, mem, valstr, h, pid, u):
+        return f'<h1>TODO: Input DB table {mem.name}</h1>'
+

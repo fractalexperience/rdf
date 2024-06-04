@@ -227,17 +227,17 @@
 		"namespace": "",
 		"code": "15",
 		"inherits": "",
-		"name": "Thumbnail preview",
+		"name": "Image",
 		"ndx": "",
-		"description": "Preview based on a hash code and MIME type - requires special handling in UI",
-		"data_type": "thumbnail",
+		"description": "Generic image - JPG, PNG or GIF - requires special handling in UI",
+		"data_type": "image",
 		"restriction": "",
 		"ref": "",
 		"required": "",
 		"multiple": "",
 		"key": "",
 		"show": "",
-		"uri": "thumbnail"
+		"uri": "image"
 	},
 	{
 		"namespace": "",
@@ -270,6 +270,22 @@
 		"key": "",
 		"show": "",
 		"uri": "lang"
+	},
+	{
+		"namespace": "",
+		"code": "18",
+		"inherits": "",
+		"name": "Media object",
+		"ndx": "",
+		"description": "Generic media object - represented by a thumbnail in the UI - requires special handling",
+		"data_type": "media",
+		"restriction": "",
+		"ref": "",
+		"required": "",
+		"multiple": "",
+		"key": "",
+		"show": "",
+		"uri": "media"
 	},
 	{
 		"namespace": "",
@@ -643,7 +659,7 @@
 		"namespace": "",
 		"code": "103",
 		"inherits": "",
-		"name": "Image",
+		"name": "Image extended",
 		"ndx": "",
 		"description": "Generic image",
 		"data_type": "object",
@@ -653,7 +669,7 @@
 		"multiple": "",
 		"key": "",
 		"show": "",
-		"uri": "img"
+		"uri": "image_extended"
 	},
 	{
 		"namespace": "",
@@ -771,7 +787,7 @@
 		"namespace": "",
 		"code": "104",
 		"inherits": "",
-		"name": "Media object",
+		"name": "Media object extended",
 		"ndx": "",
 		"description": "Generic media file such as MP3, MPEG etc. It can be also an image with specific format not supported by the browser",
 		"data_type": "object",
@@ -781,7 +797,7 @@
 		"multiple": "",
 		"key": "",
 		"show": "",
-		"uri": "media"
+		"uri": "media_extended"
 	},
 	{
 		"namespace": "",
@@ -954,7 +970,7 @@
 		"restriction": "",
 		"ref": "3",
 		"required": "",
-		"multiple": "",
+		"multiple": "TRUE",
 		"key": "",
 		"show": "",
 		"uri": ""
@@ -965,10 +981,10 @@
 		"inherits": "",
 		"name": "Image",
 		"ndx": "5",
-		"description": "Collection of images",
+		"description": "Generic image",
 		"data_type": "property",
 		"restriction": "",
-		"ref": "103",
+		"ref": "15",
 		"required": "",
 		"multiple": "TRUE",
 		"key": "",
@@ -981,10 +997,10 @@
 		"inherits": "",
 		"name": "Media object",
 		"ndx": "6",
-		"description": "Collection of media objects",
+		"description": "Generic media object",
 		"data_type": "property",
 		"restriction": "",
-		"ref": "104",
+		"ref": "18",
 		"required": "",
 		"multiple": "TRUE",
 		"key": "",

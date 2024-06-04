@@ -64,23 +64,31 @@ function update_content(containerId, url, callbackFunction)
     });
 }
 
-/** Append a sub-form for a nested compound object insidean existing form */
-function add_property_panel(uri, parent_id, multiple, callbackFunction) {
+/** Append a sub-form for a nested compound object insidean existing form
+    uri: URI of the property
+    puri: URI of the parent object
+    prop: Name of the property
+    parent_id: The id of the panel, where to add teh snippet
+    multiple: Flag whether it is allowed to add the property multiple ties
+    callback: Callback function to be executed after this one
+*/
+function add_property_panel(uri, puri, prop, parent_id, multiple, callback) {
     // Check if there is a div panel with the id corresponding to the given uri
     var p = $('#'+uri);
     if (p.length !== 0 && !multiple) {
         alert('Class '+uri+' already instantiated!');
         return;
     }
-    var url = 'f?o='+uri
+    var url = 'f?o=' + uri + '&p=' + puri + '&n=' + prop;
     $.get(url, function(data, status) {
         if (status !== 'success') {
             alert('Error: Cannot read from '+url);
             return;
         }
         $(data).appendTo($("#"+parent_id));
-        if (callbackFunction !== undefined && callbackFunction !== null) {
-            callbackFunction();
+
+        if (callback !== undefined && callback !== null) {
+            callback();
         }
     });
 }
