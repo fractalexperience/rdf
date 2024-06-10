@@ -5,6 +5,7 @@ __pycache__/
 
 # RDF stuff
 py/common/dbconfig.py
+data/
 
 # C extensions
 *.so

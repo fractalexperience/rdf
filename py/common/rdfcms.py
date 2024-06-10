@@ -1,4 +1,6 @@
 import json
+import os
+
 import common.util as util
 
 
@@ -194,5 +196,34 @@ class RdfCms:
             return None
         return self.o_read(tn, obj_id)
 
-    def uplimg(self, tn, files):
-        print(files)
+    def uplimg(self, tn, folder, file):
+        if not os.path.exists(folder):
+            os.mkdir(folder)
+        path_user = os.path.join(folder, tn)
+        if not os.path.exists(path_user):
+            os.mkdir(path_user)
+        path_img = os.path.join(path_user, 'img')
+        if not os.path.exists(path_img):
+            os.mkdir(path_img)
+        path_thumb = os.path.join(path_user, 'thumb')
+        if not os.path.exists(path_thumb):
+            os.mkdir(path_thumb)
+
+        ext = file.filename.split('.')[-1]
+        new_filename = f'{util.get_id_sha1()}.{ext}'
+        location_img = os.path.join(path_img, new_filename)
+        location_thumb = os.path.join(path_thumb, new_filename)
+
+        size = 0
+        with open(location_img, 'wb') as out:
+            while True:
+                data = file.file.read(8192)
+                if not data:
+                    break
+                out.write(data)
+                size += len(data)
+
+        u_img = location_img.replace(os.sep, '/')
+        u_thumb = location_thumb.replace(os.sep, '/')
+        result = {'img': u_img, 'thumb': u_thumb, 'filename': file.filename}
+        return json.dumps(result)

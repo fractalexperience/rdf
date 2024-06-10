@@ -1,5 +1,28 @@
 
-function handle_files(files) {
+function handle_files(files, id_tb_data) {
+    var file = files[0];
+    var formData = new FormData();
+    formData.append('file', file);
+    $.ajax({
+        url: 'uplimg', // Specify the server-side script to handle the upload
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            //alert(response);
+            $('#'+id_tb_data).val(response);
+            // Server response handling
+        },
+        error: function() {
+            // Error handling
+        }
+    });
+
+}
+
+
+function handle_files_old(files) {
     alert('handle_files');
     $("#img_thumb").attr("src", "../img/loading.gif");
     if (!files.length) {
@@ -27,7 +50,8 @@ function handle_files(files) {
            }
         };
         url = 'uplimg'
-        xhr.open('POST', url, true);
+        xhr.open('GET', url, true);
+        //xhr.open('POST', url, true);
         xhr.send(formData);
     }
 }

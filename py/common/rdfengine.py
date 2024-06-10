@@ -895,6 +895,7 @@ class RdfEngine:
             f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />')
 
     def input_image(self, mem, valstr, h, pid, u, o, bgc):
+        id_tb_data = f'img_data_{h}'
         o.append(f"""
 <div class="row align-items-start" style="background-color: {bgc};">
     <div class="col-2" style="text-align: right;">
@@ -904,12 +905,10 @@ class RdfEngine:
     </div>
     <div class="col-10">
         <form id="form_img" name="form_img" method="post" enctype="multipart/form-data">
-            <input type="file" id="file_img" accept="*" style="display: block;" onchange="handle_files(this.files)"/>
+            <input type="file" id="file_img" accept="*" style="display: block;" 
+            onchange="handle_files(this.files, \'{id_tb_data}\')"/>
             <div id="input_media">
-                <input type="text" class="form-control" id="Media_OriginalFilename" disabled="true" style="display: block;"/>
-                <input type="text" class="form-control" id="Media_FileLocation" disabled="true" style="display: block;"/>  
-                <input type="text" class="form-control" id="Media_ThumbnailLocation" disabled="true" style="display: block;"/>                         
-                <input type="text" class="form-control" id="MediaId" disabled="true" style="display: block;"/>
+                <input type="text" class="form-control" id="{id_tb_data}" disabled="true" style="display: block;"/>
             </div>
         </form>                    
     </div>
