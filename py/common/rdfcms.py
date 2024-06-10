@@ -193,3 +193,6 @@ class RdfCms:
         if obj_id is None:
             return None
         return self.o_read(tn, obj_id)
+
+    def uplimg(self, tn, files):
+        print(files)

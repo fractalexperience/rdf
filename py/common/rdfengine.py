@@ -28,55 +28,6 @@ class RdfEngine:
         }
         self.bgcolors = {0: '#FFFFFF', 1: '#EBF5FB', 2: '#AED6F1', 3: '#85C1E9', 4: '#5DADE2', 5: '#3498DB'}
 
-    #
-    # def o_read(self, tblname, obj_id, depth=0):
-    #     if obj_id is None:
-    #         return None
-    #     if depth > 99:  # Not too deep recursion
-    #         return None
-    #     frag = f"r1.id={obj_id}" if isinstance(obj_id, int) or str(obj_id).isnumeric() else f"r1.h='{obj_id}'"
-    #     q = ('SELECT '
-    #          'r1.id AS obj_id, '
-    #          'r1.h AS obj_h, '
-    #          'r1.s AS code, '
-    #          'r2.id AS prop_id, '
-    #          'r2.p AS p, '
-    #          'r2.o AS o, '
-    #          'r2.v AS v '
-    #          f'FROM {tblname} as r1 INNER JOIN {tblname} as r2 on r1.id=r2.s '
-    #          f'WHERE {frag};')  # This ordering might be removed for the purpose of speed
-    #     t = self.sqleng.exec_table(q)
-    #     if t is None or len(t) == 0:
-    #         return None
-    #
-    #     r = t[0]  # There should be only one object with that hash code or id
-    #     obj_id, obj_h, obj_code = r[0], r[1], r[2]
-    #     cdef = self.schema.classes.get(str(obj_code))
-    #     obj = {'id': obj_id, 'hash': obj_h, 'code': obj_code, 'type': cdef.name}
-    #     data = {}
-    #     obj['data'] = data
-    #     for r in t:
-    #         rdf_id, rdf_p, rdf_o, rdf_v = r[3], r[4], r[5], r[6]
-    #         mdef = self.schema.classes.get(str(rdf_p))
-    #         mem = cdef.members.get(str(rdf_p))
-    #         if mem is None:
-    #             continue
-    #         mdef = self.schema.get_class(mem.ref)
-    #         if mdef is None:
-    #             continue
-    #
-    #         if rdf_o is None:
-    #             data[mem.name] = (rdf_v, rdf_id)
-    #             continue
-    #         if mem.data_type == 'property':
-    #             obj_child = self.o_read(tblname, rdf_o, depth + 1)
-    #             data[mem.name] = obj_child
-    #         else:
-    #             # If we have a reference, we do not do the recursion in order to save processing time.
-    #             # This can be done later if needed.
-    #             data[mem.name] = (rdf_o, rdf_id)
-    #     return obj
-
     def o_rep(self, tn, cn):
         cdef = self.schema.get_class(cn)
         if not cdef:
@@ -551,18 +502,10 @@ class RdfEngine:
         valstr = val[0] if val and isinstance(val, tuple) else ''
         pid = val[1] if val and isinstance(val, tuple) else ''
         bgc = self.bgcolors.get(len(stack), self.bgcolors.get(0))
-        o.append(f'<div class="row align-items-start" style="background-color: {bgc};">')
-        o.append('<div class="col-2" style="text-align: right;">')
-        o.append(
-            f'<label for="{mem.name}" mlang="{mem.name}" class="text-primary">{mem.name}</label>')
-        o.append('</div>')
         mdef = self.schema.get_class(mem.ref)
         u = mdef.uri
         method_input = self.methods_input.get(mdef.data_type, self.methods_input.get('string'))
-        o.append('<div class="col-10">')
-        o.append(method_input(mem, valstr, h, pid, u))
-        o.append('</div>')
-        o.append('</div>')
+        method_input(mem, valstr, h, pid, u, o, bgc)
 
     def reset_rdf_table(self, tblname):
         if self.sqleng.table_exists(tblname):
@@ -886,59 +829,104 @@ class RdfEngine:
         return f'{pref}{ai_id}'
 
     # INPUT METHODS
-    def input_string(self, mem, valstr, h, pid, u):
-        return (f'<input type="text" class="form-control rdf-property" value="{valstr}" id="{mem.name}" '
-                f'oninput="$(this).addClass(\'rdf-changed\')" '
-                f'name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
+    @staticmethod
+    def table_row_decorator(method):
+        def wrapper(self, mem, valstr, h, pid, u, o, bgc):
+            o.append(f'<div class="row align-items-start" style="background-color: {bgc};">')
+            o.append('<div class="col-2" style="text-align: right;">')
+            o.append(
+                f'<label for="{mem.name}" mlang="{mem.name}" class="text-primary">{mem.name}</label>')
+            o.append('</div>')
+            o.append('<div class="col-10">')
+            method(self, mem, valstr, h, pid, u, o)
+            o.append('</div></div>')
 
-    def input_text(self, mem, valstr, h, pid, u):
-        return (f'<textarea type="text" class="form-control rdf-property" rows="2" id="{mem.name}" '
-                f'oninput="$(this).addClass(\'rdf-changed\')" '
-                f'name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}">{valstr}</textarea>')
+        return wrapper
 
-    def input_date(self, mem, valstr, h, pid, u):
-        return (f'<input type="date" class="form-control rdf-property" style="width: 150px;" value="{valstr}" '
-                f'oninput="$(this).addClass(\'rdf-changed\')" '
-                f'id="{mem.name}" name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
+    @table_row_decorator
+    def input_string(self, mem, valstr, h, pid, u, o):
+        o.append(f'<input type="text" class="form-control rdf-property" value="{valstr}" id="{mem.name}" '
+                        f'oninput="$(this).addClass(\'rdf-changed\')" '
+                        f'name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
 
-    def input_int(self, mem, valstr, h, pid, u):
-        return (
+    @table_row_decorator
+    def input_text(self, mem, valstr, h, pid, u, o):
+        o.append(
+            f'<textarea type="text" class="form-control rdf-property" rows="2" id="{mem.name}" '
+            f'oninput="$(this).addClass(\'rdf-changed\')" '
+            f'name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}">{valstr}</textarea>')
+
+    @table_row_decorator
+    def input_date(self, mem, valstr, h, pid, u, o):
+        o.append(
+            f'<input type="date" class="form-control rdf-property" style="width: 150px;" value="{valstr}" '
+            f'oninput="$(this).addClass(\'rdf-changed\')" '
+            f'id="{mem.name}" name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
+
+    @table_row_decorator
+    def input_int(self, mem, valstr, h, pid, u, o):
+        o.append(
             f'<input type="number" step="1" class="form-control rdf-property" style="width: 150px;" value="{valstr}" '
             f'oninput="$(this).addClass(\'rdf-changed\')" '
             f'id="{mem.name}" name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
 
-    def input_float(self, mem, valstr, h, pid, u):
-        return (
+    @table_row_decorator
+    def input_float(self, mem, valstr, h, pid, u, o):
+        o.append(
             f'<input type="number" step="any" class="form-control rdf-property" style="width: 150px;" value="{valstr}" '
             f'oninput="$(this).addClass(\'rdf-changed\')" '
             f'id="{mem.name}" name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
 
-    def input_boolean(self, mem, valstr, h, pid, u):
+    @table_row_decorator
+    def input_boolean(self, mem, valstr, h, pid, u, o):
         frag_checked = 'checked' if valstr.lower() == 'true' else ''
-        return (f'<div class="form-check form-switch">'
-                f'<input type="checkbox" {frag_checked} class="form-check-input rdf-property" value="{valstr}" id="{mem.name}" '
-                f'oninput="$(this).addClass(\'rdf-changed\')" '
-                f'name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />'
-                f'</div>')
+        o.append(
+            f'<div class="form-check form-switch">'
+            f'<input type="checkbox" {frag_checked} class="form-check-input rdf-property" value="{valstr}" id="{mem.name}" '
+            f'oninput="$(this).addClass(\'rdf-changed\')" '
+            f'name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />'
+            f'</div>')
 
-    def input_email(self, mem, valstr, h, pid, u):
-        return (
+    @table_row_decorator
+    def input_email(self, mem, valstr, h, pid, u, o):
+        o.append(
             f'<input type="email" class="form-control rdf-property" style="width: 150px;" value="{valstr}" id="{mem.name}" '
             f'oninput="$(this).addClass(\'rdf-changed\')" '
             f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />')
 
-    def input_image(self, mem, valstr, h, pid, u):
-            return f'<h1>TODO: Input image {mem.name}</h1>'
+    def input_image(self, mem, valstr, h, pid, u, o, bgc):
+        o.append(f"""
+<div class="row align-items-start" style="background-color: {bgc};">
+    <div class="col-2" style="text-align: right;">
+        <div id="div_thumbnail" style="text-align: center;">
+            <img src="../img/picture.png" class="rounded" alt="" height="80" id="img_thumb">
+        </div>
+    </div>
+    <div class="col-10">
+        <form id="form_img" name="form_img" method="post" enctype="multipart/form-data">
+            <input type="file" id="file_img" accept="*" style="display: block;" onchange="handle_files(this.files)"/>
+            <div id="input_media">
+                <input type="text" class="form-control" id="Media_OriginalFilename" disabled="true" style="display: block;"/>
+                <input type="text" class="form-control" id="Media_FileLocation" disabled="true" style="display: block;"/>  
+                <input type="text" class="form-control" id="Media_ThumbnailLocation" disabled="true" style="display: block;"/>                         
+                <input type="text" class="form-control" id="MediaId" disabled="true" style="display: block;"/>
+            </div>
+        </form>                    
+    </div>
+</div>""")
 
-    def input_media(self, mem, valstr, h, pid, u):
-        return f'<h1>TODO: Input media {mem.name}</h1>'
+    @table_row_decorator
+    def input_media(self, mem, valstr, h, pid, u, o):
+        o.append(f'<h1>TODO: Input media {mem.name}</h1>')
 
-    def input_lang(self, mem, valstr, h, pid, u):
-        return f'<h1>TODO: Input lang {mem.name}</h1>'
+    @table_row_decorator
+    def input_lang(self, mem, valstr, h, pid, u, o):
+        o.append(f'<h1>TODO: Input lang {mem.name}</h1>')
 
-    def input_role(self, mem, valstr, h, pid, u):
-        return f'<h1>TODO: Input role {mem.name}</h1>'
+    @table_row_decorator
+    def input_role(self, mem, valstr, h, pid, u, o):
+        o.append(f'<h1>TODO: Input role {mem.name}</h1>')
 
-    def input_db_table(self, mem, valstr, h, pid, u):
-        return f'<h1>TODO: Input DB table {mem.name}</h1>'
-
+    @table_row_decorator
+    def input_db_table(self, mem, valstr, h, pid, u, o):
+        o.append(f'<h1>TODO: Input DB table {mem.name}</h1>')
