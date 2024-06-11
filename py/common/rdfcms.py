@@ -2,6 +2,7 @@ import json
 import os
 
 import common.util as util
+from PIL import Image
 
 
 class RdfCms:
@@ -9,6 +10,8 @@ class RdfCms:
     def __init__(self, schema, sqleng):
         self.sqleng = sqleng
         self.schema = schema
+        self.base_image = 'img'
+        self.base_thumbnail = 'thumb'
 
     """
     The CMS methods return a tuple with the following structure: 
@@ -196,16 +199,23 @@ class RdfCms:
             return None
         return self.o_read(tn, obj_id)
 
-    def uplimg(self, tn, folder, file):
+    def uplimg(self, tn, folder, base, file):
+        """
+        :param tn: Table name of the current user
+        :param folder: Data folder, where user uploads have to be saved
+        :param base: Base location - part of the image address
+        :param file: File to be uploaded
+        :return: JSON snippet containing image properties
+        """
         if not os.path.exists(folder):
             os.mkdir(folder)
         path_user = os.path.join(folder, tn)
         if not os.path.exists(path_user):
             os.mkdir(path_user)
-        path_img = os.path.join(path_user, 'img')
+        path_img = os.path.join(path_user, self.base_image)
         if not os.path.exists(path_img):
             os.mkdir(path_img)
-        path_thumb = os.path.join(path_user, 'thumb')
+        path_thumb = os.path.join(path_user, self.base_thumbnail)
         if not os.path.exists(path_thumb):
             os.mkdir(path_thumb)
 
@@ -214,6 +224,7 @@ class RdfCms:
         location_img = os.path.join(path_img, new_filename)
         location_thumb = os.path.join(path_thumb, new_filename)
 
+        # Save image
         size = 0
         with open(location_img, 'wb') as out:
             while True:
@@ -223,7 +234,13 @@ class RdfCms:
                 out.write(data)
                 size += len(data)
 
-        u_img = location_img.replace(os.sep, '/')
-        u_thumb = location_thumb.replace(os.sep, '/')
+        # Create thumbnail
+        size = 512, 512
+        with Image.open(location_img) as im:
+            im.thumbnail(size)
+            im.save(location_thumb, "JPEG")
+
+        u_img = '/'.join([base, tn, self.base_image, new_filename])
+        u_thumb = '/'.join([base, tn, self.base_thumbnail, new_filename])
         result = {'img': u_img, 'thumb': u_thumb, 'filename': file.filename}
         return json.dumps(result)

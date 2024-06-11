@@ -1,6 +1,8 @@
 
-function handle_files(files, id_tb_data) {
+function handle_files(files, h) {
     var file = files[0];
+    $('#img_thumb_'+h).attr('src', 'img/loading.gif');
+
     var formData = new FormData();
     formData.append('file', file);
     $.ajax({
@@ -11,50 +13,17 @@ function handle_files(files, id_tb_data) {
         processData: false,
         success: function(response) {
             //alert(response);
-            $('#'+id_tb_data).val(response);
-            // Server response handling
+            $('#img_data_'+h).val(response);
+            $('#img_data_'+h).addClass('rdf-changed');
+            var img_data = JSON.parse(response);
+            $('#img_thumb_'+h).attr('src', img_data.thumb);
         },
         error: function() {
             // Error handling
         }
     });
-
 }
 
-
-function handle_files_old(files) {
-    alert('handle_files');
-    $("#img_thumb").attr("src", "../img/loading.gif");
-    if (!files.length) {
-        alert("<p>No files selected!</p>");
-    } else {
-        var file = files[0];
-        var formData = new FormData();
-        formData.append('file', file);
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
-           if (this.readyState == 4 && this.status == 200) {
-                alert(this.responseText);
-                var obj = JSON.parse(this.responseText);
-                if (obj["success"] == "true")
-                {
-                    $('#img_thumb').attr('src',obj["thumb_path"]+'/'+obj["thumb_file"]);
-                    $('#Media_FileLocation').val(obj["file"]);
-                    $('#Media_ThumbnailLocation').val(obj["thumb_file"]);
-                    $('#Media_OriginalFilename').val(obj["original_file"]);
-                    $('#MediaId').val('');
-                } else {
-                    $('#media_thumb').attr('src','../img/error.png');
-                }
-                $("#img_thumb").attr("src", "../img/picture.png");
-           }
-        };
-        url = 'uplimg'
-        xhr.open('GET', url, true);
-        //xhr.open('POST', url, true);
-        xhr.send(formData);
-    }
-}
 
 
 

@@ -895,22 +895,31 @@ class RdfEngine:
             f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />')
 
     def input_image(self, mem, valstr, h, pid, u, o, bgc):
-        id_tb_data = f'img_data_{h}'
+        img_data = json.loads(valstr) if valstr else None
+        location_thumb = img_data.get('thumb') if img_data else 'img/picture.png'
+        location_img = img_data.get('img') if img_data else 'img/picture.png'
+        filename = img_data.get('filename') if img_data else ''
         o.append(f"""
 <div class="row align-items-start" style="background-color: {bgc};">
     <div class="col-2" style="text-align: right;">
         <div id="div_thumbnail" style="text-align: center;">
-            <img src="../img/picture.png" class="rounded" alt="" height="80" id="img_thumb">
+            <a href="{location_img}" target="_blank">
+            <img src="{location_thumb}" alt="{filename}" title="{filename}" 
+                height="60" id="img_thumb_{pid}" style="margin:5px;">
+            </a>
         </div>
     </div>
     <div class="col-10">
-        <form id="form_img" name="form_img" method="post" enctype="multipart/form-data">
-            <input type="file" id="file_img" accept="*" style="display: block;" 
-            onchange="handle_files(this.files, \'{id_tb_data}\')"/>
-            <div id="input_media">
-                <input type="text" class="form-control" id="{id_tb_data}" disabled="true" style="display: block;"/>
-            </div>
-        </form>                    
+        <span>Choose image</span>
+        <input 
+            type="file" id="file_img_{pid}" accept="*" style="display: block;" 
+            onchange="handle_files(this.files, \'{pid}\')"/>
+        <input 
+            type="text" class="form-control rdf-property"
+            value=\'{valstr}\' 
+            oninput="$(this).addClass(\'rdf-changed\') " 
+            name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" " 
+            id="img_data_{pid}" disabled="true" style="display: none;"/>
     </div>
 </div>""")
 
