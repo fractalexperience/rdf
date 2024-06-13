@@ -404,11 +404,12 @@ class RdfEngine:
             if mem.data_type == 'ref':
                 continue  # This needs to be improved !!! It is a legal case to add multiple references
             frag_multiple = 'true' if allow_multiple else 'false'
+            obj_id = obj.get('id')
             o_temp.append(
                 f'<a class="dropdown-item" '
                 f'href="javascript:add_property_panel(\'{uri}\', \'{cdef.uri}\', \'{mem.name}\', \'{obj.get("hash")}\', {frag_multiple})" '
                 f'id="add_prop_{mem.name}" mlang="add_prop_{mem.name}" '
-                f'p="{mem.name}" u="{cdef.uri}" i="{obj.get('id')}">{mem.name}</a>')
+                f'p="{mem.name}" u="{cdef.uri}" i="{obj_id}">{mem.name}</a>')
             cnt += 1
         if cnt == 0:
             return
@@ -827,6 +828,10 @@ class RdfEngine:
         if zfill_len is not None:
             ai_id = ai_id.zfill(zfill_len)
         return f'{pref}{ai_id}'
+
+    def srcbase(self, tn, src, uri):
+        """ Basic search for a specified object type (uri). If ur is None, we search in any object. """
+        return f'Search [{src}] in [{uri}]'
 
     # INPUT METHODS
     @staticmethod

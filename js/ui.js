@@ -1,4 +1,19 @@
 
+function dc_view_data()
+{
+    url = '/html/srcbase.html';
+    update_content('output', url);
+}
+
+function dc_search(div_id, uri, search_text)
+{
+    if (search_text.length < 3) {
+        return;
+    }
+    var url = 'srcbase?src='+search_text+'&uri='+uri;
+    update_content(div_id, url);
+}
+
 function handle_files(files, h) {
     var file = files[0];
     $('#img_thumb_'+h).attr('src', 'img/loading.gif');
@@ -23,9 +38,6 @@ function handle_files(files, h) {
         }
     });
 }
-
-
-
 
 /** Reads current user and then initializes some UI parts based on user settings. */
 function ui_init() {
