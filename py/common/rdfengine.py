@@ -831,7 +831,33 @@ class RdfEngine:
 
     def srcbase(self, tn, src, uri):
         """ Basic search for a specified object type (uri). If ur is None, we search in any object. """
-        return f'Search [{src}] in [{uri}]'
+        where_frag = ''
+        if uri:
+            cdef = self.schema.get_class(uri)
+            where_frag = f" AND r2.s={cdef.code}"
+        q = f"""
+        SELECT r1.id as prop_id, r1.p AS prop_ndx, r1.v AS prop_value,
+               r2.id AS obj_id, r2.s AS obj_type, r2.h AS objt_hash
+        FROM {tn} AS r1 INNER JOIN db0002 AS r2 ON  r1.s = r2.id
+        WHERE r1.v LIKE '%{src}%' {where_frag}
+"""
+        t = self.sqleng.exec_table(q)
+        o = [f'<table class="table table-bordered table-hover">'
+             f'<tr><th>Object type</th><th>Property</th><th>Value</th></tr>']
+        for row in t:
+            prop_ndx = row[1]
+            prop_value = row[2].replace(src, f'<span style="background-color: Yellow;">{src}</span>')
+            obj_code = row[4]
+            cdef = self.schema.get_class(obj_code)
+            mem = cdef.members.get(f'{prop_ndx}')
+            h = row[5]
+            o.append(f'<tr onclick="o_edit(\'{h}\')">'
+                     f'<td>{cdef.name}</td>'
+                     f'<td>{mem.name}</td>'                
+                     f'<td>{prop_value}</td>'                     
+                     f'</tr>')
+        o.append('</table>')
+        return ''.join(o)
 
     # INPUT METHODS
     @staticmethod
