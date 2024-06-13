@@ -408,7 +408,7 @@ class RdfEngine:
             o_temp.append(
                 f'<a class="dropdown-item" '
                 f'href="javascript:add_property_panel(\'{uri}\', \'{cdef.uri}\', \'{mem.name}\', \'{obj.get("hash")}\', {frag_multiple})" '
-                f'id="add_prop_{mem.name}" mlang="add_prop_{mem.name}" '
+                f'id="add_prop_{mem.name}" mlang="add_prop_{mem.name}"  '
                 f'p="{mem.name}" u="{cdef.uri}" i="{obj_id}">{mem.name}</a>')
             cnt += 1
         if cnt == 0:
