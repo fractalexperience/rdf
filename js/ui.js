@@ -226,8 +226,7 @@ function o_save(e=null, stack=[], lvl=0, callback=null) {
     // Finalize
     if (lvl == 0) {
         s = JSON.stringify(stack[0]);
-        alert(s);
-
+        //alert(s);
         url = 's';
         $.post(url, {data: s}, function(data, status){
             if (status === 'success') {
