@@ -1,8 +1,8 @@
 <div class="row align-items-start">
-    <h1 mlang="basic_search">Search items</h1>
+    <h4 mlang="basic_search">Basic search - please enter at least 3 characters to start search</h4>
      <div class="col-12">
          <input type="text" id="search_text" class="form-control" mlang="search_text" placeholder="Search text"
-         onkeyup="dc_search('search_results', 'item', $(this).val())"/>
+         onkeyup="dc_search('search_results', '', $(this).val())"/>
      </div>
     <div class="col-12" id="search_results">
     </div>
