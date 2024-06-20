@@ -17,8 +17,10 @@ sqleng = SqlEngine(
     db_host=dbconfig.DB_HOST, db_name=dbconfig.DB_NAME, db_user=dbconfig.DB_USER, db_pass=dbconfig.DB_PASS,
     ssh_host=dbconfig.SSH_HOST, ssh_user=dbconfig.DB_USER, ssh_pass=dbconfig.SSH_PASS,
     ssh_bind_addr=dbconfig.SSH_BIND_ADDRESS)
-rdfeng = RdfEngine(sh, sqleng)
-cms = RdfCms(sh, sqleng)
+base_rdf = 'rdf'
+assets_folder = os.path.join(base_rdf, 'assets')
+data_folder = os.path.join(base_rdf, 'data')
+rdfeng = RdfEngine(sh, sqleng, base_rdf, assets_folder, data_folder)
 
 tn = 'root'
 rdfeng.reset_rdf_table(tn)

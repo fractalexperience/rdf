@@ -1,9 +1,81 @@
 <div class="row align-items-start">
-    <h4 mlang="basic_search">Basic search - please enter at least 3 characters to start search</h4>
-     <div class="col-12">
+
+     <div class="col-6">
+          <h5 mlang="basic_search">Please enter at least 3 characters to start search</h5>
          <input type="text" id="search_text" class="form-control" mlang="search_text" placeholder="Search text"
-         onkeyup="dc_search('search_results', '', $(this).val())"/>
+         onkeyup="srcbase()"/>
      </div>
+    <div class="col-3">
+        <h5>Class</h5>
+        <select id="class_name" class="form-control" mlang="class_name"
+                onchange="upd_property_name()">
+        </select>
+    </div>
+    <div class="col-3">
+        <h5>Property</h5>
+        <select id="property_name" class="form-control" mlang="property_name"
+                onchange="srcbase()">
+        </select>
+    </div>
     <div class="col-12" id="search_results">
     </div>
 </div>
+
+
+<script>
+// Initially
+upd_class_name();
+
+function srcbase()
+{
+    var search_text = $('#search_text').val();
+    if (search_text.length < 3) {
+        return;
+    }
+    var class_name = $('#class_name').val();
+    var property_name = $('#property_name').val();
+    var url = 'srcbase?src='+search_text+'&uri='+class_name+'&prop='+property_name;
+    var div_id = 'search_results';
+    update_content(div_id, url);
+}
+
+// Update class name drop down
+function upd_class_name()
+{
+    $.get('l?q=complex', function(data, status) {
+        if (status === 'success') {
+            var enums = JSON.parse(data);
+            var arrayLength = enums.length;
+            s = '<option value="">--- all ---</option>';
+            for (var i = 0; i < arrayLength; i++) {
+                e = enums[i];
+                s += '<option value="'+e[0]+'">'+e[1]+'</option>>';
+            }
+            $('#class_name').html(s);
+            srcbase();
+        } else {
+            alert("ERROR: " + status);
+        }
+    });
+}
+
+function upd_property_name()
+{
+    var class_name = $('#class_name').val();
+    $.get('l?q='+class_name+'.properties', function(data, status) {
+        if (status === 'success') {
+            var enums = JSON.parse(data);
+            var arrayLength = enums.length;
+            s = '<option value="">--- all ---</option>';
+            for (var i = 0; i < arrayLength; i++) {
+                e = enums[i];
+                s += '<option value="'+e[0]+'">'+e[1]+'</option>>';
+            }
+            $('#property_name').html(s);
+            srcbase();
+        } else {
+            alert("ERROR: " + status);
+        }
+    });
+}
+</script>

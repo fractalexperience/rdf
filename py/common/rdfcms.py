@@ -7,11 +7,16 @@ from PIL import Image
 
 class RdfCms:
     """ Content management for RDF engine """
-    def __init__(self, schema, sqleng):
+    def __init__(self, schema, sqleng, base_rdf, assets_folder, data_folder):
         self.sqleng = sqleng
         self.schema = schema
         self.base_image = 'img'
         self.base_thumbnail = 'thumb'
+
+        self.base_rdf = base_rdf
+        self.assets_folder = assets_folder
+        self.data_folder = data_folder
+
 
     """
     The CMS methods return a tuple with the following structure: 
@@ -199,7 +204,7 @@ class RdfCms:
             return None
         return self.o_read(tn, obj_id)
 
-    def uplimg(self, tn, folder, base, file):
+    def uplimg(self, tn, file):
         """
         :param tn: Table name of the current user
         :param folder: Data folder, where user uploads have to be saved
@@ -207,7 +212,7 @@ class RdfCms:
         :param file: File to be uploaded
         :return: JSON snippet containing image properties
         """
-        if not os.path.exists(folder):
+        if not os.path.exists(self.data_folder):
             os.mkdir(folder)
         path_user = os.path.join(folder, tn)
         if not os.path.exists(path_user):

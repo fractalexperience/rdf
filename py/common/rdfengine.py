@@ -1,30 +1,37 @@
 import json
 import common.util as util
 import common.htmlutil as htmlutil
-import common.rdfcms as rdfcms
-
+from common.rdfcms import RdfCms
+from common.rdfinputs import RdfInputs
 
 class RdfEngine:
-    def __init__(self, schema, sqleng):
+    def __init__(self, schema, sqleng, base_rdf, assets_folder, data_folder):
         self.sqleng = sqleng
         self.schema = schema
-        self.cms = rdfcms.RdfCms(self.schema, self.sqleng)
+
+        self.base_rdf = base_rdf
+        self.assets_folder = assets_folder
+        self.data_folder = data_folder
+
+        self.cms = RdfCms(self.schema, self.sqleng, self.base_rdf, self.assets_folder, self.data_folder)
+        self.inp = RdfInputs()
+
         # self.special_handling_classes = {
         #     'img', 'db_table', 'hash', 'user_role', 'lang', 'text', 'email', 'image', 'media'}
 
         self.methods_input = {
-            'string': self.input_string,
-            'text': self.input_text,
-            'date': self.input_date,
-            'integer': self.input_int,
-            'float': self.input_float,
-            'boolean': self.input_boolean,
-            'email': self.input_email,
-            'image': self.input_image,
-            'media': self.input_media,
-            'lang': self.input_lang,
-            'user_role': self.input_role,
-            'db_table': self.input_db_table,
+            'string': self.inp.input_string,
+            'text': self.inp.input_text,
+            'date': self.inp.input_date,
+            'integer': self.inp.input_int,
+            'float': self.inp.input_float,
+            'boolean': self.inp.input_boolean,
+            'email': self.inp.input_email,
+            'image': self.inp.input_image,
+            'media': self.inp.input_media,
+            'lang': self.inp.input_lang,
+            'user_role': self.inp.input_role,
+            'db_table': self.inp.input_db_table,
         }
         self.bgcolors = {0: '#FFFFFF', 1: '#EBF5FB', 2: '#AED6F1', 3: '#85C1E9', 4: '#5DADE2', 5: '#3498DB'}
 
@@ -54,6 +61,9 @@ class RdfEngine:
             o.append('</tr>')
         o.append('</table>')
         return ''.join(o)
+
+    def o_view(self, tn, q):
+        return f'<h1>View {q}</h1>'
 
     def o_query(self, tn, q):
         if q == 'enumerations':  # List rnumerations only - complex type objects having only one member
@@ -95,7 +105,7 @@ class RdfEngine:
                 self.get_mandatory_properties(cdef, result)
             return result
 
-        if '^' in q or '.standalone':
+        if '^' in q or '.standalone' in q:
             """ Collects standalone members for the given class. This means these members, which are of type ref 
             (are instantiated separately) and only referred from class instances."""
             result = []
@@ -105,7 +115,25 @@ class RdfEngine:
                 self.get_standalone_members(cdef, result)
             return result
 
+        if '.properties' in q:
+            result = []
+            uri = q.split('.')[0]
+            cdef = self.schema.get_class(uri)
+            if not cdef:
+                return result
+            self.get_class_properties(cdef, result)
+            return result
+
         return self.o_list(tn, q)  # Plain list of classes
+
+    def get_class_properties(self, cdef, result):
+        if not cdef or not cdef.members:
+            return
+        for ndx, mem in cdef.members.items():
+            mdef = self.schema.get_class(mem.ref)
+            if mdef.members:
+                continue
+            result.append((mem.ndx, mem.name))
 
     def get_all_properties(self, cdef, result):
         if cdef is None or not cdef.members:
@@ -829,18 +857,21 @@ class RdfEngine:
             ai_id = ai_id.zfill(zfill_len)
         return f'{pref}{ai_id}'
 
-    def srcbase(self, tn, src, uri):
+    def srcbase(self, tn, src, uri, prop):
         """ Basic search for a specified object type (uri). If ur is None, we search in any object. """
         where_frag = ''
         if uri:
             cdef = self.schema.get_class(uri)
             where_frag = f" AND r2.s={cdef.code}"
+            if prop:
+                where_frag = f'{where_frag} AND r1.p={prop}'
         q = f"""
         SELECT r1.id as prop_id, r1.p AS prop_ndx, r1.v AS prop_value,
                r2.id AS obj_id, r2.s AS obj_type, r2.h AS objt_hash
         FROM {tn} AS r1 INNER JOIN db0002 AS r2 ON  r1.s = r2.id
         WHERE r1.v LIKE '%{src}%' {where_frag}
-"""
+        LIMIT 100
+        """
         t = self.sqleng.exec_table(q)
         o = [f'<table class="table table-bordered table-hover">'
              f'<tr><th>Object type</th><th>Property</th><th>Value</th></tr>']
@@ -851,121 +882,11 @@ class RdfEngine:
             cdef = self.schema.get_class(obj_code)
             mem = cdef.members.get(f'{prop_ndx}')
             h = row[5]
-            o.append(f'<tr onclick="o_edit(\'{h}\')">'
-                     f'<td>{cdef.name}</td>'
-                     f'<td>{mem.name}</td>'                
-                     f'<td>{prop_value}</td>'                     
+            # o.append(f'<tr onclick="o_edit(\'{h}\')">'
+            #          f'<td>{cdef.name}</td><td>{mem.name}</td><td>{prop_value}</td>'
+            #          f'</tr>')
+            o.append(f'<tr onclick="window.open(\'view?h={h}\')">'
+                     f'<td>{cdef.name}</td><td>{mem.name}</td><td>{prop_value}</td>'                     
                      f'</tr>')
         o.append('</table>')
         return ''.join(o)
-
-    # INPUT METHODS
-    @staticmethod
-    def table_row_decorator(method):
-        def wrapper(self, mem, valstr, h, pid, u, o, bgc):
-            o.append(f'<div class="row align-items-start" style="background-color: {bgc};">')
-            o.append('<div class="col-2" style="text-align: right;">')
-            o.append(
-                f'<label for="{mem.name}" mlang="{mem.name}" class="text-primary">{mem.name}</label>')
-            o.append('</div>')
-            o.append('<div class="col-10">')
-            method(self, mem, valstr, h, pid, u, o)
-            o.append('</div></div>')
-
-        return wrapper
-
-    @table_row_decorator
-    def input_string(self, mem, valstr, h, pid, u, o):
-        o.append(f'<input type="text" class="form-control rdf-property" value="{valstr}" id="{mem.name}" '
-                        f'oninput="$(this).addClass(\'rdf-changed\')" '
-                        f'name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
-
-    @table_row_decorator
-    def input_text(self, mem, valstr, h, pid, u, o):
-        o.append(
-            f'<textarea type="text" class="form-control rdf-property" rows="2" id="{mem.name}" '
-            f'oninput="$(this).addClass(\'rdf-changed\')" '
-            f'name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}">{valstr}</textarea>')
-
-    @table_row_decorator
-    def input_date(self, mem, valstr, h, pid, u, o):
-        o.append(
-            f'<input type="date" class="form-control rdf-property" style="width: 150px;" value="{valstr}" '
-            f'oninput="$(this).addClass(\'rdf-changed\')" '
-            f'id="{mem.name}" name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
-
-    @table_row_decorator
-    def input_int(self, mem, valstr, h, pid, u, o):
-        o.append(
-            f'<input type="number" step="1" class="form-control rdf-property" style="width: 150px;" value="{valstr}" '
-            f'oninput="$(this).addClass(\'rdf-changed\')" '
-            f'id="{mem.name}" name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
-
-    @table_row_decorator
-    def input_float(self, mem, valstr, h, pid, u, o):
-        o.append(
-            f'<input type="number" step="any" class="form-control rdf-property" style="width: 150px;" value="{valstr}" '
-            f'oninput="$(this).addClass(\'rdf-changed\')" '
-            f'id="{mem.name}" name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
-
-    @table_row_decorator
-    def input_boolean(self, mem, valstr, h, pid, u, o):
-        frag_checked = 'checked' if valstr.lower() == 'true' else ''
-        o.append(
-            f'<div class="form-check form-switch">'
-            f'<input type="checkbox" {frag_checked} class="form-check-input rdf-property" value="{valstr}" id="{mem.name}" '
-            f'oninput="$(this).addClass(\'rdf-changed\')" '
-            f'name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />'
-            f'</div>')
-
-    @table_row_decorator
-    def input_email(self, mem, valstr, h, pid, u, o):
-        o.append(
-            f'<input type="email" class="form-control rdf-property" style="width: 150px;" value="{valstr}" id="{mem.name}" '
-            f'oninput="$(this).addClass(\'rdf-changed\')" '
-            f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />')
-
-    def input_image(self, mem, valstr, h, pid, u, o, bgc):
-        img_data = json.loads(valstr) if valstr else None
-        location_thumb = img_data.get('thumb') if img_data else 'img/picture.png'
-        location_img = img_data.get('img') if img_data else 'img/picture.png'
-        filename = img_data.get('filename') if img_data else ''
-        o.append(f"""
-<div class="row align-items-start" style="background-color: {bgc};">
-    <div class="col-2" style="text-align: right;">
-        <div id="div_thumbnail" style="text-align: center;">
-            <a href="{location_img}" target="_blank">
-            <img src="{location_thumb}" alt="{filename}" title="{filename}" 
-                height="60" id="img_thumb_{pid}" style="margin:5px;">
-            </a>
-        </div>
-    </div>
-    <div class="col-10">
-        <span>Choose image</span>
-        <input 
-            type="file" id="file_img_{pid}" accept="*" style="display: block;" 
-            onchange="handle_files(this.files, \'{pid}\')"/>
-        <input 
-            type="text" class="form-control rdf-property"
-            value=\'{valstr}\' 
-            oninput="$(this).addClass(\'rdf-changed\') " 
-            name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" " 
-            id="img_data_{pid}" disabled="true" style="display: none;"/>
-    </div>
-</div>""")
-
-    @table_row_decorator
-    def input_media(self, mem, valstr, h, pid, u, o):
-        o.append(f'<h1>TODO: Input media {mem.name}</h1>')
-
-    @table_row_decorator
-    def input_lang(self, mem, valstr, h, pid, u, o):
-        o.append(f'<h1>TODO: Input lang {mem.name}</h1>')
-
-    @table_row_decorator
-    def input_role(self, mem, valstr, h, pid, u, o):
-        o.append(f'<h1>TODO: Input role {mem.name}</h1>')
-
-    @table_row_decorator
-    def input_db_table(self, mem, valstr, h, pid, u, o):
-        o.append(f'<h1>TODO: Input DB table {mem.name}</h1>')

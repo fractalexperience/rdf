@@ -5,15 +5,6 @@ function dc_view_data()
     update_content('output', url);
 }
 
-function dc_search(div_id, uri, search_text)
-{
-    if (search_text.length < 3) {
-        return;
-    }
-    var url = 'srcbase?src='+search_text+'&uri='+uri;
-    update_content(div_id, url);
-}
-
 function handle_files(files, h) {
     var file = files[0];
     $('#img_thumb_'+h).attr('src', 'img/loading.gif');
@@ -150,11 +141,16 @@ function format_message(m) {
 
 /** Calls the "e" method with a given object hash */
 function o_edit(h) {
-    update_content("output", "e?h="+h, null)
+    update_content("output", "e?h="+h, null);
+}
+
+/** Calls the "view" method with a given object hash */
+function o_view(h) {
+    update_content("output", "view?h="+h, null);
 }
 
 function o_new(uri) {
-    update_content("output", "n?uri="+uri, null)
+    update_content("output", "n?uri="+uri, null);
 }
 
 function o_delete(callback) {
