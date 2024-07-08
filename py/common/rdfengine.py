@@ -3,36 +3,19 @@ import common.util as util
 import common.htmlutil as htmlutil
 from common.rdfcms import RdfCms
 from common.rdfinputs import RdfInputs
+from common.rdfviews import RdfViews
 
 class RdfEngine:
-    def __init__(self, schema, sqleng, base_rdf, assets_folder, data_folder):
+    def __init__(self, schema, sqleng, base_rdf, base_data, assets_folder, data_folder):
         self.sqleng = sqleng
         self.schema = schema
-
         self.base_rdf = base_rdf
+        self.base_data = base_data
         self.assets_folder = assets_folder
         self.data_folder = data_folder
-
-        self.cms = RdfCms(self.schema, self.sqleng, self.base_rdf, self.assets_folder, self.data_folder)
-        self.inp = RdfInputs()
-
-        # self.special_handling_classes = {
-        #     'img', 'db_table', 'hash', 'user_role', 'lang', 'text', 'email', 'image', 'media'}
-
-        self.methods_input = {
-            'string': self.inp.input_string,
-            'text': self.inp.input_text,
-            'date': self.inp.input_date,
-            'integer': self.inp.input_int,
-            'float': self.inp.input_float,
-            'boolean': self.inp.input_boolean,
-            'email': self.inp.input_email,
-            'image': self.inp.input_image,
-            'media': self.inp.input_media,
-            'lang': self.inp.input_lang,
-            'user_role': self.inp.input_role,
-            'db_table': self.inp.input_db_table,
-        }
+        self.cms = RdfCms(self.schema, self.sqleng, self.base_rdf, self.base_data, self.assets_folder, self.data_folder)
+        self.inp = RdfInputs(self)
+        self.vws = RdfViews(self)
         self.bgcolors = {0: '#FFFFFF', 1: '#EBF5FB', 2: '#AED6F1', 3: '#85C1E9', 4: '#5DADE2', 5: '#3498DB'}
 
     def o_rep(self, tn, cn):
@@ -61,9 +44,6 @@ class RdfEngine:
             o.append('</tr>')
         o.append('</table>')
         return ''.join(o)
-
-    def o_view(self, tn, q):
-        return f'<h1>View {q}</h1>'
 
     def o_query(self, tn, q):
         if q == 'enumerations':  # List rnumerations only - complex type objects having only one member
@@ -323,24 +303,33 @@ class RdfEngine:
             cdef = self.schema.get_class(h_u)
         return obj, cdef
 
-    def r_frag(self, tn, o, p, n):
+    def r_frag(self, tn, o_uri, p_uri, prop_name):
         """ Renders an entry form fragment for a given object (or class to be instantiated)
-        o: URI of the property
-        p: URI of the parent class
+        o_uri: URI of the property
+        p_uri: URI of the parent class
         n: Name of the property
         """
-        obj, cdef = self.get_obj_and_cdef(tn, o)
-        obj_parent, pdef = self.get_obj_and_cdef(tn, p)
-        mem = pdef.members_by_name.get(n)
+        obj, cdef = self.get_obj_and_cdef(tn, o_uri)
+        obj_parent, pdef = self.get_obj_and_cdef(tn, p_uri)
+        mem = pdef.members_by_name.get(prop_name)
         val = obj.get('v') if obj else None
+        o = []
         if cdef.members is None:
-            o = []
-            self.o_edit_prop(o, mem, val, [cdef], obj)
-            return ''.join(o)
+            # o = []
+            self.o_edit_prop(o, tn, mem, val, [cdef], obj, self.inp.input_methods)
+            # return ''.join(o)
+        else:
+            self.o_edit_members(o, tn, [cdef], obj, self.inp.input_methods)
+        return ''.join(o)
+        # return self.o_get_html(tn, obj, cdef, obj_parent, self.inp.input_methods)
 
-        return self.o_get_html(tn, obj, cdef, obj_parent)
+    def o_view(self, tn, h_u):
+        return self.o_represent(tn, h_u, self.vws.view_methods, False)
 
     def o_edit(self, tn, h_u):
+        return self.o_represent(tn, h_u, self.inp.input_methods, True)
+
+    def o_represent(self, tn, h_u, methods, wrap_in_form):
         """ Generates an edit form for an object. It is identified by its hash code. """
         obj, cdef = self.get_obj_and_cdef(tn, h_u)
         if cdef is None:
@@ -348,21 +337,20 @@ class RdfEngine:
         if cdef.members is None:
             return f'<h2><span mlang="msg_todo"></span></h2>'
 
-        o = [f'<form action="" id="form_object_edit" class="needs-validation" novalidate method="post"> ']
-        # Always start from root
-        frag_div = self.o_get_html(tn, obj, cdef, None)
-        # ---
-        o.append(frag_div)
-        self.o_edit_footer(o, obj, cdef)
-        return ''.join(o)
-
-    def o_get_html(self, tn, obj, cdef, pdef):
-        """ Creates a HTML div element to be embedded in editing form for the given object. """
         o = []
-        self.o_edit_members(o, tn, [cdef], obj)
+        if wrap_in_form:
+            self.o_represent_header(o, obj, cdef)
+        # ---
+        self.o_edit_members(o, tn, [cdef], obj, methods)
+        # ---
+        if wrap_in_form:
+            self.o_represent_footer(o, obj, cdef)
         return ''.join(o)
 
-    def o_edit_footer(self, o, obj, cdef):
+    def o_represent_header(self, o, obj, cdef):
+        o.append(f'<form action="" id="form_object_edit" class="needs-validation" novalidate method="post"> ')
+
+    def o_represent_footer(self, o, obj, cdef):
         h = obj.get('hash') if obj else None
         frag_o_save = f'o_save(null, [], 0, function() {{ o_edit(\'{h}\')}} )' \
             if h \
@@ -386,7 +374,7 @@ class RdfEngine:
         o.append(frag_btn_cancel)
         o.append('</div>')
 
-    def o_edit_members(self, o, tn, stack, obj=None):
+    def o_edit_members(self, o, tn, stack, obj, methods):
         if not stack:
             return
         cdef = stack[-1]
@@ -409,7 +397,7 @@ class RdfEngine:
         o.append('</div>')
 
         for mem in cdef.members.values():
-            self.o_edit_member(o, tn, mem, stack, obj)
+            self.o_edit_member(o, tn, mem, stack, obj, methods)
 
         o.append('</div>')
 
@@ -458,7 +446,7 @@ class RdfEngine:
         o.append('</div>')
         o.append('</div>')
 
-    def o_edit_member(self, o, tn, mem, stack, obj):
+    def o_edit_member(self, o, tn, mem, stack, obj, methods):
         data = obj.get('data') if obj else {}
         mdef = self.schema.get_class(mem.ref)
         allow_multiple = mem and mem.multiple.lower() == 'true'
@@ -470,56 +458,39 @@ class RdfEngine:
                 if not sub_data:
                     return
                 stack.append(mdef)
-                self.o_edit_members(o, tn, stack, sub_data)
+                self.o_edit_members(o, tn, stack, sub_data, methods)
                 stack.pop(len(stack) - 1)
                 # ---
             else:  # Independent reference
-                self.o_edit_prop_independent(o, tn, mem, val, stack, obj)
+                # self.o_edit_prop_standalone(o, tn, mem, val, stack, obj, methods)
+                self.o_edit_prop(o, tn, mem, val, stack, obj, methods)
         else:
             if val is not None or not allow_multiple:
                 # If property is defined once, it should be displayed even empty.
                 # If it defined to allowed multiple occurrences, then it should be added from "Add property"
-                self.o_edit_prop(o, mem, val, stack, obj)
+                self.o_edit_prop(o, tn, mem, val, stack, obj, methods)
 
-    def o_edit_prop_independent(self, o, tn, mem, val, stack, obj):
+    def o_edit_prop_standalone(self, o, tn, mem, val, stack, obj, methods):
         h = obj.get('hash') if obj else ''
         valstr = val[0] if val and isinstance(val, tuple) else ''
         pid = val[1] if val and isinstance(val, tuple) else ''
-        # u = '.'.join([cdef.uri for cdef in stack])
         mdef = self.schema.get_class(mem.ref)
         u = mdef.uri
-        olst = self.o_list(tn, mem.ref)
         bgc = self.bgcolors.get(len(stack), self.bgcolors.get(0))
-        o.append(f'<div class="row align-items-start" style="background-color: {bgc};">'
-                 f'<div class="col-2" style="text-align: right;">'
-                 f'<label for="{mem.name}" mlang="{mem.name}" class="text-success">{mem.name}</label>'
-                 f'</div>'
-                 f'<div class="col-10">'
-                 f'<select id="{mem.name}" mlang="{mem.name}" '
-                 f'onchange="$(this).addClass(\'rdf-changed\')" '
-                 f'class="form-select rdf-property" i="{pid}" p="{mem.name}" u="{u}" >'
-                 f'<option value=""> ... </option>')
-        for ref_obj in olst:
-            ref_h = ref_obj.get('hash')
-            ref_n = ref_obj.get('Name')
-            ref_id = ref_obj.get('id')
-            is_selected = ' selected="true"' if ref_id == valstr else ''
-            # o.append(f'<option value="{ref_h}"{is_selected}>{util.escape_xml(ref_n)}</option>')
-            o.append(f'<option value="{ref_id}"{is_selected}>{util.escape_xml(ref_n)}</option>')
-        o.append('</select>'
-                 '</div>'
-                 '</div>')
+        method = methods.get('standalone', methods.get('string'))
+        method(tn, mem, valstr, h, pid, u, o, bgc)
 
-    def o_edit_prop(self, o, mem, val, stack, obj):
+    def o_edit_prop(self, o, tn, mem, val, stack, obj, methods):
         if isinstance(val, list):
             for v in val:
-                self.o_edit_prop_single(o, mem, v, stack, obj)
+                self.o_edit_prop_single(o, tn, mem, v, stack, obj, methods)
             return
         # Normal case
-        self.o_edit_prop_single(o, mem, val, stack, obj)
+        self.o_edit_prop_single(o, tn, mem, val, stack, obj, methods)
 
-    def o_edit_prop_single(self, o, mem, val, stack, obj):
+    def o_edit_prop_single(self, o, tn, mem, val, stack, obj, methods):
         """
+        :param methods: Methods collection to represent simple content properties
         :param o: Output list
         :param mem: Ptoperty class
         :param val: Value of the property
@@ -533,8 +504,9 @@ class RdfEngine:
         bgc = self.bgcolors.get(len(stack), self.bgcolors.get(0))
         mdef = self.schema.get_class(mem.ref)
         u = mdef.uri
-        method_input = self.methods_input.get(mdef.data_type, self.methods_input.get('string'))
-        method_input(mem, valstr, h, pid, u, o, bgc)
+        method_ref = 'standalone' if mdef.data_type == 'object' else mdef.data_type
+        method = methods.get(method_ref, methods.get('string'))
+        method(tn, mem, valstr, h, pid, u, o, bgc)
 
     def reset_rdf_table(self, tblname):
         if self.sqleng.table_exists(tblname):
@@ -882,9 +854,6 @@ class RdfEngine:
             cdef = self.schema.get_class(obj_code)
             mem = cdef.members.get(f'{prop_ndx}')
             h = row[5]
-            # o.append(f'<tr onclick="o_edit(\'{h}\')">'
-            #          f'<td>{cdef.name}</td><td>{mem.name}</td><td>{prop_value}</td>'
-            #          f'</tr>')
             o.append(f'<tr onclick="window.open(\'view?h={h}\')">'
                      f'<td>{cdef.name}</td><td>{mem.name}</td><td>{prop_value}</td>'                     
                      f'</tr>')

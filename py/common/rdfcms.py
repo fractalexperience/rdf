@@ -7,13 +7,15 @@ from PIL import Image
 
 class RdfCms:
     """ Content management for RDF engine """
-    def __init__(self, schema, sqleng, base_rdf, assets_folder, data_folder):
+    def __init__(self, schema, sqleng, base_rdf, base_data, assets_folder, data_folder):
         self.sqleng = sqleng
         self.schema = schema
+
         self.base_image = 'img'
         self.base_thumbnail = 'thumb'
 
         self.base_rdf = base_rdf
+        self.base_data = base_data
         self.assets_folder = assets_folder
         self.data_folder = data_folder
 
@@ -213,8 +215,8 @@ class RdfCms:
         :return: JSON snippet containing image properties
         """
         if not os.path.exists(self.data_folder):
-            os.mkdir(folder)
-        path_user = os.path.join(folder, tn)
+            os.mkdir(self.data_folder)
+        path_user = os.path.join(self.data_folder, tn)
         if not os.path.exists(path_user):
             os.mkdir(path_user)
         path_img = os.path.join(path_user, self.base_image)
@@ -245,7 +247,7 @@ class RdfCms:
             im.thumbnail(size)
             im.save(location_thumb, "JPEG")
 
-        u_img = '/'.join([base, tn, self.base_image, new_filename])
-        u_thumb = '/'.join([base, tn, self.base_thumbnail, new_filename])
+        u_img = '/'.join([self.base_data, tn, self.base_image, new_filename])
+        u_thumb = '/'.join([self.base_data, tn, self.base_thumbnail, new_filename])
         result = {'img': u_img, 'thumb': u_thumb, 'filename': file.filename}
         return json.dumps(result)
