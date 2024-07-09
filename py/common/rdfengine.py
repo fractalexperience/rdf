@@ -5,6 +5,7 @@ from common.rdfcms import RdfCms
 from common.rdfinputs import RdfInputs
 from common.rdfviews import RdfViews
 
+
 class RdfEngine:
     def __init__(self, schema, sqleng, base_rdf, base_data, assets_folder, data_folder):
         self.sqleng = sqleng
@@ -292,11 +293,30 @@ class RdfEngine:
                 fields_show.append(mem)
         return fields_show if fields_show else fields_all
 
-    def get_obj_and_cdef(self, tn, h_u):
+    def get_near_object(self, tn, h, go):
+        if not go or go not in ['prev', 'next']:
+            return h
+        sign = '<' if go == 'prev' else '>'
+        rdf_s = self.sqleng.exec_scalar(f"SELECT s FROM {tn} WHERE h='{h}'")
+        rdf_id = self.sqleng.exec_scalar(f"SELECT id FROM {tn} WHERE h='{h}'") # This could be optimized
+
+        q = f"SELECT h FROM {tn} WHERE s = {rdf_s} AND id < {rdf_id} ORDER BY id DESC LIMIT 1" \
+            if go == 'prev' \
+            else f"SELECT h FROM {tn} WHERE s = {rdf_s} AND id > {rdf_id} ORDER BY id LIMIT 1"
+
+        near_h = self.sqleng.exec_scalar(q)
+        return h if near_h is None else near_h
+
+    def get_obj_and_cdef(self, tn, h_u, go=None):
         """ Reads an object (from the given table) and class definition (from schema)
-         corresponding to a hash or uri identifier. """
+         corresponding to a hash or uri identifier.
+         tn: Table name
+         h_u: Hash code of the object, or the URI of the class definition
+         go: Instruction where to go - this object, previous, or next
+         """
         if util.is_sha1(h_u):
-            obj = self.cms.o_read(tn, h_u, depth=0)
+            h = h_u if go is None else self.get_near_object(tn, h_u, go)
+            obj = self.cms.o_read(tn, h, depth=0)
             cdef = self.schema.get_class(obj.get('code'))
         else:
             obj = None
@@ -319,19 +339,20 @@ class RdfEngine:
             self.o_edit_prop(o, tn, mem, val, [cdef], obj, self.inp.input_methods)
             # return ''.join(o)
         else:
-            self.o_edit_members(o, tn, [cdef], obj, self.inp.input_methods)
+            self.o_edit_members(o, tn, [cdef], obj, self.inp.input_methods, False)
         return ''.join(o)
         # return self.o_get_html(tn, obj, cdef, obj_parent, self.inp.input_methods)
 
-    def o_view(self, tn, h_u):
-        return self.o_represent(tn, h_u, self.vws.view_methods, False)
+    def o_view(self, tn, h_u, go):
+        obj, cdef = self.get_obj_and_cdef(tn, h_u, go)
+        return self.o_represent(tn, cdef, obj, self.vws.view_methods, False)
 
     def o_edit(self, tn, h_u):
-        return self.o_represent(tn, h_u, self.inp.input_methods, True)
+        obj, cdef = self.get_obj_and_cdef(tn, h_u, None)
+        return self.o_represent(tn, cdef, obj, self.inp.input_methods, True)
 
-    def o_represent(self, tn, h_u, methods, wrap_in_form):
+    def o_represent(self, tn, cdef, obj, methods, wrap_in_form):
         """ Generates an edit form for an object. It is identified by its hash code. """
-        obj, cdef = self.get_obj_and_cdef(tn, h_u)
         if cdef is None:
             return f'<h2><span mlang="msg_unknown_object">Unknown object</span></h2>'
         if cdef.members is None:
@@ -341,7 +362,7 @@ class RdfEngine:
         if wrap_in_form:
             self.o_represent_header(o, obj, cdef)
         # ---
-        self.o_edit_members(o, tn, [cdef], obj, methods)
+        self.o_edit_members(o, tn, [cdef], obj, methods, wrap_in_form)
         # ---
         if wrap_in_form:
             self.o_represent_footer(o, obj, cdef)
@@ -374,7 +395,7 @@ class RdfEngine:
         o.append(frag_btn_cancel)
         o.append('</div>')
 
-    def o_edit_members(self, o, tn, stack, obj, methods):
+    def o_edit_members(self, o, tn, stack, obj, methods, wrap_in_form):
         if not stack:
             return
         cdef = stack[-1]
@@ -383,17 +404,16 @@ class RdfEngine:
         u = cdef.uri if cdef else ''
 
         if cdef.members is None:
-            # if pdef:
-            #     mem = pdef.members_by_name.get(cdef.name)
-            #     self.o_edit_member(o, tn, mem, stack, obj)
             return
 
         bgc = self.bgcolors.get(len(stack), self.bgcolors.get(0))
         o.append(f'<div class="form-group rdf-container" id="{div_id}" i="{i}" u="{u}">')
         o.append(f'<div class="row align-items-start" style="padding-bottom: 20px;background-color: {bgc};">')
-        o.append(f'<div class="col-9"><h4 mlang="o_edit_members">{cdef.name}</h4></div>')
-        if obj is not None:
-            self.add_property_button(o, tn, cdef, obj)
+        o.append(f'<div class="col-8"><h4 mlang="o_edit_members">{cdef.name}</h4></div>')
+
+        if obj is not None and len(stack)<2:
+            self.add_property_button(o, tn, cdef, obj, wrap_in_form)
+
         o.append('</div>')
 
         for mem in cdef.members.values():
@@ -401,7 +421,7 @@ class RdfEngine:
 
         o.append('</div>')
 
-    def add_property_button(self, o, tn, cdef, obj):
+    def add_property_button(self, o, tn, cdef, obj, wrap_in_form):
         if not obj:
             return
         if not cdef:
@@ -411,7 +431,6 @@ class RdfEngine:
         obj_data = obj.get('data', {})
         o_temp, cnt = [], 0
         for mem in cdef.members.values():
-            # pdef = self.schema.get_class(it[0])
             allow_multiple = mem.multiple.lower() == 'true'
             mdef = self.schema.get_class(mem.ref)
             uri = mdef.uri if mdef else None
@@ -431,19 +450,39 @@ class RdfEngine:
             return
 
         # Add property button
-        o.append('<div class="col-3" style="text-align: right;">'
-                 '<div class="btn-group">'
-                 '<button type="button" class="btn btn-primary" '
-                 'id="btn_append_property" '
-                 'mlang="btn_append_property">Append property</button> '
-                 '<button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" '
-                 'data-bs-toggle="dropdown"> '
-                 '<span class="caret"></span> '
-                 '</button> '
-                 '<div class="dropdown-menu" id="properties_dropdown">')
-        o.append(''.join(o_temp))
-        o.append('</div>')
-        o.append('</div>')
+        h = obj.get('hash')
+        o.append('<div class="col-4" style="text-align: right;">')
+
+        if not wrap_in_form:
+
+            o.append('<button type="button" class="btn btn-light" style="margin-right: 5px;" '
+                     'id="btn_previous_object" '
+                     f'onclick="location.replace(\'view?h={h}&go=prev\');" '
+                     'mlang="btn_previous_object"><img src="img/left.svg" width="24px"/> Previous</button>')
+            o.append('<button type="button" class="btn btn-light" style="margin-right: 5px;" '
+                     'id="btn_next_object" '
+                     f'onclick="location.replace(\'view?h={h}&go=next\');" '
+                     'mlang="btn_next_object">Next <img src="img/right.svg" width="24px"/></button>')
+
+        if wrap_in_form:
+            o.append('<button type="button" class="btn btn-primary" style="margin-right: 5px;" '
+                     'id="btn_view_object" '
+                     f'onclick="location.replace(\'view?h={h}\');" '
+                     'mlang="btn_view_object">View Object</button>')
+
+            o.append('<div class="btn-group">'
+                     '<button type="button" class="btn btn-primary" '
+                     'id="btn_append_property" '
+                     'mlang="btn_append_property">Append property</button> '
+                     '<button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" '
+                     'data-bs-toggle="dropdown"> '
+                     '<span class="caret"></span> '
+                     '</button> '
+                     '<div class="dropdown-menu" id="properties_dropdown">')
+            o.append(''.join(o_temp))
+            o.append('</div>')
+            o.append('</div>')
+
         o.append('</div>')
 
     def o_edit_member(self, o, tn, mem, stack, obj, methods):
@@ -458,7 +497,7 @@ class RdfEngine:
                 if not sub_data:
                     return
                 stack.append(mdef)
-                self.o_edit_members(o, tn, stack, sub_data, methods)
+                self.o_edit_members(o, tn, stack, sub_data, methods, False)
                 stack.pop(len(stack) - 1)
                 # ---
             else:  # Independent reference
@@ -855,7 +894,7 @@ class RdfEngine:
             mem = cdef.members.get(f'{prop_ndx}')
             h = row[5]
             o.append(f'<tr onclick="window.open(\'view?h={h}\')">'
-                     f'<td>{cdef.name}</td><td>{mem.name}</td><td>{prop_value}</td>'                     
+                     f'<td>{cdef.name}</td><td>{mem.name}</td><td>{prop_value}</td>'
                      f'</tr>')
         o.append('</table>')
         return ''.join(o)

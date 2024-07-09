@@ -5,6 +5,12 @@ function dc_view_data()
     update_content('output', url);
 }
 
+function dc_reports()
+{
+    url = 'b?cn=custom_report';
+    update_content('output', url);
+}
+
 function handle_files(files, h) {
     var file = files[0];
     $('#img_thumb_'+h).attr('src', 'img/loading.gif');

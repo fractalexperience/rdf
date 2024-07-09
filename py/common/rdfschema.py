@@ -16,7 +16,7 @@ class RdfSchema:
             'string', 'integer', 'float', 'boolean', 'date',
             'object', 'property', 'ref', 'email', 'text',
             # These here require special handling in UI
-            'thumbnail', 'db_table', 'lang', 'image', 'media')
+            'thumbnail', 'db_table', 'lang', 'image', 'media', 'report_def')
         self.errors = None
 
         self.init()
