@@ -10,6 +10,11 @@ function dc_reports()
     url = 'b?cn=custom_report';
     update_content('output', url);
 }
+function dc_view_reports()
+{
+    url = 'r?cn=custom_report';
+    update_content('output', url);
+}
 
 function handle_files(files, h) {
     var file = files[0];
@@ -116,13 +121,22 @@ function add_property_panel(uri, puri, prop, parent_id, multiple, callback) {
         alert('Class '+uri+' already instantiated!');
         return;
     }
+
+    var valueReportModal = new bootstrap.Modal(document.getElementById('modal_1'), {});
+    valueReportModal.show();
+    //url = '/vrep_per?acronym='+acronym+'&cik='+cik+'&h='+hash+'&capt='+capt;
+    //$('#modal_1_title').html(capt);
+    //update_content('div_value_report_body', url, null);
+
+
     var url = 'f?o=' + uri + '&p=' + puri + '&n=' + prop;
     $.get(url, function(data, status) {
         if (status !== 'success') {
             alert('Error: Cannot read from '+url);
             return;
         }
-        $(data).appendTo($("#"+parent_id));
+        //$(data).appendTo($("#"+parent_id));
+        $('#modal_1_title').html(data);
 
         if (callback !== undefined && callback !== null) {
             callback();
