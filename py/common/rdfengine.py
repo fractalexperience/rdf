@@ -26,14 +26,15 @@ class RdfEngine:
 
         olst = self.o_list(tn, cn)
         o = [f'<h1>{cdef.name}</h1>'
-             '<table class="table table-bordered">', '<tr>']
+             '<table class="table table-bordered">'
+             '<tr class="table-info">']
         for ndx, mem in cdef.members.items():
             mdef = self.schema.get_class(mem.ref)
             if not mdef or mdef.data_type == 'object':
                 continue
             o.append(f'<td>{mem.name}</td>')
-
         o.append('</tr>')
+
         for obj in olst:
             o.append('<tr>')
             for ndx, mem in cdef.members.items():
@@ -41,7 +42,14 @@ class RdfEngine:
                 if not mdef or mdef.data_type == 'object':
                     continue
                 v = obj.get(mem.name, '')
+                method = self.vws.view_tab_methods.get(mdef.data_type)
+                if method is not None:
+                    h = obj.get('hash')
+                    pid = obj.get('id')
+                    v = method(tn, mem, v, h, pid, mdef.data_type, o, 'White')
+
                 o.append(f'<td>{v}</td>')
+
             o.append('</tr>')
         o.append('</table>')
         return ''.join(o)
@@ -266,8 +274,15 @@ class RdfEngine:
         cdef = self.schema.get_class(obj.get('code'))
         fields = self.get_fields_to_show(cdef)
         for mem in fields:
+            mdef = self.schema.get_class(mem.ref)
             prop_val = obj.get(mem.name)
             prop_val_resolved = prop_val[0] if isinstance(prop_val, tuple) else prop_val
+            if mdef:
+                method = self.vws.view_tab_methods.get(mdef.data_type)
+                if method:
+                    h = obj.get('hash')
+                    pid = obj.get('id')
+                    prop_val_resolved = method(tn, mem, prop_val_resolved, h, pid, mdef.data_type, o, 'White')
 
             if mem.data_type == 'ref' and isinstance(prop_val, int):
                 # Referred standalone object
@@ -343,8 +358,24 @@ class RdfEngine:
         return ''.join(o)
         # return self.o_get_html(tn, obj, cdef, obj_parent, self.inp.input_methods)
 
-    def o_view(self, tn, h_u, go):
-        obj, cdef = self.get_obj_and_cdef(tn, h_u, go)
+    def o_view(self, u, h_u, go):
+        rdf_h = h_u[0:40] if len(h_u) > 40 else h_u
+        tn = h_u[40:] if len(h_u) > 40 else None
+        if tn is None:
+            if u is None:  # Not logged in
+                return '<h1 mlang="not_authorized">Not authorized</h1>'
+            t = u.get('db')
+            tn = t[0]
+        # TODO: Check also cross-organization situation
+
+        obj, cdef = self.get_obj_and_cdef(tn, rdf_h, go)
+        if obj is None:
+            return '<h1>Object not found</h1>'
+
+        method = self.vws.complex_content_view_methods.get(cdef.uri)
+        if method is not None:
+            return method(tn, obj, cdef)
+
         return self.o_represent(tn, cdef, obj, self.vws.view_methods, False)
 
     def o_edit(self, tn, h_u):
@@ -898,3 +929,4 @@ class RdfEngine:
                      f'</tr>')
         o.append('</table>')
         return ''.join(o)
+

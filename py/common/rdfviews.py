@@ -21,8 +21,16 @@ class RdfViews:
             'media': self.view_media,
             'lang': self.view_lang,
             'db_table': self.view_db_table,
+            'report_def': self.view_report_def,
         }
 
+        self.view_tab_methods = {
+            'report_def': self.resolve_report_def,
+        }
+
+        self.complex_content_view_methods = {
+            'custom_report' : self.play_custom_report,
+        }
 
     @staticmethod
     def view_row_decorator(method):
@@ -37,10 +45,10 @@ class RdfViews:
             o.append('</div></div>')
         return wrapper
 
+    # --- View methods - used to view properties in form ---
 
     @view_row_decorator
     def view_standalone(self, tn, mem, valstr, h, pid, u, o):
-        # o.append(f'<div class="bg-dark fw-warning">{valstr}</div>')
         olst = self.rdfeng.o_list(tn, mem.ref)
         for ref_obj in olst:
             ref_n = ref_obj.get('Name')
@@ -108,3 +116,45 @@ class RdfViews:
     @view_row_decorator
     def view_db_table(self, tn, mem, valstr, h, pid, u, o):
         o.append(f'<h1>TODO: View DB table {mem.name} - {valstr}</h1>')
+
+    @view_row_decorator
+    def view_report_def(self, tn, mem, valstr, h, pid, u, o):
+        o.append(f'<div class="bg-light">{valstr}</div>')
+
+    # --- View-tab methods - used to view properties in table view ---
+    def resolve_report_def(self, tn, mem, valstr, h, pid, u, o, bgc):
+        return (f'<div class="bg-light">'
+                f'<button class="btn btn-primary" onclick="window.open(\'view?h={h}\')" mlang="view_report">'
+                f'View report'
+                f'</button>'
+                f'</div>')
+
+    # --- Predefined view methods for complex content objects ---
+    def play_custom_report(self, tn, obj, cdef):
+        # rdf_h = h[0:40]
+        # tn = h[40:]
+        # obj, cdef = self.get_obj_and_cdef(tn, rdf_h)
+        if obj is None:
+            return '<h1>Object not found</h1>'
+        if cdef is None or cdef.uri != 'custom_report':
+            return '<h1>Wrong object type</h1>'
+
+        data = obj.get('data')
+        if data is None:
+            return '<h1>Wrong object definition</h1>'
+
+        try:
+            report_def = json.loads(data.get('Definition')[0])
+            title = data.get('Name')[0]
+            return (f'<h1 style="margin-top: 50px;">{title}</h1>'
+                    f'<div><b>Variables</b>{report_def["var"]}</div>'
+                    f'<div><b>Select</b>{report_def["select"]}</div>'
+                    f'<div><b>Where</b>{report_def["where"]}</div>'
+                    f'<div><b>Order</b>{report_def["order"]}</div>')
+        except:
+            return '<h1>Incorrect object definition</h1>'
+        # return f'<h1>Report play: {obj.get("hash")}, Database: {tn}</h1>'
+
+
+
+

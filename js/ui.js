@@ -16,6 +16,12 @@ function dc_view_reports()
     update_content('output', url);
 }
 
+function view_report(h)
+{
+    url = 'play?h='+h;
+    window.open(url);
+}
+
 function handle_files(files, h) {
     var file = files[0];
     $('#img_thumb_'+h).attr('src', 'img/loading.gif');

@@ -21,6 +21,7 @@ class RdfInputs:
             'lang': self.input_lang,
             'user_role': self.input_role,
             'db_table': self.input_db_table,
+            'report_def': self.input_report_def,
         }
 
     @staticmethod
@@ -146,3 +147,10 @@ class RdfInputs:
     @input_row_decorator
     def input_db_table(self, tn, mem, valstr, h, pid, u, o):
         o.append(f'<h1>TODO: Input DB table {mem.name}</h1>')
+
+    @input_row_decorator
+    def input_report_def(self, tn, mem, valstr, h, pid, u, o):
+        o.append(
+            f'<textarea type="text" class="form-control rdf-property" rows="2" id="{mem.name}" '
+            f'oninput="$(this).addClass(\'rdf-changed\')" '
+            f'name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}">{valstr}</textarea>')
