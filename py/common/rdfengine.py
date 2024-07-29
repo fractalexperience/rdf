@@ -160,8 +160,8 @@ class RdfEngine:
             if mdef.data_type == 'object' and mem.data_type == 'ref':
                 result.append((mdef.uri, mem.name))
 
-    def o_list(self, tn, cn):
-        """ tn => Table name, cn => class name, cd => Class definition """
+    def o_list(self, tn, cn, use_ndx=False):
+        """ tn => Table name, cn => class name, use_ndx - Whether to use ndx value instead of property name in index """
         cdef = self.schema.get_class(cn)
         # List all instances together with their properties
         sql = (f"SELECT r1.id AS id, r1.h AS h, r1.s AS s, r2.p AS p, r2.o AS o, r2.v AS v "
@@ -192,7 +192,10 @@ class RdfEngine:
                 else:
                     rdf_v = rdf_o
 
-            curr_obj[member.name] = rdf_v
+            if use_ndx:
+                curr_obj.setdefault(member.ndx, []).append(rdf_v)
+            else:
+                curr_obj[member.name] = rdf_v
 
         return res
 

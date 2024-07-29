@@ -130,6 +130,85 @@ class RdfViews:
                 f'</div>')
 
     # --- Predefined view methods for complex content objects ---
+    def populate_rep_cache(self, tn, cache, var):
+        if not var:
+            return
+        if len(var) == 1:
+            return
+        code = var[0]
+        if code in cache:
+            return
+        objects = self.rdfeng.o_list(tn, code, True)
+        cache[code] = objects
+        cdef = self.rdfeng.schema.get_class(code)
+        # print('Looping class', cdef.name)
+        self.populate_rep_cache(tn, cache, var[1:])
+
+    def init_rep_variables(self, variables, cache, rep, roots, select):
+        # Prepare variables_by_expr
+        variables_by_expr = {}
+        for var_name, var_expr in variables.items():
+            variables_by_expr.setdefault(var_expr, []).append(var_name)
+        for root in roots:
+            objects = cache.get(root)
+            if not objects:
+                continue
+            for obj in objects:
+                stack, row, header, body = [root], [], rep.get('header'), rep.get('body')
+                self.loop_obj(obj, stack, row, variables_by_expr, select, header, body)
+        # print(rep)
+
+    def loop_obj(self, obj, stack, row, variables_by_expr, select, header, body):
+        cdef = self.rdfeng.schema.get_class(obj.get('code'))
+        properties = [p for p in obj.items() if p[0] not in ['id', 'hash', 'code', 'type']]
+        self.loop_properties(cdef, properties, stack, row, variables_by_expr, select, header, body)
+
+    def loop_properties(self, cdef, properties, stack, row, variables_by_expr, select, header, body):
+        if len(properties) == 0:
+            # print(stack, row)
+            base = '.'.join(stack)
+            # Init the variable
+            for ndx, value in row:
+                key = f'{base}.{ndx}'
+                variable_names = variables_by_expr.get(key)
+                if not variable_names:
+                    continue
+                for variable_name in variable_names:
+                    if variable_name:
+                        property_name = cdef.members.get(ndx).name
+                        header[variable_name] = property_name
+                        try:
+                            exec(f'{variable_name}=\'{value}\'')
+                        except:
+                            pass
+            # Evaluate select expressions
+            result_row = []
+            for expr in [s.split('|')[0] for s in select]:
+                try:
+                    result_value = eval(expr)
+                    result_row.append(result_value)
+                except:
+                    result_row.append(None)
+            if any(v for v in result_row if v is not None):
+                body.append(result_row)
+            return
+
+        first = properties[0]
+        ndx = first[0]
+        values = first[1]
+
+        for value in values:
+            if isinstance(value, dict):  # property is a complex object
+                stack.append(ndx)
+                self.loop_obj(value, stack, row, variables_by_expr, select, header, body)
+                stack.pop()
+                continue
+
+            # Property is simple string value
+            row.append((ndx, value))
+            self.loop_properties(cdef, properties[1:], stack, row, variables_by_expr, select, header, body)
+            row.pop()
+
     def play_custom_report(self, tn, obj, cdef):
         # rdf_h = h[0:40]
         # tn = h[40:]
@@ -144,16 +223,51 @@ class RdfViews:
             return '<h1>Wrong object definition</h1>'
 
         try:
-            report_def = json.loads(data.get('Definition')[0])
+            rdef = json.loads(data.get('Definition')[0])
             title = data.get('Name')[0]
-            return (f'<h1 style="margin-top: 50px;">{title}</h1>'
-                    f'<div><b>Variables</b>{report_def["var"]}</div>'
-                    f'<div><b>Select</b>{report_def["select"]}</div>'
-                    f'<div><b>Where</b>{report_def["where"]}</div>'
-                    f'<div><b>Order</b>{report_def["order"]}</div>')
-        except:
-            return '<h1>Incorrect object definition</h1>'
-        # return f'<h1>Report play: {obj.get("hash")}, Database: {tn}</h1>'
+            variables = rdef.get('var')
+            if not variables:
+                return '<h1>Incorrect report definition - no variables defined.</h1>'
+            select = rdef.get('select')
+            if not select:
+                return '<h1>Incorrect report definition - no select expressions defined.</h1>'
+            where = rdef.get('where', [])
+            order = rdef.get('order', [])
+
+            # Step 1 - Prepare object cache
+            cache = {}  # Here we store raw data
+            roots = set([v.split('.')[0] for v in variables.values()])
+            for pair in variables.items():
+                var_name = pair[0]
+                var = pair[1]
+                self.populate_rep_cache(tn, cache, var.split('.'))
+
+            # Step 2 - Evaluate variables
+            rep = {'header': {}, 'body': []}  # This is the report - list of lists
+            self.init_rep_variables(variables, cache, rep, roots, select)
+
+            # Step 3 - Render report
+            header = rep.get('header')
+            body = rep.get('body')
+            o = [f'<h1 style="margin-top: 30px;">{title}</h1>'
+                 f'<table class="table table-bordered display dataTable"><thead>'
+                 f'<tr class="table-info">']
+            for expr in select:
+                capt = expr.split('|')[1] if '|' in expr else header.get(expr, '-')
+                o.append(f'<th>{capt}</th>')
+            o.append('</tr></thead><tbody>')
+            for row in body:
+                o.append('<tr>')
+                for value in row:
+                    value_str = '&nbsp;' if value is None else value
+                    o.append(f'<td>{value_str}</td>')
+                o.append('</tr>')
+            o.append(f'</tbody></table>')
+            return ''.join(o)
+
+        except Exception as ex:
+            return f'<h1>Incorrect object definition: {ex}</h1>'
+
 
 
 
