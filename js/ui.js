@@ -129,11 +129,10 @@ function add_property_panel(uri, puri, prop, parent_id, multiple, callback) {
     }
 
     var valueReportModal = new bootstrap.Modal(document.getElementById('modal_1'), {});
-    valueReportModal.show();
+//    valueReportModal.show();
     //url = '/vrep_per?acronym='+acronym+'&cik='+cik+'&h='+hash+'&capt='+capt;
     //$('#modal_1_title').html(capt);
     //update_content('div_value_report_body', url, null);
-
 
     var url = 'f?o=' + uri + '&p=' + puri + '&n=' + prop;
     $.get(url, function(data, status) {
@@ -141,8 +140,8 @@ function add_property_panel(uri, puri, prop, parent_id, multiple, callback) {
             alert('Error: Cannot read from '+url);
             return;
         }
-        //$(data).appendTo($("#"+parent_id));
-        $('#modal_1_title').html(data);
+        $(data).appendTo($("#"+parent_id));
+//        $('#modal_1_title').html(data);
 
         if (callback !== undefined && callback !== null) {
             callback();
