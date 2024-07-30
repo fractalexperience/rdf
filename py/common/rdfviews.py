@@ -286,18 +286,18 @@ class RdfViews:
             o.append(f'</tbody></table>')
 
             # Interactive table snippet - !! UNREM to enable interactive table !!
-#             o.append("""
-# <script>
-# $('.dataTable').each(function () {
-#     var t = $(this).DataTable({
-#         "paging":true,
-#         "ordering":true,
-#         "info":true,
-#         "pageLength": 50})
-#     t.order([]).draw();
-# });
-# </script>
-#             """)
+            o.append("""
+<script>
+$('.dataTable').each(function () {
+    var t = $(this).DataTable({
+        "paging":true,
+        "ordering":true,
+        "info":true,
+        "pageLength": 50})
+    t.order([]).draw();
+});
+</script>
+            """)
             return ''.join(o)
 
         except Exception as ex:
