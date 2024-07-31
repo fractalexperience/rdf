@@ -1,4 +1,8 @@
 import json
+import os.path
+
+import pandas as pd
+import openpyxl
 import common.util as util
 
 
@@ -26,10 +30,11 @@ class RdfViews:
 
         self.view_tab_methods = {
             'report_def': self.resolve_report_def,
+            'image': self.resolve_image,
         }
 
         self.complex_content_view_methods = {
-            'custom_report' : self.play_custom_report,
+            'custom_report': self.play_custom_report,
         }
 
     @staticmethod
@@ -124,10 +129,28 @@ class RdfViews:
     # --- View-tab methods - used to view properties in table view ---
     def resolve_report_def(self, tn, mem, valstr, h, pid, u, o, bgc):
         return (f'<div class="bg-light">'
+                f'<span id="view_{h}">'
                 f'<button class="btn btn-primary" onclick="window.open(\'view?h={h}\')" mlang="view_report">'
                 f'View report'
-                f'</button>'
+                f'</button></span>'
+                f'<span id="export_{h}" style="margin-left: 10px;">'
+                f'<button class="btn btn-primary" '
+                f'onclick="update_content(\'export_{h}\', \'view?h={h}&format=excel\')" mlang="export_excel">'
+                f'Export to Excel'
+                f'</button></span>'
                 f'</div>')
+
+    def resolve_image(self, tn, mem, valstr, h, pid, u, o, bgc):
+
+        return '<div>IMG</div>'
+
+    # --- Methods, which can be used inside reports select areas
+    def resolve_img(self, s):
+        imgdef = json.loads(s)
+        url_img = imgdef.get('img')
+        filename = imgdef.get('filename')
+        url_thumb = imgdef.get('thumb')
+        return f'<a href="{url_img}" target="_blank"><img src="{url_thumb}" width="100px" alt="{filename}" /></a>'
 
     # --- Predefined view methods for complex content objects ---
     def populate_rep_cache(self, tn, cache, var):
@@ -191,9 +214,10 @@ class RdfViews:
                 except:
                     result_row.append(None)
 
-            if any(v for v in result_row if v is not None):
+            if (len(stack) == 1  # Only do this for level 1 of recursion
+                    and any(v for v in result_row if v is not None)):
                 # Evaluate where condition
-                condition  = True
+                condition = True
                 for expr in where:
                     try:
                         local_condition = eval(expr)
@@ -207,6 +231,7 @@ class RdfViews:
                     if h not in keys:
                         body.append(result_row)
                         keys.add(h)
+
             return
 
         first = properties[0]
@@ -218,14 +243,14 @@ class RdfViews:
                 stack.append(ndx)
                 self.loop_obj(value, stack, row, variables_by_expr, select, where, order, header, body, keys)
                 stack.pop()
-                continue
+                # continue
 
             # Property is simple string value
             row.append((ndx, value))
             self.loop_properties(cdef, properties[1:], stack, row, variables_by_expr, select, where, order, header, body, keys)
             row.pop()
 
-    def play_custom_report(self, tn, obj, cdef):
+    def play_custom_report(self, tn, obj, cdef, format):
         # rdf_h = h[0:40]
         # tn = h[40:]
         # obj, cdef = self.get_obj_and_cdef(tn, rdf_h)
@@ -270,6 +295,17 @@ class RdfViews:
             # Step 3 - Render report
             header = rep.get('header')
             body = rep.get('body')
+
+            # Excel version
+            if format == 'excel':
+                df = pd.DataFrame(body)
+                path_temp = self.rdfeng.cms.get_path_temp(tn)
+                filename = f'r{util.to_camelcase(title)}.xlsx'
+                path = os.path.join(path_temp, filename)
+                df.to_excel(path)
+                url = f'{self.rdfeng.base_data}/{tn}/{self.rdfeng.cms.base_temp}/{filename}'
+                return f'<a href="{url}"><img src="img/xlsx.png" width="42px"/></a>'
+
             o = [f'<h1 style="margin-top: 30px;">{title}</h1>'
                  f'<table class="table table-bordered display dataTable"><thead>'
                  f'<tr class="table-info">']

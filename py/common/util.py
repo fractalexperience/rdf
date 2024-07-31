@@ -1,5 +1,6 @@
 import hashlib
 import datetime
+from re import sub
 
 dom_hex = set('0123456789abcdef')
 
@@ -25,3 +26,8 @@ def escape_xml(s):
 def get_id_sha1():
     return get_sha1(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"))
 
+
+def to_camelcase(s):
+    pattern = r'(_|-|/|\\|\?)+'
+    s = sub(pattern, " ", s).title().replace(" ", "").replace("*", "")
+    return ''.join([s[0].lower(), s[1:]])

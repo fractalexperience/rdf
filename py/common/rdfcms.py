@@ -12,6 +12,7 @@ class RdfCms:
         self.schema = schema
 
         self.base_image = 'img'
+        self.base_temp = 'temp'
         self.base_thumbnail = 'thumb'
 
         self.base_rdf = base_rdf
@@ -205,6 +206,17 @@ class RdfCms:
         if obj_id is None:
             return None
         return self.o_read(tn, obj_id)
+
+    def get_path_temp(self, tn):
+        if not os.path.exists(self.data_folder):
+            os.mkdir(self.data_folder)
+        path_user = os.path.join(self.data_folder, tn)
+        if not os.path.exists(path_user):
+            os.mkdir(path_user)
+        path_temp = os.path.join(path_user, self.base_temp)
+        if not os.path.exists(path_temp):
+            os.mkdir(path_temp)
+        return path_temp
 
     def uplimg(self, tn, file):
         """

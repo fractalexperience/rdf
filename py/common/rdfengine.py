@@ -361,7 +361,7 @@ class RdfEngine:
         return ''.join(o)
         # return self.o_get_html(tn, obj, cdef, obj_parent, self.inp.input_methods)
 
-    def o_view(self, u, h_u, go):
+    def o_view(self, u, h_u, go, format):
         rdf_h = h_u[0:40] if len(h_u) > 40 else h_u
         tn = h_u[40:] if len(h_u) > 40 else None
         if tn is None:
@@ -377,7 +377,7 @@ class RdfEngine:
 
         method = self.vws.complex_content_view_methods.get(cdef.uri)
         if method is not None:
-            return method(tn, obj, cdef)
+            return method(tn, obj, cdef, format)
 
         return self.o_represent(tn, cdef, obj, self.vws.view_methods, False)
 
