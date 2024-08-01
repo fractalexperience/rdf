@@ -184,13 +184,16 @@ class RdfEngine:
                 continue
 
             if rdf_o is not None and rdf_v is None:  # Referred object
-                if member.data_type == 'property':  # Make recursion and retrieve full referred object
-                    child_obj = self.cms.o_read(tn, rdf_o)
-                    rdf_v = child_obj
-                # There is a reference to separate object, but it is standalone and to avoid infinite recursions
-                # we just give the id
-                else:
+                if use_ndx:
                     rdf_v = rdf_o
+                else:
+                    if member.data_type == 'property':  # Make recursion and retrieve full referred object
+                        child_obj = self.cms.o_read(tn, rdf_o)
+                        rdf_v = child_obj
+                    # There is a reference to separate object, but it is standalone and to avoid infinite recursions
+                    # we just give the id
+                    else:
+                        rdf_v = rdf_o
 
             if use_ndx:
                 curr_obj.setdefault(member.ndx, []).append(rdf_v)

@@ -132,7 +132,7 @@ class RdfCms:
         i = self.sqleng.exec_insert(q)
         return i, None, True, f'Property inserted {cname} for {puri}'
 
-    def o_read(self, tblname, obj_id, depth=0):
+    def o_read(self, tblname, obj_id, depth=0, use_ndx=False):
         if obj_id is None:
             return None
         if depth > 99:  # Not too deep recursion
@@ -156,8 +156,8 @@ class RdfCms:
         obj_id, obj_h, obj_code = r[0], r[1], r[2]
         cdef = self.schema.classes.get(str(obj_code))
         obj = {'id': obj_id, 'hash': obj_h, 'code': obj_code, 'type': cdef.name}
-        data = {}
-        obj['data'] = data
+        dta = {}
+        obj['data'] = dta
         for r in t:
             rdf_id, rdf_p, rdf_o, rdf_v = r[3], r[4], r[5], r[6]
             mdef = self.schema.classes.get(str(rdf_p))
@@ -168,24 +168,33 @@ class RdfCms:
             if mdef is None:
                 continue
 
+            # key = mem.ndx if use_ndx else mem.name
             if rdf_o is None:
-                if mem.name not in data:
-                    data[mem.name] = (rdf_v, rdf_id)
+                if use_ndx:
+                    dta.setdefault(mem.ndx, []).append(rdf_v)
                     continue
-                val_existing = data.get(mem.name)
-                if isinstance(val_existing, tuple):
-                    data[mem.name] = [val_existing, (rdf_v, rdf_id)]
-                    continue
-                if isinstance(val_existing, list):
-                    val_existing.append((rdf_v, rdf_id))
-                    continue
-            if mem.data_type == 'property':
-                obj_child = self.o_read(tblname, rdf_o, depth + 1)
-                data[mem.name] = obj_child
+                else:
+                    if mem.name not in dta:
+                        dta[mem.name] = (rdf_v, rdf_id)
+                        continue
+                    val_existing = dta.get(mem.name)
+                    if isinstance(val_existing, tuple):
+                        dta[mem.name] = [val_existing, (rdf_v, rdf_id)]
+                        continue
+                    if isinstance(val_existing, list):
+                        val_existing.append((rdf_v, rdf_id))
+                        continue
+
+            if use_ndx:
+                dta[mem.ndx] = (rdf_o, rdf_id)
             else:
-                # If we have a reference, we do not do the recursion in order to save processing time.
-                # This can be done later if needed.
-                data[mem.name] = (rdf_o, rdf_id)
+                if mem.data_type == 'property':
+                    obj_child = self.o_read(tblname, rdf_o, depth + 1)
+                    dta[mem.name] = obj_child
+                else:
+                    # If we have a reference, we do not do the recursion in order to save processing time.
+                    # This can be done later if needed.
+                    dta[mem.name] = (rdf_o, rdf_id)
         return obj
 
     def o_seek(self, tn, uri, p_name, p_value):

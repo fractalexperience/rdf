@@ -167,37 +167,41 @@ class RdfViews:
         # print('Looping class', cdef.name)
         self.populate_rep_cache(tn, cache, var[1:])
 
-    def init_rep_variables(self, variables, cache, rep, roots, select, where, order):
+    def init_rep_variables(self, tn, variables, cache, rep, roots, select, where, order):
         # Prepare variables_by_expr
         variables_by_expr = {}
         for var_name, var_expr in variables.items():
             variables_by_expr.setdefault(var_expr, []).append(var_name)
         for root in roots:
-            objects = cache.get(root)
+            objects = self.rdfeng.o_list(tn, root, True)
+            # objects = cache.get(root)
             if not objects:
                 continue
             for obj in objects:
                 stack, row, header, body, keys = [root], [], rep.get('header'), rep.get('body'), rep.get('keys')
-                self.loop_obj(obj, stack, row, variables_by_expr, select, where, order, header, body, keys)
+                self.loop_obj(tn, cache, obj, stack, row, variables_by_expr, select, where, order, header, body, keys)
 
-    def loop_obj(self, obj, stack, row, variables_by_expr, select, where, order, header, body, keys):
+    def loop_obj(self, tn, cache, obj, stack, row, variables_by_expr, select, where, order, header, body, keys):
         cdef = self.rdfeng.schema.get_class(obj.get('code'))
         properties = [p for p in obj.items() if p[0] not in ['id', 'hash', 'code', 'type']]
-        self.loop_properties(cdef, properties, stack, row, variables_by_expr, select, where, order, header, body, keys)
+        self.loop_properties(tn, cache, cdef, properties, stack, row, variables_by_expr, select, where, order, header, body, keys)
 
-    def loop_properties(self, cdef, properties, stack, row, variables_by_expr, select, where, order, header, body, keys):
+    def loop_properties(self, tn, cache, cdef, properties, stack, row, variables_by_expr, select, where, order, header, body, keys):
         if len(properties) == 0:
             # print(stack, row)
-            base = '.'.join(stack)
+            # base = '.'.join(stack)
             # Init the variable
             for ndx, value in row:
-                key = f'{base}.{ndx}'
-                variable_names = variables_by_expr.get(key)
+                # key = f'{base}.{ndx}'
+                variable_names = variables_by_expr.get(ndx)
                 if not variable_names:
                     continue
                 for variable_name in variable_names:
                     if variable_name:
-                        property_name = cdef.members.get(ndx).name
+                        mem = cdef.members.get(ndx.split('.')[-1])
+                        if not mem:
+                            continue
+                        property_name = mem.name
                         header[variable_name] = property_name
                         try:
                             exec(f'{variable_name}=\'{value}\'')
@@ -239,16 +243,21 @@ class RdfViews:
         values = first[1]
 
         for value in values:
-            if isinstance(value, dict):  # property is a complex object
-                stack.append(ndx)
-                self.loop_obj(value, stack, row, variables_by_expr, select, where, order, header, body, keys)
-                stack.pop()
-                # continue
+            if isinstance(value, int):  # property is a complex object
+                # Read nested object
+                nested_obj = self.rdfeng.cms.o_read(tn, value, use_ndx=True)
+                if nested_obj:
+                    nested_properties = nested_obj.get('data')
+                    if nested_properties:
+                        nested_properties['code'] = nested_obj.get('code')
+                        stack.append(ndx)
+                        self.loop_obj(tn, cache, nested_properties, stack, row, variables_by_expr, select, where, order, header, body, keys)
+                        stack.pop()
 
             # Property is simple string value
-            row.append((ndx, value))
-            self.loop_properties(cdef, properties[1:], stack, row, variables_by_expr, select, where, order, header, body, keys)
-            row.pop()
+            row.append(('.'.join(stack + [ndx]), value))
+            self.loop_properties(tn, cache, cdef, properties[1:], stack, row, variables_by_expr, select, where, order, header, body, keys)
+            # row.pop()
 
     def play_custom_report(self, tn, obj, cdef, format):
         # rdf_h = h[0:40]
@@ -278,10 +287,10 @@ class RdfViews:
             # Step 1 - Prepare object cache
             cache = {}  # Here we store raw data
             roots = set([v.split('.')[0] for v in variables.values()])
-            for pair in variables.items():
-                var_name = pair[0]
-                var = pair[1]
-                self.populate_rep_cache(tn, cache, var.split('.'))
+            # for pair in variables.items():
+            #     var_name = pair[0]
+            #     var = pair[1]
+            #     self.populate_rep_cache(tn, cache, var.split('.'))
 
             # Step 2 - Evaluate variables
             # header => Header captions collected from variable definitions. If no header in variable definition,
@@ -290,7 +299,7 @@ class RdfViews:
             # keys => a set containing all unique hash codes generated by report rows content - only unique rows
             #         are included
             rep = {'header': {}, 'body': [], 'keys': set()}
-            self.init_rep_variables(variables, cache, rep, roots, select, where, order)
+            self.init_rep_variables(tn, variables, cache, rep, roots, select, where, order)
 
             # Step 3 - Render report
             header = rep.get('header')
