@@ -147,7 +147,8 @@ class RdfCms:
              'r2.o AS o, '
              'r2.v AS v '
              f'FROM {tblname} as r1 INNER JOIN {tblname} as r2 on r1.id=r2.s '
-             f'WHERE {frag};')  # This ordering might be removed for the purpose of speed
+             f'WHERE {frag};')
+
         t = self.sqleng.exec_table(q)
         if t is None or len(t) == 0:
             return None

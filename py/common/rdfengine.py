@@ -166,7 +166,7 @@ class RdfEngine:
         # List all instances together with their properties
         sql = (f"SELECT r1.id AS id, r1.h AS h, r1.s AS s, r2.p AS p, r2.o AS o, r2.v AS v "
                f"FROM {tn} AS r1 LEFT JOIN {tn} as r2 ON r1.id=r2.s "
-               f"WHERE r1.s={cdef.code} AND r1.p IS NULL AND r1.o IS NULL;")
+               f"WHERE r1.s={cdef.code} ")
         t = self.sqleng.exec_table(sql)
         res = []
         curr_obj, curr_obj_id = None, None
@@ -178,11 +178,7 @@ class RdfEngine:
                 res.append(curr_obj)
                 curr_obj_id = rdf_id
 
-            p_def = self.schema.classes.get(str(rdf_p))
             member = cdef.members.get(str(rdf_p))
-            if p_def is None or member is None:
-                continue
-
             if rdf_o is not None and rdf_v is None:  # Referred object
                 if use_ndx:
                     rdf_v = rdf_o

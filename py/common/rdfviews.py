@@ -1,8 +1,8 @@
 import json
 import os.path
+import datetime
 
 import pandas as pd
-import openpyxl
 import common.util as util
 
 
@@ -153,19 +153,19 @@ class RdfViews:
         return f'<a href="{url_img}" target="_blank"><img src="{url_thumb}" width="100px" alt="{filename}" /></a>'
 
     # --- Predefined view methods for complex content objects ---
-    def populate_rep_cache(self, tn, cache, var):
-        if not var:
-            return
-        if len(var) == 1:
-            return
-        code = var[0]
-        if code in cache:
-            return
-        objects = self.rdfeng.o_list(tn, code, True)
-        cache[code] = objects
-        cdef = self.rdfeng.schema.get_class(code)
-        # print('Looping class', cdef.name)
-        self.populate_rep_cache(tn, cache, var[1:])
+    # def populate_rep_cache(self, tn, cache, var):
+    #     if not var:
+    #         return
+    #     if len(var) == 1:
+    #         return
+    #     code = var[0]
+    #     if code in cache:
+    #         return
+    #     objects = self.rdfeng.o_list(tn, code, True)
+    #     cache[code] = objects
+    #     cdef = self.rdfeng.schema.get_class(code)
+    #     # print('Looping class', cdef.name)
+    #     self.populate_rep_cache(tn, cache, var[1:])
 
     def init_rep_variables(self, tn, variables, cache, rep, roots, select, where, order):
         # Prepare variables_by_expr
@@ -188,8 +188,6 @@ class RdfViews:
 
     def loop_properties(self, tn, cache, cdef, properties, stack, row, variables_by_expr, select, where, order, header, body, keys):
         if len(properties) == 0:
-            # print(stack, row)
-            # base = '.'.join(stack)
             # Init the variable
             for ndx, value in row:
                 # key = f'{base}.{ndx}'
@@ -244,8 +242,12 @@ class RdfViews:
 
         for value in values:
             if isinstance(value, int):  # property is a complex object
-                # Read nested object
-                nested_obj = self.rdfeng.cms.o_read(tn, value, use_ndx=True)
+                # Read nested object - first check in cache
+                nested_obj = cache.get(value)
+                if not nested_obj:
+                    nested_obj = self.rdfeng.cms.o_read(tn, value, use_ndx=True)
+                    cache[value] = nested_obj
+
                 if nested_obj:
                     nested_properties = nested_obj.get('data')
                     if nested_properties:
@@ -259,10 +261,7 @@ class RdfViews:
             self.loop_properties(tn, cache, cdef, properties[1:], stack, row, variables_by_expr, select, where, order, header, body, keys)
             # row.pop()
 
-    def play_custom_report(self, tn, obj, cdef, format):
-        # rdf_h = h[0:40]
-        # tn = h[40:]
-        # obj, cdef = self.get_obj_and_cdef(tn, rdf_h)
+    def play_custom_report(self, tn, obj, cdef, fmt):
         if obj is None:
             return '<h1>Object not found</h1>'
         if cdef is None or cdef.uri != 'custom_report':
@@ -284,13 +283,10 @@ class RdfViews:
             where = rdef.get('where', [])
             order = rdef.get('order', [])
 
+            ts = datetime.datetime.now()
             # Step 1 - Prepare object cache
             cache = {}  # Here we store raw data
             roots = set([v.split('.')[0] for v in variables.values()])
-            # for pair in variables.items():
-            #     var_name = pair[0]
-            #     var = pair[1]
-            #     self.populate_rep_cache(tn, cache, var.split('.'))
 
             # Step 2 - Evaluate variables
             # header => Header captions collected from variable definitions. If no header in variable definition,
@@ -306,7 +302,7 @@ class RdfViews:
             body = rep.get('body')
 
             # Excel version
-            if format == 'excel':
+            if fmt == 'excel':
                 df = pd.DataFrame(body)
                 path_temp = self.rdfeng.cms.get_path_temp(tn)
                 filename = f'r{util.to_camelcase(title)}.xlsx'
@@ -315,7 +311,9 @@ class RdfViews:
                 url = f'{self.rdfeng.base_data}/{tn}/{self.rdfeng.cms.base_temp}/{filename}'
                 return f'<a href="{url}"><img src="img/xlsx.png" width="42px"/></a>'
 
+            tdiff = datetime.datetime.now() - ts
             o = [f'<h1 style="margin-top: 30px;">{title}</h1>'
+                 f'<div>Report created in {tdiff.microseconds / 1e6} s</div>'
                  f'<table class="table table-bordered display dataTable"><thead>'
                  f'<tr class="table-info">']
             for expr in select:
