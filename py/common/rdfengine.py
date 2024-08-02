@@ -179,6 +179,9 @@ class RdfEngine:
                 curr_obj_id = rdf_id
 
             member = cdef.members.get(str(rdf_p))
+            if not member:
+                continue
+
             if rdf_o is not None and rdf_v is None:  # Referred object
                 if use_ndx:
                     rdf_v = rdf_o
