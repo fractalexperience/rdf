@@ -1585,6 +1585,22 @@
 	},
 	{
 		"namespace": "",
+		"code": "",
+		"inherits": "",
+		"name": "Purchase/Value",
+		"ndx": "36",
+		"description": "Purchase/Value",
+		"data_type": "property",
+		"restriction": "",
+		"ref": "1014",
+		"required": "",
+		"multiple": "",
+		"key": "",
+		"show": "",
+		"uri": ""
+	},
+	{
+		"namespace": "",
 		"code": "1001",
 		"inherits": "",
 		"name": "Location",

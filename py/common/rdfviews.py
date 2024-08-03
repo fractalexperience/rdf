@@ -130,11 +130,11 @@ class RdfViews:
     def resolve_report_def(self, tn, mem, valstr, h, pid, u, o, bgc):
         return (f'<div class="bg-light">'
                 f'<span id="view_{h}">'
-                f'<button class="btn btn-primary" onclick="window.open(\'view?h={h}\')" mlang="view_report">'
+                f'<button class="btn btn-primary btn-sm" onclick="window.open(\'view?h={h}\')" mlang="view_report">'
                 f'View report'
                 f'</button></span>'
                 f'<span id="export_{h}" style="margin-left: 10px;">'
-                f'<button class="btn btn-primary" '
+                f'<button class="btn btn-primary btn-sm" '
                 f'onclick="update_content(\'export_{h}\', \'view?h={h}&format=excel\')" mlang="export_excel">'
                 f'Export to Excel'
                 f'</button></span>'
