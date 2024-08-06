@@ -3,7 +3,6 @@
             onclick="update_content('output', 'b?cn=item', null)"
             id="btn_edit_data" mlang="btn_edit_data">Edit data</button>
 
-
     <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" style="margin-right: 5px;">
         <span class="caret"></span>
     </button>
@@ -17,21 +16,42 @@
             onclick="dc_view_data()"
             id="btn_dc_view_data" mlang="btn_dc_view_data">Quick Search</button>
 </div>
-<div class="btn-group" style="margin-right: 5px; margin-left: 5px;">
+<!--div class="btn-group" style="margin-right: 5px; margin-left: 5px;">
     <button type="button" class="btn btn-light"
             onclick="dc_reports()"
-            id="btn_dc_reports" mlang="btn_dc_reports">Manage Custom Reports</button>
+            id="btn_dc_reports" mlang="btn_dc_reports">Manage Custom Reports</button-->
 </div>
 <div class="btn-group" style="margin-right: 5px; margin-left: 5px;">
     <button type="button" class="btn btn-light"
             onclick="dc_view_reports()"
             id="btn_dc_view_reports" mlang="btn_dc_view_reports">View Reports</button>
+
+    <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split"
+            data-bs-toggle="dropdown" style="margin-right: 5px;">
+        <span class="caret"></span>
+    </button>
+
+    <div class="dropdown-menu" id="manage_custom_reports">
+        <a class="dropdown-item" href="javascript:dc_reports()" id="dc_manage_custom_repots" mlang="dc_manage_custom_repots">Manage Custom Reports</a>
+    </div>
+
 </div>
-<!--div class="btn-group" style="margin-right: 5px; margin-left: 5px;">
+
+<div class="btn-group" style="margin-right: 5px; margin-left: 5px;">
     <button type="button" class="btn btn-light"
-            onclick="dc_expert_search()"
-            id="btn_dc_expert_search" mlang="btn_dc_expert_search">Expert search</button>
-</div-->
+            id="btn_dc_data_management" mlang="btn_dc_data_management">Data Management</button>
+
+    <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split"
+            data-bs-toggle="dropdown" style="margin-right: 5px;">
+        <span class="caret"></span>
+    </button>
+
+    <div class="dropdown-menu" id="data_management_dropdown">
+        <a class="dropdown-item" href="javascript:data_export()" id="dc_data_export" mlang="dc_data_export">Data Export</a>
+        <a class="dropdown-item" href="javascript:data_import()" id="dc_data_import" mlang="dc_data_import">Data Import</a>
+        <a class="dropdown-item" href="javascript:mass_changes()" id="dc_mass_changes" mlang="dc_mass_changes">Mass Changes</a>
+    </div>
+</div>
 
 <script>
 // Update enumerations drop down
