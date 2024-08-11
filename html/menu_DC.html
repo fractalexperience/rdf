@@ -39,6 +39,7 @@
 
 <div class="btn-group" style="margin-right: 5px; margin-left: 5px;">
     <button type="button" class="btn btn-light"
+            onclick="data_summary()"
             id="btn_dc_data_management" mlang="btn_dc_data_management">Data Management</button>
 
     <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split"
@@ -47,9 +48,9 @@
     </button>
 
     <div class="dropdown-menu" id="data_management_dropdown">
-        <a class="dropdown-item" href="javascript:data_export()" id="dc_data_export" mlang="dc_data_export">Data Export</a>
-        <a class="dropdown-item" href="javascript:data_import()" id="dc_data_import" mlang="dc_data_import">Data Import</a>
-        <a class="dropdown-item" href="javascript:mass_changes()" id="dc_mass_changes" mlang="dc_mass_changes">Mass Changes</a>
+        <a class="dropdown-item" href="javascript:data_export()" id="data_export" mlang="data_export">Data Export</a>
+        <a class="dropdown-item" href="javascript:data_import()" id="data_import" mlang="data_import">Data Import</a>
+        <a class="dropdown-item" href="javascript:mass_changes()" id="mass_changes" mlang="mass_changes">Mass Changes</a>
     </div>
 </div>
 
@@ -69,4 +70,29 @@ $.get('l?q=item^', function(data, status) {
         alert("ERROR: " + status);
     }
 });
+
+    function data_export()
+    {
+        update_content('output', 'chunk/dbexport');
+    }
+
+    function data_import()
+    {
+         update_content('output', 'chunk/dbimport');
+    }
+
+    function mass_changes()
+    {
+        update_content('output', 'chunk/masschg');
+    }
+    function data_summary()
+    {
+        update_content('output', 'summary');
+    }
+
+    function do_dbexport()
+    {
+        var fmt=$('#export_format').val();
+        update_content('download_link', 'dbexport?fmt='+fmt);
+    }
 </script>

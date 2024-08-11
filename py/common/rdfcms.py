@@ -1,5 +1,6 @@
 import json
 import os
+import pandas as pd
 
 import common.util as util
 from PIL import Image
@@ -273,3 +274,105 @@ class RdfCms:
         u_thumb = '/'.join([self.base_data, tn, self.base_thumbnail, new_filename])
         result = {'img': u_img, 'thumb': u_thumb, 'filename': file.filename}
         return json.dumps(result)
+
+    def data_summary(self, tn):
+        q = f'SELECT count(*) FROM {tn}'
+        num_total = self.sqleng.exec_scalar(q)
+        o = [f'<div class="row">'
+             f'<div class="col-6"><h1 mlang="data_summary">Data Summary</h1></div>'
+             f'<div class="col-6" style="text-align: right; margin-top: 10px;">'
+             f'<button type="button" class="btn btn-primary btn-sm" onclick="data_export()" id="dbexport" '
+             f'mlang="data_export">Data Export</button>'
+             f'<button type="button" class="btn btn-primary btn-sm" style="margin-left: 5px;" '
+             f'onclick="data_import()" id="dbimport" mlang="data_export">Data Import</button>'
+             f'<button type="button" class="btn btn-primary btn-sm" style="margin-left: 5px;" '
+             f'onclick="mass_changes()" id="mass_changes" mlang="mass_changes">Mass Changes</button>'
+             f'</div>'             
+             f'</div>'
+             f'<table class="table table-bordered">'
+             f'<tr class="table-info"><th>Code</th><th>Property</th><th>Value</th></tr>',
+             f'<tr><td colspan="2"><div mlang="total_rows">Total rows</div></td><td style="text-align: right;">{num_total}</td></tr>'
+             f'<tr><th colspan="3">Objects by type</th></tr>']
+
+        q = f"select s, count(s) from {tn} where h IS NOT NULL  GROUP BY s ORDER BY s"
+        t = self.sqleng.exec_table(q)
+        for r in t:
+            code = r[0]
+            cnt = r[1]
+            cdef = self.schema.get_class(code)
+            name = cdef.name if cdef else 'unknown'
+            o.append(f'<tr><td>{code}</td><td>{name}</td><td style="text-align: right;">{cnt}</td></tr>')
+        o.append('</table>')
+        return ''.join(o)
+
+    def data_export_sql(self, tn):
+        q = f'SELECT * FROM {tn} ORDER BY id'
+        t = self.sqleng.exec_table(q)
+        content = [f'TRUNCATE TABLE {tn};']
+        for r in t:
+            rdf_id = r[0]
+            s = r[1] if r[1] else 'NULL'
+            p = r[2] if r[2] else 'NULL'
+            o = r[3] if r[3] else 'NULL'
+            v = r[4] if r[4] else 'NULL'
+            h = r[5] if r[5] else 'NULL'
+            sql = f"INSERT INTO {tn} (id, s, p, o, v, h) VALUES ({rdf_id}, {s}, {p}, {o}, {self.sqleng.resolve_sql_value(v)}, '{h}'); "
+            content.append(sql)
+
+        path = self.get_path_temp(tn)
+        filename = 'dbexport.sql'
+        filepath = os.path.join(path, filename)
+        # if os.path.exists(filepath):
+        #     os.remove(filepath)
+        try:
+            with open(filepath, 'w', encoding="utf-8") as f:
+                f.write('\n'.join(content), )
+            url = '/'.join([self.base_data, tn, self.base_temp, filename])
+            return url
+        except Exception as ex:
+            print(ex)
+            return ex
+
+    def data_export_excel(self, tn):
+        q = f'SELECT * FROM {tn} ORDER BY id'
+        try:
+            df = pd.read_sql(q, con=self.sqleng.connection)
+            path = self.get_path_temp(tn)
+            filename = 'dbexport..xlsx'
+            filepath = os.path.join(path, filename)
+            df.to_excel(filepath)
+            url = '/'.join([self.base_data, tn, self.base_temp, filename])
+            return url
+        except Exception as ex:
+            print(ex)
+            return ex
+
+    def data_export_json(self, tn):
+        q = f'SELECT * FROM {tn} ORDER BY id'
+        t = self.sqleng.exec_table(q)
+        content = []
+        for r in t:
+            rdf_id = t[0]
+            s = r[1]
+            p = r[2]
+            o = r[3]
+            v = r[4]
+            h = r[5]
+            content.append({'id': rdf_id, 's': s, 'p': p, 'o': o, 'v': v, 'h': h})
+        path = self.get_path_temp(tn)
+        filename = 'dbexport.json'
+        filepath = os.path.join(path, filename)
+        with open(filepath, 'w') as f:
+            json.dump(content, f)
+        url = '/'.join([self.base_data, tn, self.base_temp, filename])
+        return url
+
+    def data_export(self, tn, fmt):
+        if fmt == 'json':
+            return self.data_export_json(tn)
+        if fmt == 'excel':
+            return self.data_export_excel(tn)
+        if fmt == 'sql':
+            return self.data_export_sql(tn)
+
+        return f'Unsupported format: {fmt}'
