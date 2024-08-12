@@ -352,7 +352,7 @@ class RdfCms:
         t = self.sqleng.exec_table(q)
         content = []
         for r in t:
-            rdf_id = t[0]
+            rdf_id = r[0]
             s = r[1]
             p = r[2]
             o = r[3]
@@ -376,3 +376,34 @@ class RdfCms:
             return self.data_export_sql(tn)
 
         return f'Unsupported format: {fmt}'
+
+    def data_import(self, tn, content):
+        o = []
+        while True:
+            data = content.file.read(8192)
+            if not data:
+                break
+            o.append(data.decode())
+        try:
+            s = ''.join(o)
+            data = json.loads(s)
+            q = f'TRUNCATE TABLE {tn}'
+            self.sqleng.exec_update(q)
+            for r in data:
+                rdf_id = r.get('id')
+                s = r.get('s')
+                s = s if s else 'NULL'
+                p = r.get('p')
+                p = p if p else 'NULL'
+                o = r.get('o')
+                o = o if o else 'NULL'
+                v = r.get('v')
+                v = v if v else 'NULL'
+                h = r.get('h')
+                h = h if h else 'NULL'
+                q = f"INSERT INTO {tn} (id, s, p, o, v, h) VALUES ({rdf_id}, {s}, {p}, {o}, {self.sqleng.resolve_sql_value(v)}, \'{h}\')"
+                self.sqleng.exec_update(q)
+
+        except Exception as ex:
+            return ex
+

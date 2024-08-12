@@ -47,6 +47,31 @@ function handle_files(files, h) {
     });
 }
 
+function do_dbimport() {
+    var files = $('#file_dbimport').prop('files');
+    if (files.length == 0)
+    {
+        alert('No file selected');
+        return;
+    }
+    var file = files[0];
+    var formData = new FormData();
+    formData.append('content', file);
+    $.ajax({
+        url: 'dbimport', // Specify the server-side script to handle the upload
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            $('#import_result').html(response);
+        },
+        error: function() {
+            // Error handling
+        }
+    });
+}
+
 /** Reads current user and then initializes some UI parts based on user settings. */
 function ui_init() {
     $.getJSON( "../assets/mlang.json", function( ml ) {

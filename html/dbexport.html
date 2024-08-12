@@ -18,3 +18,11 @@
     </div>
     <div class="col-sm-3"></div>
 </div>
+
+<script>
+    function do_dbexport()
+    {
+        var fmt=$('#export_format').val();
+        update_content('download_link', 'dbexport?fmt='+fmt);
+    }
+</script>

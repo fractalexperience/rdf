@@ -90,9 +90,4 @@ $.get('l?q=item^', function(data, status) {
         update_content('output', 'summary');
     }
 
-    function do_dbexport()
-    {
-        var fmt=$('#export_format').val();
-        update_content('download_link', 'dbexport?fmt='+fmt);
-    }
 </script>
