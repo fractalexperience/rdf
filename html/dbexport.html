@@ -1,7 +1,7 @@
 <div class="row" style="margin-top: 50px;">
     <div class="col-sm-3"></div>
     <div class="col-sm-6">
-        <h1 mlang="dbexport">Data export</h1>
+        <h1 mlang="dbexport" style="text-align: center;">Data export</h1>
         <label for="export_format" mlang="export_format">Choose export format:</label>
         <select id="export_format" style="width: 100%;">
             <option value="json">JSON</option>
@@ -9,7 +9,7 @@
             <option value="sql">SQL</option>
         </select>
 
-        <div style="text-align: right; margin-top: 10px;">
+        <div style="text-align: center; margin-top: 10px;">
             <button type="button" class="btn btn-primary"
                     onclick="do_dbexport()"
                     id="btn_do_data_export" mlang="do_data_export">Start data export</button>
@@ -20,9 +20,9 @@
 </div>
 
 <script>
-    function do_dbexport()
-    {
-        var fmt=$('#export_format').val();
-        update_content('download_link', 'dbexport?fmt='+fmt);
-    }
+function do_dbexport()
+{
+    var fmt=$('#export_format').val();
+    update_content('download_link', 'dbexport?fmt='+fmt);
+}
 </script>

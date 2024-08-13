@@ -13,7 +13,7 @@ Data import can be done from a previously created database dump file in <b>JSON<
             After clicking on "Start import" button, all existing data from the current database will be permanently
             deleted. Please make sure you have backup data!
         </div>
-        <div style="text-align: right; margin-top: 10px; text-align: center;">
+        <div style="margin-top: 10px; text-align: center;">
             <button type="button" class="btn btn-primary"
                     onclick="do_dbimport()"
                     id="btn_do_data_import" mlang="do_data_import">Start data import</button>
@@ -24,5 +24,28 @@ Data import can be done from a previously created database dump file in <b>JSON<
 </div>
 
 <script>
-
+function do_dbimport() {
+    var files = $('#file_dbimport').prop('files');
+    if (files.length == 0)
+    {
+        alert('No file selected');
+        return;
+    }
+    var file = files[0];
+    var formData = new FormData();
+    formData.append('content', file);
+    $.ajax({
+        url: 'dbimport', // Specify the server-side script to handle the upload
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            $('#import_result').html(response);
+        },
+        error: function() {
+            // Error handling
+        }
+    });
+}
 </script>

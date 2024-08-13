@@ -1,1 +1,44 @@
-<h1 mlang="mass_changes">Mass Changes</h1>
+<div class="row" style="margin-top: 50px;">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-6">
+        <h1 mlang="mass_changes" style="text-align: center;">Mass Changes</h1>
+
+        <label for="class_name" mlang="class_name">Class</label>
+        <select id="class_name" class="form-control" mlang="class_name"
+                onchange="upd_property_name(false)">
+        </select>
+        <label for="property_name" mlang="property_name">Property</label>
+        <select id="property_name" class="form-control" mlang="property_name" style="width: 100%;">
+        </select>
+
+        <label for="property_value" mlang="property_value">Property value</label>
+        <input id="property_value" style="width: 100%;" type="text"/>
+
+        <h1 mlang="masschg_warning" style="text-align: center; margin-top: 10px;">WARNING !</h1>
+        <div class="bg-warning" style="padding:10px;" mlang="masschg_explanation">
+When clicking "Apply changes" button, the selected property value will be set to the value entered for all objects, which have this property. Note, that the change cannot be undone.
+        </div>
+
+        <div style="text-align: right; margin-top: 10px; text-align: center;">
+            <button type="button" class="btn btn-primary"
+                    onclick="do_masschg()"
+                    id="btn_do_masschg" mlang="do_masschg">Apply changes</button>
+        </div>
+        <div id="masschg_result" style="margin-top: 10px;"></div>
+    </div>
+    <div class="col-sm-3"></div>
+</div>
+
+<script>
+// Initially
+upd_class_name(false);
+
+function do_masschg()
+{
+    var cn=$('#class_name').val();
+    var pn=$('#property_name').val();
+    var v=$('#property_value').val();
+    url = 'masschg?cn='+cn+'&pn='+pn+'&v='+v;
+    update_content('masschg_result', url);
+}
+</script>

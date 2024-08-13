@@ -407,3 +407,25 @@ class RdfCms:
         except Exception as ex:
             return ex
 
+    def data_masschg(self, tn, cn, pn, v):
+        """
+        :param tn: Table name
+        :param cn: Class identifier (URI)
+        :param pn: Property identifier (ndx)
+        :param v: Property value
+        :return: Mass change result message
+        """
+        cdef = self.schema.get_class(cn)
+        if not cdef:
+            return f'Error: Incorrect class identifier: {cn}'
+        if not cdef.members:
+            return f'Error: Incorrect class definition: {cn} - no complex content'
+        mem = cdef.members.get(pn)
+        if not mem:
+            return f'Error: Incorrect property for class: {cn}'
+        # This double nesting in the query is specific for MYSQL
+        q = (f"UPDATE {tn} SET v={self.sqleng.resolve_sql_value(v)} "
+             f"WHERE s in (SELECT id FROM (SELECT id FROM {tn} WHERE s={cdef.code}) as t) AND p = {35}")
+        self.sqleng.exec_update(q)
+        # Maybe we shall add INSERT statements for objects, which don't have the property yet
+        return f'Property value changed to: {v} in class {cdef.name}'

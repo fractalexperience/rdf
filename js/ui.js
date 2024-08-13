@@ -47,31 +47,6 @@ function handle_files(files, h) {
     });
 }
 
-function do_dbimport() {
-    var files = $('#file_dbimport').prop('files');
-    if (files.length == 0)
-    {
-        alert('No file selected');
-        return;
-    }
-    var file = files[0];
-    var formData = new FormData();
-    formData.append('content', file);
-    $.ajax({
-        url: 'dbimport', // Specify the server-side script to handle the upload
-        type: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function(response) {
-            $('#import_result').html(response);
-        },
-        error: function() {
-            // Error handling
-        }
-    });
-}
-
 /** Reads current user and then initializes some UI parts based on user settings. */
 function ui_init() {
     $.getJSON( "../assets/mlang.json", function( ml ) {
@@ -284,3 +259,47 @@ function o_save(e=null, stack=[], lvl=0, callback=null) {
     }
 }
 
+
+// Update class name drop down
+function upd_class_name(add_all, callback)
+{
+    $.get('l?q=complex', function(data, status) {
+        if (status === 'success') {
+            var enums = JSON.parse(data);
+            var arrayLength = enums.length;
+            s = add_all ? '<option value="">--- all ---</option>' : '';
+            for (var i = 0; i < arrayLength; i++) {
+                e = enums[i];
+                sel = e[0] == 'item' && !add_all ? ' selected="true" ' : '';
+                s += '<option value="'+e[0]+'"'+sel+'">'+e[1]+'</option>';
+            }
+            $('#class_name').html(s);
+            upd_property_name(add_all, callback);
+        } else {
+            alert("ERROR: " + status);
+        }
+    });
+}
+
+function upd_property_name(add_all, callback)
+{
+    var class_name = $('#class_name').val();
+    $.get('l?q='+class_name+'.properties', function(data, status) {
+        if (status === 'success') {
+            var enums = JSON.parse(data);
+            var arrayLength = enums.length;
+            s = add_all ? '<option value="">--- all ---</option>' : '';
+            for (var i = 0; i < arrayLength; i++) {
+                e = enums[i];
+                s += '<option value="'+e[0]+'">'+e[1]+'</option>>';
+            }
+            $('#property_name').html(s);
+            if (callback !== 'undefined')
+            {
+                callback();
+            }
+        } else {
+            alert("ERROR: " + status);
+        }
+    });
+}

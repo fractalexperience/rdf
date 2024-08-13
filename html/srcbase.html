@@ -8,7 +8,7 @@
     <div class="col-3">
         <h5>Class</h5>
         <select id="class_name" class="form-control" mlang="class_name"
-                onchange="upd_property_name()">
+                onchange="upd_property_name(true, srcbase)">
         </select>
     </div>
     <div class="col-3">
@@ -24,7 +24,7 @@
 
 <script>
 // Initially
-upd_class_name();
+upd_class_name(true, srcbase);
 
 function srcbase()
 {
@@ -39,43 +39,4 @@ function srcbase()
     update_content(div_id, url);
 }
 
-// Update class name drop down
-function upd_class_name()
-{
-    $.get('l?q=complex', function(data, status) {
-        if (status === 'success') {
-            var enums = JSON.parse(data);
-            var arrayLength = enums.length;
-            s = '<option value="">--- all ---</option>';
-            for (var i = 0; i < arrayLength; i++) {
-                e = enums[i];
-                s += '<option value="'+e[0]+'">'+e[1]+'</option>>';
-            }
-            $('#class_name').html(s);
-            srcbase();
-        } else {
-            alert("ERROR: " + status);
-        }
-    });
-}
-
-function upd_property_name()
-{
-    var class_name = $('#class_name').val();
-    $.get('l?q='+class_name+'.properties', function(data, status) {
-        if (status === 'success') {
-            var enums = JSON.parse(data);
-            var arrayLength = enums.length;
-            s = '<option value="">--- all ---</option>';
-            for (var i = 0; i < arrayLength; i++) {
-                e = enums[i];
-                s += '<option value="'+e[0]+'">'+e[1]+'</option>>';
-            }
-            $('#property_name').html(s);
-            srcbase();
-        } else {
-            alert("ERROR: " + status);
-        }
-    });
-}
 </script>
