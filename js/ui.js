@@ -84,7 +84,7 @@ function ui_mlang(lang)
     } else {
         $('#status_mlang').html(lang); // sets an explicit lang value
     }
-    $("h1,h2,h3,h4,h5,span,button,a,label,p").each(function(index){
+    $("h1,h2,h3,h4,h5,span,button,a,label,p,div").each(function(index){
         var key = this.getAttribute('mlang');
         if(key !== '' && key !== null) {
             if (mlang[key] !== null && mlang[key] !== undefined) {

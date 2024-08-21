@@ -1,16 +1,26 @@
 {
 	"root": {
-		"bg": "",
 		"de": "",
 		"en": "",
 		"fr": "",
 		"it": ""
 	},
 	"rdf_template": {
-		"bg": "RDF Демонстрация",
 		"de": "RDF Demonstration",
 		"en": "<b>RDF</b><br/><small><small>(Resource Description Framework)</small></small><br/>A Lightweight implementation",
 		"fr": "RDF Démo",
 		"it": "RDF Demo"
+	},
+	"inventory_title": {
+		"de": "Inventar",
+		"en": "Inventory",
+		"fr": "Inventaire",
+		"it": "Inventario"
+	},
+	"inventory_subtitle": {
+		"de": "Die praxisorientierte Anwendung für Museen, Galerien, Kunstsammlungen, Privatsammlungen und Bibliotheken",
+		"en": "The practical application for museums, galleries, art collections, private collections and libraries",
+		"fr": "Application orientée vers la pratique pour musées, galerie, collections d'art, collections privée et bibliothèques",
+		"it": "Applicazione practica-orientat a per i musei, galerie, collezioni di arte, collezioni private et biblioteche"
 	}
 }
