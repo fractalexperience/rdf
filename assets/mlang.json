@@ -22,5 +22,29 @@
 		"en": "The practical application for museums, galleries, art collections, private collections and libraries",
 		"fr": "Application orientée vers la pratique pour musées, galerie, collections d'art, collections privée et bibliothèques",
 		"it": "Applicazione practica-orientat a per i musei, galerie, collezioni di arte, collezioni private et biblioteche"
+	},
+	"login_username": {
+		"de": "Benutzername",
+		"en": "User Name",
+		"fr": "Nom d'utilisateur",
+		"it": "Nome utente"
+	},
+	"login_pwd": {
+		"de": "Passwort",
+		"en": "Password",
+		"fr": "Mot de passe",
+		"it": "Password"
+	},
+	"submit_login": {
+		"de": "Einreichen",
+		"en": "Submit",
+		"fr": "Soumettre",
+		"it": "Invia"
+	},
+	"forgot_password": {
+		"de": "Passwort vergessen",
+		"en": "Forgot password",
+		"fr": "Mot de passe oublié",
+		"it": "Ha dimenticato la password"
 	}
 }
