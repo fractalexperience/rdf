@@ -1,6 +1,7 @@
 import hashlib
 import datetime
-from re import sub
+import re
+
 
 dom_hex = set('0123456789abcdef')
 
@@ -29,5 +30,15 @@ def get_id_sha1():
 
 def to_camelcase(s):
     pattern = r'(_|-|/|\\|\?)+'
-    s = sub(pattern, " ", s).title().replace(" ", "").replace("*", "")
+    s = re.sub(pattern, " ", s).title().replace(" ", "").replace("*", "")
     return ''.join([s[0].lower(), s[1:]])
+
+
+def to_snakecase(s):
+    if not s:
+        return ''
+    delimiters = {'_', '-', '?', '/', '\\', ':', ';', '.', ','}
+    for d in delimiters:
+        s = s.replace(d, ' ')
+    lst = s.split(' ')
+    return '_'.join([p.lower() for p in lst if p != ''])

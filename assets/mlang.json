@@ -8,7 +8,7 @@
 	"rdf_template": {
 		"de": "RDF Demonstration",
 		"en": "<b>RDF</b><br/><small><small>(Resource Description Framework)</small></small><br/>A Lightweight implementation",
-		"fr": "RDF Démo",
+		"fr": "RDF DГ©mo",
 		"it": "RDF Demo"
 	},
 	"inventory_title": {
@@ -18,9 +18,9 @@
 		"it": "Inventario"
 	},
 	"inventory_subtitle": {
-		"de": "Die praxisorientierte Anwendung für Museen, Galerien, Kunstsammlungen, Privatsammlungen und Bibliotheken",
+		"de": "Die praxisorientierte Anwendung fГјr Museen, Galerien, Kunstsammlungen, Privatsammlungen und Bibliotheken",
 		"en": "The practical application for museums, galleries, art collections, private collections and libraries",
-		"fr": "Application orientée vers la pratique pour musées, galerie, collections d'art, collections privée et bibliothèques",
+		"fr": "Application orientГ©e vers la pratique pour musГ©es, galerie, collections d'art, collections privГ©e et bibliothГЁques",
 		"it": "Applicazione practica-orientat a per i musei, galerie, collezioni di arte, collezioni private et biblioteche"
 	},
 	"login_username": {
@@ -44,7 +44,1453 @@
 	"forgot_password": {
 		"de": "Passwort vergessen",
 		"en": "Forgot password",
-		"fr": "Mot de passe oublié",
+		"fr": "Mot de passe oubliГ©",
 		"it": "Ha dimenticato la password"
+	},
+	"data_summary": {
+		"en": "Data summary",
+		"de": "Datenzusammenfassung",
+		"fr": "Résumé des données",
+		"it": "Riepilogo dei dati"
+	},
+	"data_export": {
+		"en": "Data export",
+		"de": "Datenexport",
+		"fr": "Exportation de données",
+		"it": "Esportazione dati"
+	},
+	"mass_changes": {
+		"en": "Mass changes",
+		"de": "Massenänderungen",
+		"fr": "Changements de masse",
+		"it": "Cambiamenti di massa"
+	},
+	"total_rows": {
+		"en": "Total rows",
+		"de": "Zeilen gesamt",
+		"fr": "Nombre total de lignes",
+		"it": "Totale righe"
+	},
+	"o_save": {
+		"en": "Save object",
+		"de": "Objekt speichern",
+		"fr": "Enregistrer l'objet",
+		"it": "Salva oggetto"
+	},
+	"not_authorized": {
+		"en": "Not authorized",
+		"de": "Nicht autorisiert",
+		"fr": "Non autorisé",
+		"it": "Non autorizzato"
+	},
+	"msg_unknown_object": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"msg_todo": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"o_delete": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"o_cancel": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"o_edit_members": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"btn_previous_object": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"btn_next_object": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"btn_view_object": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"btn_append_property": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"view_report": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"export_excel": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"change_password": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"old_password": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"new_password": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"new_password_retype": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"dbexport": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"export_format": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"do_data_export": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"dbimport": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"choose_import_file": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"dbimport_explanation": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"dbimport_warning": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"do_data_import": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"email": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"enter_email": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"reset_email": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"lbl_remember_me": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"class_name": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"property_name": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"property_value": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"masschg_warning": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"masschg_explanation": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"do_masschg": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"btn_edit_data": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"btn_dc_view_data": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"btn_dc_reports": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"btn_dc_view_reports": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"dc_manage_custom_repots": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"btn_dc_data_management": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"data_import": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"view_data": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"btn_org_settings": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"btn_admin_users": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"manage_data": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"data_backup": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"organizations": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"users": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"mlang": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"export_mlang": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"import_mlang": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"reports": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"sa_list_orgs": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"sa_list_users": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"search": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"help": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"basic_search": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"search_text": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"inventory_2024": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"login": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"settings": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"logout": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"user_settings": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"user_full_name": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"save_settings": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"name": {
+		"en": "Name",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"nc_name": {
+		"en": "NC Name",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"description": {
+		"en": "Description",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"user_role": {
+		"en": "User Role",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"hash": {
+		"en": "Hash",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"general_descriptor": {
+		"en": "General descriptor",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"url": {
+		"en": "URL",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"media_type": {
+		"en": "Media type",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"date": {
+		"en": "Date",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"integer": {
+		"en": "Integer",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"decimal": {
+		"en": "Decimal",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"boolean": {
+		"en": "Boolean",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"currency_code": {
+		"en": "Currency code",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"image": {
+		"en": "Image",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"database": {
+		"en": "Database",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"lang": {
+		"en": "Lang",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"media_object": {
+		"en": "Media object",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"report_definition": {
+		"en": "Report definition",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"organization": {
+		"en": "Organization",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"address": {
+		"en": "Address",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"web_page": {
+		"en": "Web page",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"picture": {
+		"en": "Picture",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"user": {
+		"en": "User",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"username": {
+		"en": "Username",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"role": {
+		"en": "Role",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"password_hash": {
+		"en": "Password hash",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"language": {
+		"en": "Language",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"address_line_1": {
+		"en": "Address line 1",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"address_line_2": {
+		"en": "Address line 2",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"city": {
+		"en": "City",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"zip_code": {
+		"en": "ZIP code",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"country": {
+		"en": "Country",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"image_extended": {
+		"en": "Image extended",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"location": {
+		"en": "Location",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"file_name": {
+		"en": "File name",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"title": {
+		"en": "Title",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"thumbnail": {
+		"en": "Thumbnail",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"width": {
+		"en": "Width",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"height": {
+		"en": "Height",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"media_object_extended": {
+		"en": "Media object extended",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"custom_report": {
+		"en": "Custom Report",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"publish": {
+		"en": "Publish",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"definition": {
+		"en": "Definition",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"inventory_item": {
+		"en": "Inventory Item",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"inventory_no": {
+		"en": "Inventory No.",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"vernacular_name": {
+		"en": "Vernacular Name",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"preamble": {
+		"en": "Preamble",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"inventory_date": {
+		"en": "Inventory date",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"quantity": {
+		"en": "Quantity",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"publish_data": {
+		"en": "Publish data",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"transfer_in_visitor_catalog": {
+		"en": "Transfer in Visitor Catalog",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"inventory_manager": {
+		"en": "Inventory Manager",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"general_remarks": {
+		"en": "General Remarks",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"dating": {
+		"en": "Dating",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"classification": {
+		"en": "Classification",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"origin_author": {
+		"en": "Origin/Author",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"inscription": {
+		"en": "Inscription",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"measures": {
+		"en": "Measures",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"material": {
+		"en": "Material",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"temporary_location": {
+		"en": "Temporary Location",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"condition": {
+		"en": "Condition",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"art_general_information": {
+		"en": "Art - General Information",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"art_exhibitions": {
+		"en": "Art - Exhibitions",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"art_books_and_catalogues": {
+		"en": "Art - Books and Catalogues",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"artist": {
+		"en": "Artist",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"press_and_tv": {
+		"en": "Press and TV",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"signature": {
+		"en": "Signature",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"literature_basic_info": {
+		"en": "Literature basic info",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"literature_appearance": {
+		"en": "Literature appearance",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"literature_origin": {
+		"en": "Literature origin",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"literature_additional_info": {
+		"en": "Literature additional info",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"photography_info": {
+		"en": "Photography info",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"internet_site": {
+		"en": "Internet site",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"old_inventory_text_no": {
+		"en": "Old Inventory Text / No.",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"purchase_value": {
+		"en": "Purchase/Value",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"invenroy_manager": {
+		"en": "Invenroy Manager",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"inventory_dating": {
+		"en": "Inventory Dating",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"date_of_work": {
+		"en": "Date of work",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"year_of": {
+		"en": "Year of",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"year_to": {
+		"en": "Year to",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"comment": {
+		"en": "Comment",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"department": {
+		"en": "Department",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"group": {
+		"en": "Group",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"using_context": {
+		"en": "Using context",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"abstract_function": {
+		"en": "Abstract function",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"representation": {
+		"en": "Representation",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"invenroy_classification": {
+		"en": "Invenroy Classification",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"acquisition_type": {
+		"en": "Acquisition type",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"currency": {
+		"en": "Currency",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"value_designation": {
+		"en": "Value designation",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"item_value": {
+		"en": "Item Value",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"donor": {
+		"en": "Donor",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"previous_owner": {
+		"en": "Previous Owner",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"acquisition_date": {
+		"en": "Acquisition date",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"type_of_acquisition": {
+		"en": "Type of acquisition",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"price": {
+		"en": "Price",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"copyright": {
+		"en": "Copyright",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"origin_location": {
+		"en": "Origin/Location",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"author_producer": {
+		"en": "Author/Producer",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"bibliography": {
+		"en": "Bibliography",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"type_of_inscription": {
+		"en": "Type of inscription",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"inscription_type": {
+		"en": "Inscription type",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"inscription_text": {
+		"en": "Inscription text",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"depth": {
+		"en": "Depth",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"length": {
+		"en": "Length",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"diameter": {
+		"en": "Diameter",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"thickness": {
+		"en": "Thickness",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"weight": {
+		"en": "Weight",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"content": {
+		"en": "Content",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"number_of_parts": {
+		"en": "Number of parts",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"technical_category": {
+		"en": "Technical Category",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"material_technique": {
+		"en": "Material/Technique",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"material_technique_comment": {
+		"en": "Material/Technique Comment",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"item_temporary_location": {
+		"en": "Item Temporary Location",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"temporary_of": {
+		"en": "Temporary of",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"temporary_to": {
+		"en": "Temporary to",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"item_condition": {
+		"en": "Item condition",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"condition_notes": {
+		"en": "Condition Notes",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"art_information": {
+		"en": "Art information",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"archive_photo_number": {
+		"en": "Archive photo number",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"photo_archive": {
+		"en": "Photo archive",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"illustrated_and_original_works": {
+		"en": "Illustrated and original works",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"artist_works_for": {
+		"en": "Artist works for",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"story": {
+		"en": "Story",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"texts_of_the_artist": {
+		"en": "Texts of the artist",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"catalogue_of_works_number": {
+		"en": "Catalogue of works number",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"summary": {
+		"en": "Summary",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"exhibitions": {
+		"en": "Exhibitions",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"exhibitions_generic": {
+		"en": "Exhibitions Generic",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"collective_exhibitions": {
+		"en": "Collective Exhibitions",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"personal_exhibitions": {
+		"en": "Personal Exhibitions",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"image_templates": {
+		"en": "Image Templates",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"catalogues": {
+		"en": "Catalogues",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"general_works_and_catalogues": {
+		"en": "General works and catalogues",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"group_exhibition_catalogues": {
+		"en": "Group exhibition catalogues",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"monograph": {
+		"en": "Monograph",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"personal_exhibition_catalogue": {
+		"en": "Personal exhibition catalogue",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"dictionaries": {
+		"en": "Dictionaries",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"nationality": {
+		"en": "Nationality",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"born_date": {
+		"en": "Born; Date",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"born_place": {
+		"en": "Born; Place",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"school_university": {
+		"en": "School / University",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"died_date": {
+		"en": "Died; date",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"died_place": {
+		"en": "Died; place",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"mass_media_info": {
+		"en": "Mass Media Info",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"general_articles_in_art_magazines": {
+		"en": "General articles in art magazines",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"general_articles_in_magazines_and_newspapers": {
+		"en": "General articles in magazines and newspapers",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"art_magazines": {
+		"en": "Art Magazines",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"radio_tv_movie": {
+		"en": "Radio-TV movie",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"magazines_and_newspapers": {
+		"en": "Magazines and newspapers",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"signature_type": {
+		"en": "Signature type",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"signature_text": {
+		"en": "Signature text",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"number": {
+		"en": "Number",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"isbn_issn": {
+		"en": "ISBN / ISSN",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"type_of_publication": {
+		"en": "Type of Publication",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"medium_style": {
+		"en": "Medium / Style",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"year_of_publication": {
+		"en": "Year of publication",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"editions": {
+		"en": "Editions",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"location_of_publication": {
+		"en": "Location of Publication",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"translator": {
+		"en": "Translator",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"illustrator": {
+		"en": "Illustrator",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"illustration_style": {
+		"en": "Illustration style",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"publisher_editor": {
+		"en": "Publisher / Editor",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"number_of_editions": {
+		"en": "Number of Editions",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"number_of_pages": {
+		"en": "Number of Pages",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"format": {
+		"en": "Format",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"movie_number": {
+		"en": "Movie Number",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"scene_(description)": {
+		"en": "Scene (description)",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"shooting_place": {
+		"en": "Shooting Place",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"date_of_recording": {
+		"en": "Date of Recording",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"legal_applicability": {
+		"en": "Legal Applicability",
+		"de": "",
+		"fr": "",
+		"it": ""
 	}
 }

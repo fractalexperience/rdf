@@ -307,7 +307,7 @@ class RdfViews:
                 path_temp = self.rdfeng.cms.get_path_temp(tn)
                 filename = f'r{util.to_camelcase(title)}.xlsx'
                 path = os.path.join(path_temp, filename)
-                df.to_excel(path)
+                df.to_excel(path, header=False, index=False)
                 url = f'{self.rdfeng.base_data}/{tn}/{self.rdfeng.cms.base_temp}/{filename}'
                 return f'<a href="{url}"><img src="img/xlsx.png" width="42px"/></a>'
 

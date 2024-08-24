@@ -106,6 +106,8 @@ function update_content(containerId, url, callbackFunction)
             return;
         }
         $('#'+containerId).html(format_message(data));
+        var lang = $("#status_mlang").text();
+        ui_mlang(lang);
         if (callbackFunction !== undefined && callbackFunction !== null) {
             callbackFunction();
         }
