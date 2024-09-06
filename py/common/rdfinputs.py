@@ -27,10 +27,10 @@ class RdfInputs:
     @staticmethod
     def input_row_decorator(method):
         def wrapper(self, tn, mem, valstr, h, pid, u, o, bgc):
+            lbl = f'<b>{mem.name} *</b> ' if mem.required and mem.required.lower() == 'true' else mem.name
             o.append(f'<div class="row align-items-start" style="background-color: {bgc};">')
             o.append('<div class="col-2" style="text-align: right;">')
-            o.append(
-                f'<label for="{mem.name}" mlang="{mem.name}" class="text-primary">{mem.name}</label>')
+            o.append(f'<label for="{mem.name}" mlang="{mem.name}" class="text-primary">{lbl}</label>')
             o.append('</div>')
             o.append('<div class="col-10">')
             method(self, tn, mem, valstr, h, pid, u, o)

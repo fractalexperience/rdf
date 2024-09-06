@@ -97,6 +97,112 @@ class RdfSchema:
         # Search either by URI, or by name - this may be reconsidered
         return self.classes_by_uri.get(cn, self.classes_by_name.get(cn, self.classes.get(str(cn))))
 
+    def get_all_properties(self, cdef, result):
+        if cdef is None or not cdef.members:
+            return
+        for mem in cdef.members.values():
+            mdef = self.get_class(mem.ref)
+            result.append((mdef.uri, mem.name))
+
+    def get_optional_properties(self, cdef, result):
+        if cdef is None or not cdef.members:
+            return
+        for mem in cdef.members.values():
+            mdef = self.get_class(mem.ref)
+            if mem.data_type == 'property' and not mem.required:
+                result.append((mdef.uri, mem.name))
+
+    def get_mandatory_properties(self, cdef, result):
+        if cdef is None or not cdef.members:
+            return
+        for mem in cdef.members.values():
+            mdef = self.get_class(mem.ref)
+            if mem.data_type == 'property' and mem.required:
+                result.append((mdef.uri, mem.name))
+
+    def get_standalone_members(self, cdef, result):
+        if cdef is None or not cdef.members:
+            return
+        for mem in cdef.members.values():
+            mdef = self.get_class(mem.ref)
+            if not mdef.members:
+                continue
+            # if mem.data_type == 'property':
+            #     continue
+            self.get_standalone_members(mdef, result)
+            if mdef.data_type == 'object' and mem.data_type == 'ref':
+                result.append((mdef.uri, mem.name))
+
+    def get_class_properties(self, cdef, result):
+        if not cdef or not cdef.members:
+            return
+        for ndx, mem in cdef.members.items():
+            mdef = self.get_class(mem.ref)
+            if mdef.members:
+                continue
+            result.append((mem.ndx, mem.name))
+
+    def query(self, q):
+        if q == 'enumerations':  # List rnumerations only - complex type objects having only one member
+            return list(sorted([(cdef.uri, cdef.name) for code, cdef in self.classes.items()
+                                if cdef.members and len(cdef.members) == 1], key=lambda t: t[1]))
+        if q == 'complex':  # List objects having complex type
+            return list(sorted([(cdef.uri, cdef.name) for code, cdef in self.classes.items()
+                                if cdef.members and len(cdef.members) > 0], key=lambda t: t[1]))
+        if q == 'simple':  # List objects having simple type
+            return list(sorted([(cdef.uri, cdef.name) for code, cdef in self.classes.items()
+                                if cdef.members is None], key=lambda t: t[1]))
+
+        if '.all' in q:
+            """ Collects all properties for the given class, or list of classes. """
+            result = []
+            cn = q.replace('$', '').replace('.all', '')
+            cdefs = [c for c in self.classes.values() if (cn == '*' or c.uri in cn.split(',')) and c.members]
+            for cdef in cdefs:
+                self.get_all_properties(cdef, result)
+            return result
+
+        if '$' in q or '.optional' in q:
+            """ Collects these members, which are: 
+            - Not standalone - i.e. of type property
+            - Not mandatory """
+            result = []
+            cn = q.replace('$', '').replace('.optional', '')
+            cdefs = [c for c in self.classes.values() if (cn == '*' or c.uri in cn.split(',')) and c.members]
+            for cdef in cdefs:
+                self.get_optional_properties(cdef, result)
+            return result
+
+        if '.mandatory' in q:
+            """ Collects mandatory members """
+            result = []
+            cn = q.replace('$', '').replace('.mandatory', '')
+            cdefs = [c for c in self.classes.values() if (cn == '*' or c.uri in cn.split(',')) and c.members]
+            for cdef in cdefs:
+                self.get_mandatory_properties(cdef, result)
+            return result
+
+        if '^' in q or '.standalone' in q:
+            """ Collects standalone members for the given class. This means these members, which are of type ref 
+            (are instantiated separately) and only referred from class instances."""
+            result = []
+            cn = q.replace('^', '').replace('.standalone', '')
+            cdefs = [c for c in self.classes.values() if (cn == '*' or c.uri in cn.split(',')) and c.members]
+            for cdef in cdefs:
+                self.get_standalone_members(cdef, result)
+            return result
+
+        if '.properties' in q:
+            result = []
+            uri = q.split('.')[0]
+            cdef = self.get_class(uri)
+            if not cdef:
+                return result
+            self.get_class_properties(cdef, result)
+            return result
+
+        return None
+
     def r_html(self):
         o = []
         for code in [k for k in self.classes.keys() if k.isnumeric()]:

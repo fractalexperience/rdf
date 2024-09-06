@@ -8,6 +8,7 @@ from PIL import Image
 
 class RdfCms:
     """ Content management for RDF engine """
+
     def __init__(self, schema, sqleng, base_rdf, base_data, assets_folder, data_folder):
         self.sqleng = sqleng
         self.schema = schema
@@ -20,7 +21,6 @@ class RdfCms:
         self.base_data = base_data
         self.assets_folder = assets_folder
         self.data_folder = data_folder
-
 
     """
     The CMS methods return a tuple with the following structure: 
@@ -218,6 +218,38 @@ class RdfCms:
             return None
         return self.o_read(tn, obj_id)
 
+    def o_list2(self, tn, cn):
+        """
+        tn => Table name
+        cn => class name
+        """
+        cdef = self.schema.get_class(cn)
+        # List all instances together with their properties
+        sql = (f"SELECT r1.id AS id, r1.h AS h, r1.s AS s, r2.p AS p, r2.o AS o, r2.v AS v "
+               f"FROM {tn} AS r1 LEFT JOIN {tn} as r2 ON r1.id=r2.s "
+               f"WHERE r1.s={cdef.code} ")
+        t = self.sqleng.exec_table(sql)
+        res = []
+        curr_obj, curr_obj_id = None, None
+        for r in t:
+            rdf_id, rdf_h, rdf_s, rdf_p, rdf_o, rdf_v = r[0], r[1], r[2], r[3], r[4], r[5]
+
+            if curr_obj_id != rdf_id:
+                curr_obj = {'id': rdf_id, 'hash': rdf_h, 'code': rdf_s, 'type': cdef.name}
+                res.append(curr_obj)
+                curr_obj_id = rdf_id
+
+            mem = cdef.members.get(str(rdf_p))
+            if not mem:
+                continue
+
+            if rdf_o is not None and rdf_v is None:  # Referred object
+                rdf_v = rdf_o
+
+            curr_obj.setdefault(mem.ndx, []).append(rdf_v)
+
+        return res
+
     def get_path_temp(self, tn):
         if not os.path.exists(self.data_folder):
             os.mkdir(self.data_folder)
@@ -275,8 +307,10 @@ class RdfCms:
         result = {'img': u_img, 'thumb': u_thumb, 'filename': file.filename}
         return json.dumps(result)
 
-    def data_summary(self, tn):
-        q = f'SELECT count(*) FROM {tn}'
+    def data_summary(self, tn, cn):
+        lst = self.schema.query(f'{cn}^')
+        codes = ','.join([f'\'{self.schema.get_class(t[0]).code}\'' for t in lst])
+        q = f'SELECT count(*) FROM {tn} WHERE h IS NOT NULL AND s IN ({codes})'
         num_total = self.sqleng.exec_scalar(q)
         o = [f'<div class="row">'
              f'<div class="col-6"><h1 mlang="data_summary">Data Summary</h1></div>'
@@ -287,21 +321,47 @@ class RdfCms:
              f'onclick="data_import()" id="dbimport" mlang="data_export">Data Import</button>'
              f'<button type="button" class="btn btn-primary btn-sm" style="margin-left: 5px;" '
              f'onclick="mass_changes()" id="mass_changes" mlang="mass_changes">Mass Changes</button>'
-             f'</div>'             
+             f'</div>'
              f'</div>'
              f'<table class="table table-bordered">'
-             f'<tr class="table-info"><th>Code</th><th>Property</th><th>Value</th></tr>',
-             f'<tr><td colspan="2"><div mlang="total_rows">Total rows</div></td><td style="text-align: right;">{num_total}</td></tr>'
-             f'<tr><th colspan="3">Objects by type</th></tr>']
+             f'<tr class="table-info">'
+             f'<th style="width: 40px;">Action</th>'
+             f'<th style="width: 60px;">Code</th>'
+             f'<th>Object name</th>'
+             f'<th>Object description</th>'
+             f'<th style="text-align: right;">Count</th></tr>',
+             f'<tr>'
+             f'<td>&nbsp;</td>'
+             f'<td colspan="3"><div mlang="total_rows">Total rows</div></td>'
+             f'<td style="text-align: right;">{num_total}</td>'
+             f'</tr>'
+             f'<tr>'
+             f'<td>&nbsp;</td>'
+             f'<th colspan="3">Objects by type</th>'
+             f'</tr>']
 
-        q = f"select s, count(s) from {tn} where h IS NOT NULL  GROUP BY s ORDER BY s"
+        q = f"SELECT s, count(s) FROM {tn} WHERE h IS NOT NULL AND s IN ({codes}) GROUP BY s ORDER BY s"
         t = self.sqleng.exec_table(q)
         for r in t:
             code = r[0]
             cnt = r[1]
             cdef = self.schema.get_class(code)
-            name = cdef.name if cdef else 'unknown'
-            o.append(f'<tr><td>{code}</td><td>{name}</td><td style="text-align: right;">{cnt}</td></tr>')
+            if cdef is None or cdef.members is None:
+                continue
+            name = cdef.name
+            desc = cdef.description
+            o.append(f'<tr>'
+                     f'<td>'
+                     f'<button type="button" class="btn btn-primary btn-sm" style="margin-left: 5px;" '
+                     f'onclick="update_content(\'output\', \'b?cn={cdef.uri}\')" '
+                     f'id="btn_edit_{cdef.uri}" '
+                     f'mlang="btn_edit">Edit</button>'
+                     f'</td>'
+                     f'<td>{code}</td>'
+                     f'<td>{name}</td>'
+                     f'<td>{desc}</td>'
+                     f'<td style="text-align: right;">{cnt}</td>'
+                     f'</tr>')
         o.append('</table>')
         return ''.join(o)
 
