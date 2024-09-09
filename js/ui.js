@@ -181,15 +181,27 @@ function o_new(uri) {
 }
 
 function o_delete(callback) {
-    if (!confirm('Are you sure ?'))
-        return;
     var objects = [];
-
     $('div').each(function(idx) {
         if ($(this).hasClass('rdf-container')) {
             objects.push(this.getAttribute('id'));
         }
     });
+    o_delete_lst(objects, callback);
+}
+
+function o_delete_id(obj_id, callback) {
+    if (obj_id === undefined) {
+        return;
+    }
+    var objects = [];
+    objects.push(obj_id);
+    o_delete_lst(objects, callback);
+}
+
+function o_delete_lst(objects, callback) {
+    if (!confirm('Are you sure ?'))
+        return;
     var url = 'd';
     s = JSON.stringify(objects);
     $.post(url, {data: s}, function(data, status){

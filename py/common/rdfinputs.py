@@ -1,4 +1,5 @@
 import json
+import datetime
 import common.util as util
 
 class RdfInputs:
@@ -22,23 +23,26 @@ class RdfInputs:
             'user_role': self.input_role,
             'db_table': self.input_db_table,
             'report_def': self.input_report_def,
+            'current_user': self.input_current_user,
+            'ts_creation': self.input_ts_creation,
+            'ts_modification': self.input_ts_modification,
         }
 
     @staticmethod
     def input_row_decorator(method):
-        def wrapper(self, tn, mem, valstr, h, pid, u, o, bgc):
+        def wrapper(self, tn, un, mem, valstr, h, pid, u, o, bgc):
             lbl = f'<b>{mem.name} *</b> ' if mem.required and mem.required.lower() == 'true' else mem.name
             o.append(f'<div class="row align-items-start" style="background-color: {bgc};">')
             o.append('<div class="col-2" style="text-align: right;">')
             o.append(f'<label for="{mem.name}" mlang="{mem.name}" class="text-primary">{lbl}</label>')
             o.append('</div>')
             o.append('<div class="col-10">')
-            method(self, tn, mem, valstr, h, pid, u, o)
+            method(self, tn, un, mem, valstr, h, pid, u, o)
             o.append('</div></div>')
         return wrapper
 
     @input_row_decorator
-    def input_standalone(self, tn, mem, valstr, h, pid, u, o):
+    def input_standalone(self, tn, un, mem, valstr, h, pid, u, o):
         olst = self.rdfeng.o_list(tn, mem.ref)
         o.append(f'<select id="{mem.name}" mlang="{mem.name}" '
                  f'onchange="$(this).addClass(\'rdf-changed\')" '
@@ -53,41 +57,67 @@ class RdfInputs:
         o.append('</select>')
 
     @input_row_decorator
-    def input_string(self, tn, mem, valstr, h, pid, u, o):
+    def input_string(self, tn, un, mem, valstr, h, pid, u, o):
         o.append(f'<input type="text" class="form-control rdf-property" value="{valstr}" id="{mem.name}" '
                  f'oninput="$(this).addClass(\'rdf-changed\')" '
                  f'name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
 
     @input_row_decorator
-    def input_text(self, tn, mem, valstr, h, pid, u, o):
+    def input_text(self, tn, un, mem, valstr, h, pid, u, o):
         o.append(
             f'<textarea type="text" class="form-control rdf-property" rows="2" id="{mem.name}" '
             f'oninput="$(this).addClass(\'rdf-changed\')" '
             f'name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}">{valstr}</textarea>')
 
     @input_row_decorator
-    def input_date(self, tn, mem, valstr, h, pid, u, o):
+    def input_date(self, tn, un, mem, valstr, h, pid, u, o):
         o.append(
             f'<input type="date" class="form-control rdf-property" style="width: 150px;" value="{valstr}" '
             f'oninput="$(this).addClass(\'rdf-changed\')" '
             f'id="{mem.name}" name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
 
     @input_row_decorator
-    def input_int(self, tn, mem, valstr, h, pid, u, o):
+    def input_ts_creation(self, tn, un, mem, valstr, h, pid, u, o):
+        date_creation = valstr if valstr else datetime.datetime.now().strftime('%Y-%m-%d')
+        o.append(
+            f'<input type="date" class="form-control rdf-property" style="width: 150px;" value="{date_creation}" '
+            f'disabled="true" '
+            f'oninput="$(this).addClass(\'rdf-changed\')" '
+            f'id="{mem.name}" name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
+
+    @input_row_decorator
+    def input_ts_modification(self, tn, un, mem, valstr, h, pid, u, o):
+        date_modification = datetime.datetime.now().strftime('%Y-%m-%d')
+        o.append(
+            f'<input type="date" class="form-control rdf-property" style="width: 150px;" value="{date_modification}" '
+            f'disabled="true" '
+            f'oninput="$(this).addClass(\'rdf-changed\')" '
+            f'id="{mem.name}" name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
+
+    @input_row_decorator
+    def input_current_user(self, tn, un, mem, valstr, h, pid, u, o):
+        o.append(
+            f'<input type="text" class="form-control rdf-property" value="{un}" '
+            f'disabled="true" '
+            f'oninput="$(this).addClass(\'rdf-changed\')" '
+            f'id="{mem.name}" name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
+
+    @input_row_decorator
+    def input_int(self, tn, un, mem, valstr, h, pid, u, o):
         o.append(
             f'<input type="number" step="1" class="form-control rdf-property" style="width: 150px;" value="{valstr}" '
             f'oninput="$(this).addClass(\'rdf-changed\')" '
             f'id="{mem.name}" name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
 
     @input_row_decorator
-    def input_float(self, tn, mem, valstr, h, pid, u, o):
+    def input_float(self, tn, un, mem, valstr, h, pid, u, o):
         o.append(
             f'<input type="number" step="any" class="form-control rdf-property" style="width: 150px;" value="{valstr}" '
             f'oninput="$(this).addClass(\'rdf-changed\')" '
             f'id="{mem.name}" name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
 
     @input_row_decorator
-    def input_boolean(self, tn, mem, valstr, h, pid, u, o):
+    def input_boolean(self, tn, un, mem, valstr, h, pid, u, o):
         frag_checked = 'checked' if valstr.lower() == 'true' else ''
         o.append(
             f'<div class="form-check form-switch">'
@@ -97,13 +127,13 @@ class RdfInputs:
             f'</div>')
 
     @input_row_decorator
-    def input_email(self, tn, mem, valstr, h, pid, u, o):
+    def input_email(self, tn, un, mem, valstr, h, pid, u, o):
         o.append(
             f'<input type="email" class="form-control rdf-property" style="width: 150px;" value="{valstr}" id="{mem.name}" '
             f'oninput="$(this).addClass(\'rdf-changed\')" '
             f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />')
 
-    def input_image(self, tn, mem, valstr, h, pid, u, o, bgc):
+    def input_image(self, tn, un, mem, valstr, h, pid, u, o, bgc):
         img_data = json.loads(valstr) if valstr else None
         location_thumb = img_data.get('thumb') if img_data else 'img/picture.png'
         location_img = img_data.get('img') if img_data else 'img/picture.png'
@@ -133,23 +163,23 @@ class RdfInputs:
     </div>""")
 
     @input_row_decorator
-    def input_media(self, tn, mem, valstr, h, pid, u, o):
+    def input_media(self, tn, un, mem, valstr, h, pid, u, o):
         o.append(f'<h1>TODO: Input media {mem.name}</h1>')
 
     @input_row_decorator
-    def input_lang(self, tn, mem, valstr, h, pid, u, o):
+    def input_lang(self, tn, un, mem, valstr, h, pid, u, o):
         o.append(f'<h1>TODO: Input lang {mem.name}</h1>')
 
     @input_row_decorator
-    def input_role(self, tn, mem, valstr, h, pid, u, o):
+    def input_role(self, tn, un, mem, valstr, h, pid, u, o):
         o.append(f'<h1>TODO: Input role {mem.name}</h1>')
 
     @input_row_decorator
-    def input_db_table(self, tn, mem, valstr, h, pid, u, o):
+    def input_db_table(self, tn, un, mem, valstr, h, pid, u, o):
         o.append(f'<h1>TODO: Input DB table {mem.name}</h1>')
 
     @input_row_decorator
-    def input_report_def(self, tn, mem, valstr, h, pid, u, o):
+    def input_report_def(self, tn, un, mem, valstr, h, pid, u, o):
         o.append(
             f'<textarea type="text" class="form-control rdf-property" rows="2" id="{mem.name}" '
             f'oninput="$(this).addClass(\'rdf-changed\')" '

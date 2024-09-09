@@ -165,7 +165,7 @@ class RdfEngine:
 
         htmlutil.wrap_table(o)
         o.insert(0, f'<div style="margin-top: 10px;">'
-                    f'<button id="btn_new" class="btn btn-primary" onclick="o_new(\'{cdef.uri}\')" mlang="o_save">'
+                    f'<button id="btn_new" class="btn btn-primary" onclick="o_new(\'{cdef.uri}\')" mlang="o_new">'
                     f'New {cdef.name}'
                     f'</button>'
                     f'</div>')
@@ -218,7 +218,7 @@ class RdfEngine:
             return h
         sign = '<' if go == 'prev' else '>'
         rdf_s = self.sqleng.exec_scalar(f"SELECT s FROM {tn} WHERE h='{h}'")
-        rdf_id = self.sqleng.exec_scalar(f"SELECT id FROM {tn} WHERE h='{h}'") # This could be optimized
+        rdf_id = self.sqleng.exec_scalar(f"SELECT id FROM {tn} WHERE h='{h}'")  # This could be optimized
 
         q = f"SELECT h FROM {tn} WHERE s = {rdf_s} AND id < {rdf_id} ORDER BY id DESC LIMIT 1" \
             if go == 'prev' \
@@ -259,7 +259,7 @@ class RdfEngine:
             self.o_edit_prop(o, tn, mem, val, [cdef], obj, self.inp.input_methods)
             # return ''.join(o)
         else:
-            self.o_edit_members(o, tn, [cdef], obj, self.inp.input_methods, False)
+            self.o_edit_members(o, tn, [cdef], obj, self.inp.input_methods, False, obj)
         return ''.join(o)
         # return self.o_get_html(tn, obj, cdef, obj_parent, self.inp.input_methods)
 
@@ -281,13 +281,14 @@ class RdfEngine:
         if method is not None:
             return method(tn, obj, cdef, format)
 
-        return self.o_represent(tn, cdef, obj, self.vws.view_methods, False)
+        un = u.get('name').split('|')[0] if u else ''
+        return self.o_represent(tn, un, cdef, obj, self.vws.view_methods, False)
 
-    def o_edit(self, tn, h_u):
+    def o_edit(self, tn, un, h_u):
         obj, cdef = self.get_obj_and_cdef(tn, h_u, None)
-        return self.o_represent(tn, cdef, obj, self.inp.input_methods, True)
+        return self.o_represent(tn, un, cdef, obj, self.inp.input_methods, True)
 
-    def o_represent(self, tn, cdef, obj, methods, wrap_in_form):
+    def o_represent(self, tn, un, cdef, obj, methods, wrap_in_form):
         """ Generates an edit form for an object. It is identified by its hash code. """
         if cdef is None:
             return f'<h2><span mlang="msg_unknown_object">Unknown object</span></h2>'
@@ -298,7 +299,7 @@ class RdfEngine:
         if wrap_in_form:
             self.o_represent_header(o, obj, cdef)
         # ---
-        self.o_edit_members(o, tn, [cdef], obj, methods, wrap_in_form)
+        self.o_edit_members(o, tn, un, [cdef], obj, methods, wrap_in_form, obj)
         # ---
         if wrap_in_form:
             self.o_represent_footer(o, obj, cdef)
@@ -331,7 +332,7 @@ class RdfEngine:
         o.append(frag_btn_cancel)
         o.append('</div>')
 
-    def o_edit_members(self, o, tn, stack, obj, methods, wrap_in_form):
+    def o_edit_members(self, o, tn, un, stack, obj, methods, wrap_in_form, grand_parent):
         if not stack:
             return
         cdef = stack[-1]
@@ -345,17 +346,30 @@ class RdfEngine:
         bgc = self.bgcolors.get(len(stack), self.bgcolors.get(0))
         o.append(f'<div class="form-group rdf-container" id="{div_id}" i="{i}" u="{u}">')
         o.append(f'<div class="row align-items-start" style="padding-bottom: 20px;background-color: {bgc};">')
-        o.append(f'<div class="col-8"><h4 mlang="o_edit_members">{cdef.name}</h4></div>')
+        o.append(f'<div class="col-11"><h4 mlang="o_edit_members">{cdef.name}</h4></div>')
 
-        if obj is not None and len(stack)<2:
-            self.add_property_button(o, tn, cdef, obj, wrap_in_form)
+        if obj is not None:
+            if len(stack) < 2:
+                self.add_property_button(o, tn, cdef, obj, wrap_in_form)
+            else:
+                if methods == self.inp.input_methods:
+                    self.add_delete_button(o, tn, cdef, obj, grand_parent)
 
         o.append('</div>')
 
         for mem in cdef.members.values():
-            self.o_edit_member(o, tn, mem, stack, obj, methods)
+            self.o_edit_member(o, tn, un, mem, stack, obj, methods, grand_parent)
 
         o.append('</div>')
+
+    def add_delete_button(self, o, tn, cdef, obj, grand_parent):
+        h = obj.get('hash')
+        h_gp = grand_parent.get('hash')
+        o.append(f'<div class="col-1" style="text-align: right;">'
+                 f'<button type="button" class="btn btn-danger btn-sm" mlang="btn_delete_property" '
+                 f'onclick="o_delete_id(\'{h}\', function() {{ o_edit(\'{h_gp}\')}} )" '
+                 f'id="btn_delete_property"> x </button>'
+                 f'</div>')
 
     def add_property_button(self, o, tn, cdef, obj, wrap_in_form):
         if not obj:
@@ -370,7 +384,7 @@ class RdfEngine:
             allow_multiple = mem.multiple.lower() == 'true'
             mdef = self.schema.get_class(mem.ref)
             uri = mdef.uri if mdef else None
-            if mem.name in obj_data and not allow_multiple:
+            if mem.name in obj_data and obj_data.get(mem.name) is not None and not allow_multiple:
                 continue
             if mem.data_type == 'ref':
                 continue  # This needs to be improved !!! It is a legal case to add multiple references
@@ -390,7 +404,6 @@ class RdfEngine:
         o.append('<div class="col-4" style="text-align: right;">')
 
         if not wrap_in_form:
-
             o.append('<button type="button" class="btn btn-light" style="margin-right: 5px;" '
                      'id="btn_previous_object" '
                      f'onclick="location.replace(\'view?h={h}&go=prev\');" '
@@ -421,7 +434,7 @@ class RdfEngine:
 
         o.append('</div>')
 
-    def o_edit_member(self, o, tn, mem, stack, obj, methods):
+    def o_edit_member(self, o, tn, un, mem, stack, obj, methods, grand_parent):
         data = obj.get('data') if obj else {}
         mdef = self.schema.get_class(mem.ref)
         allow_multiple = mem and mem.multiple.lower() == 'true'
@@ -433,17 +446,16 @@ class RdfEngine:
                 if not sub_data:
                     return
                 stack.append(mdef)
-                self.o_edit_members(o, tn, stack, sub_data, methods, False)
+                self.o_edit_members(o, tn, un, stack, sub_data, methods, False, grand_parent)
                 stack.pop(len(stack) - 1)
                 # ---
             else:  # Independent reference
-                # self.o_edit_prop_standalone(o, tn, mem, val, stack, obj, methods)
-                self.o_edit_prop(o, tn, mem, val, stack, obj, methods)
+                self.o_edit_prop(o, tn, un, mem, val, stack, obj, methods)
         else:
             if val is not None or not allow_multiple:
                 # If property is defined once, it should be displayed even empty.
                 # If it defined to allowed multiple occurrences, then it should be added from "Add property"
-                self.o_edit_prop(o, tn, mem, val, stack, obj, methods)
+                self.o_edit_prop(o, tn, un, mem, val, stack, obj, methods)
 
     def o_edit_prop_standalone(self, o, tn, mem, val, stack, obj, methods):
         h = obj.get('hash') if obj else ''
@@ -455,15 +467,15 @@ class RdfEngine:
         method = methods.get('standalone', methods.get('string'))
         method(tn, mem, valstr, h, pid, u, o, bgc)
 
-    def o_edit_prop(self, o, tn, mem, val, stack, obj, methods):
+    def o_edit_prop(self, o, tn, un, mem, val, stack, obj, methods):
         if isinstance(val, list):
             for v in val:
-                self.o_edit_prop_single(o, tn, mem, v, stack, obj, methods)
+                self.o_edit_prop_single(o, tn, un, mem, v, stack, obj, methods)
             return
         # Normal case
-        self.o_edit_prop_single(o, tn, mem, val, stack, obj, methods)
+        self.o_edit_prop_single(o, tn, un, mem, val, stack, obj, methods)
 
-    def o_edit_prop_single(self, o, tn, mem, val, stack, obj, methods):
+    def o_edit_prop_single(self, o, tn, un, mem, val, stack, obj, methods):
         """
         :param methods: Methods collection to represent simple content properties
         :param o: Output list
@@ -481,7 +493,7 @@ class RdfEngine:
         u = mdef.uri
         method_ref = 'standalone' if mdef.data_type == 'object' else mdef.data_type
         method = methods.get(method_ref, methods.get('string'))
-        method(tn, mem, valstr, h, pid, u, o, bgc)
+        method(tn, un, mem, valstr, h, pid, u, o, bgc)
 
     def reset_rdf_table(self, tblname):
         if self.sqleng.table_exists(tblname):
@@ -834,4 +846,3 @@ class RdfEngine:
                      f'</tr>')
         o.append('</table>')
         return ''.join(o)
-
