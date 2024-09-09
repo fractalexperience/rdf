@@ -19,7 +19,7 @@ class RdfEngine:
         self.vws = RdfViews(self)
         self.bgcolors = {0: '#FFFFFF', 1: '#EBF5FB', 2: '#AED6F1', 3: '#85C1E9', 4: '#5DADE2', 5: '#3498DB'}
 
-    def o_rep(self, tn, cn):
+    def o_rep(self, tn, un, cn):
         cdef = self.schema.get_class(cn)
         if not cdef:
             return f'<h1 style="color: Red;">Class not defined: {cn}</h1>'
@@ -46,7 +46,7 @@ class RdfEngine:
                 if method is not None:
                     h = obj.get('hash')
                     pid = obj.get('id')
-                    v = method(tn, mem, v, h, pid, mdef.data_type, o, 'White')
+                    v = method(tn, un, mem, v, h, pid, mdef.data_type, o, 'White')
 
                 o.append(f'<td>{v}</td>')
 
