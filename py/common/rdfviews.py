@@ -4,6 +4,7 @@ import datetime
 
 import pandas as pd
 import common.util as util
+import common.htmlutil as htmlutil
 
 
 class RdfViews:
@@ -131,7 +132,7 @@ class RdfViews:
         return (f'<div class="bg-light">'
                 f'<span id="view_{h}">'
                 f'<button class="btn btn-primary btn-sm" onclick="window.open(\'view?h={h}\')" mlang="view_report">'
-                f'View report'
+                f'View'
                 f'</button></span>'
                 f'<span id="export_{h}" style="margin-left: 10px;">'
                 f'<button class="btn btn-primary btn-sm" '
@@ -329,18 +330,7 @@ class RdfViews:
             o.append(f'</tbody></table>')
 
             # Interactive table snippet - !! UNREM to enable interactive table !!
-            o.append("""
-<script>
-$('.dataTable').each(function () {
-    var t = $(this).DataTable({
-        "paging":true,
-        "ordering":true,
-        "info":true,
-        "pageLength": 50})
-    t.order([]).draw();
-});
-</script>
-            """)
+            htmlutil.append_interactive_table(o)
             return ''.join(o)
 
         except Exception as ex:

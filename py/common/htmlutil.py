@@ -15,24 +15,25 @@ def wrap_h(o, fields, title, attr=None):
     wrap_table(o, attr)
 
 
-def wrap_td(o, cell):
+def wrap_td(o, cell, is_th=False):
     if cell is None:
         o.append('<td>&nbsp;</td>')
         return
+    tag = "th" if is_th else 'td'
     if cell == 'NULL':  # Special case for null values
-        o.append(f'<td class="table-secondary">{cell}</td>')
+        o.append(f'<{tag} class="table-secondary">{cell}</{tag}>')
         return
     if isinstance(cell, str) or isinstance(cell, int) or isinstance(cell, float):
-        o.append(f'<td>{cell}</td>')
+        o.append(f'<{tag}>{cell}</{tag}>')
         return
     if isinstance(cell, tuple):
-        o.append(f'<td {cell[0]}>{cell[1]}</td>')
+        o.append(f'<{tag} {cell[0]}>{cell[1]}</{tag}>')
 
 
-def wrap_tr(o, cells, attr=None):
+def wrap_tr(o, cells, attr=None, is_th=False):
     o2 = []
     for c in cells:
-        wrap_td(o2, c)
+        wrap_td(o2, c, is_th=is_th)
     if attr is None:
         o2.insert(0, '<tr>')
     else:
@@ -40,3 +41,16 @@ def wrap_tr(o, cells, attr=None):
     o2.append('</tr>')
     o.append(''.join(o2))
 
+
+def append_interactive_table(o):
+    o.append("""
+    <script>
+    $('.dataTable').each(function () {
+        var t = $(this).DataTable({
+            "paging":true,
+            "ordering":true,
+            "info":true,
+            "pageLength": 50})
+        t.order([]).draw();
+    });
+    </script> """)

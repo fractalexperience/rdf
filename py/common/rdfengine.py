@@ -26,14 +26,14 @@ class RdfEngine:
 
         olst = self.o_list(tn, cn)
         o = [f'<h1>{cdef.name}</h1>'
-             '<table class="table table-bordered">'
-             '<tr class="table-info">']
+             '<table class="table table-bordered display dataTable">'
+             '<thead><tr class="table-info">']
         for ndx, mem in cdef.members.items():
             mdef = self.schema.get_class(mem.ref)
             if not mdef or mdef.data_type == 'object':
                 continue
-            o.append(f'<td>{mem.name}</td>')
-        o.append('</tr>')
+            o.append(f'<th>{mem.name}</th>')
+        o.append('</tr></thead>')
 
         for obj in olst:
             o.append('<tr>')
@@ -52,6 +52,8 @@ class RdfEngine:
 
             o.append('</tr>')
         o.append('</table>')
+
+        htmlutil.append_interactive_table(o)
         return ''.join(o)
 
     def o_query(self, tn, q):
@@ -156,20 +158,22 @@ class RdfEngine:
 
         o = []
         fields = self.get_fields_to_show(cdef)
-        htmlutil.wrap_tr(o, [f.name for f in fields], 'class="table-info"')
+        o.append('<thead>')
+        htmlutil.wrap_tr(o, [f.name for f in fields], 'class="table-info"', is_th=True)
+        o.append('</thead>')
         for obj in sorted(js, key=lambda ob: ob.get('id'), reverse=True):
             obj_row = []
             h = obj.get('hash')
             self.o_populate_field_values(tn, obj, obj_row)
             htmlutil.wrap_tr(o, obj_row, f'onclick="o_edit(\'{h}\')"')
 
-        htmlutil.wrap_table(o)
+        htmlutil.wrap_table(o, attr='class="table table-hover table-bordered display dataTable"')
         o.insert(0, f'<div style="margin-top: 10px;">'
                     f'<button id="btn_new" class="btn btn-primary" onclick="o_new(\'{cdef.uri}\')" mlang="o_new">'
                     f'New {cdef.name}'
                     f'</button>'
                     f'</div>')
-
+        htmlutil.append_interactive_table(o)
         return ''.join(o)
 
     def o_populate_field_values(self, tn, obj, o):
