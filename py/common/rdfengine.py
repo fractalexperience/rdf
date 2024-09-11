@@ -247,7 +247,7 @@ class RdfEngine:
             cdef = self.schema.get_class(h_u)
         return obj, cdef
 
-    def r_frag(self, tn, o_uri, p_uri, prop_name):
+    def r_frag(self, tn, un, o_uri, p_uri, prop_name):
         """ Renders an entry form fragment for a given object (or class to be instantiated)
         o_uri: URI of the property
         p_uri: URI of the parent class
@@ -260,10 +260,10 @@ class RdfEngine:
         o = []
         if cdef.members is None:
             # o = []
-            self.o_edit_prop(o, tn, mem, val, [cdef], obj, self.inp.input_methods)
+            self.o_edit_prop(o, tn, un, mem, val, [cdef], obj, self.inp.input_methods)
             # return ''.join(o)
         else:
-            self.o_edit_members(o, tn, [cdef], obj, self.inp.input_methods, False, obj)
+            self.o_edit_members(o, tn, un, [cdef], obj, self.inp.input_methods, False, obj)
         return ''.join(o)
         # return self.o_get_html(tn, obj, cdef, obj_parent, self.inp.input_methods)
 
