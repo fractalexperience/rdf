@@ -14,6 +14,7 @@ class RdfCms:
         self.schema = schema
 
         self.base_image = 'img'
+        self.base_media = 'media'
         self.base_temp = 'temp'
         self.base_thumbnail = 'thumb'
 
@@ -21,6 +22,7 @@ class RdfCms:
         self.base_data = base_data
         self.assets_folder = assets_folder
         self.data_folder = data_folder
+        self.img_formats = ['bmp', 'dds', 'gif', 'jpg', 'jpeg', 'png', 'tif', 'tiff']
 
     """
     The CMS methods return a tuple with the following structure: 
@@ -274,21 +276,26 @@ class RdfCms:
         path_user = os.path.join(self.data_folder, tn)
         if not os.path.exists(path_user):
             os.mkdir(path_user)
-        path_img = os.path.join(path_user, self.base_image)
-        if not os.path.exists(path_img):
-            os.mkdir(path_img)
+
+        ext = file.filename.split('.')[-1]
+        new_filename = f'{util.get_id_sha1()}.{ext}'
+
+        base = self.base_image if ext.lower() in self.img_formats else  self.base_media
+        path = os.path.join(path_user, base)
+        if not os.path.exists(path):
+            os.mkdir(path)
         path_thumb = os.path.join(path_user, self.base_thumbnail)
         if not os.path.exists(path_thumb):
             os.mkdir(path_thumb)
 
-        ext = file.filename.split('.')[-1]
-        new_filename = f'{util.get_id_sha1()}.{ext}'
-        location_img = os.path.join(path_img, new_filename)
+        location = os.path.join(path, new_filename)
         location_thumb = os.path.join(path_thumb, new_filename)
+        u_media = '/'.join([self.base_data, tn, base, new_filename])
+        u_thumb = '/'.join([self.base_data, tn, self.base_thumbnail, new_filename])
 
         # Save image
         size = 0
-        with open(location_img, 'wb') as out:
+        with open(location, 'wb') as out:
             while True:
                 data = file.file.read(8192)
                 if not data:
@@ -296,15 +303,16 @@ class RdfCms:
                 out.write(data)
                 size += len(data)
 
-        # Create thumbnail
-        size = 512, 512
-        with Image.open(location_img) as im:
-            im.thumbnail(size)
-            im.save(location_thumb, "JPEG")
+        if ext.lower() in self.img_formats:
+            # Create thumbnail
+            size = 512, 512
+            with Image.open(location) as im:
+                im.thumbnail(size)
+                im.save(location_thumb, "JPEG")
+        else:
+            u_thumb = f'img/{ext}.png'
 
-        u_img = '/'.join([self.base_data, tn, self.base_image, new_filename])
-        u_thumb = '/'.join([self.base_data, tn, self.base_thumbnail, new_filename])
-        result = {'img': u_img, 'thumb': u_thumb, 'filename': file.filename}
+        result = {'img': u_media, 'media': u_media, 'thumb': u_thumb, 'filename': file.filename}
         return json.dumps(result)
 
     def data_summary(self, tn, cn):

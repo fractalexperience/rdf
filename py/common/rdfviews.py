@@ -104,12 +104,20 @@ class RdfViews:
         location_img = img_data.get('img') if img_data else 'img/picture.png'
         filename = img_data.get('filename') if img_data else ''
         o.append(f'<a href="{location_img}" target="_blank">'
-                 f'<img src="{location_thumb}" style="max-width:400px;" alt="{filename}" title="{filename}" />'
+                 f'<img src="{location_thumb}" style="max-width:150px;" alt="{filename}" title="{filename}" />'
                  f'</a>')
 
-    @view_row_decorator
-    def view_media(self, tn, un, mem, valstr, h, pid, u, o):
-        o.append(f'<h1>TODO: View media {mem.name} - {valstr}</h1>')
+    def view_media(self, tn, un, mem, valstr, h, pid, u, o, bgc):
+        img_data = json.loads(valstr) if valstr else None
+        if img_data is None:
+            o.append('<div><img src="img/unchecked.png" /></div>')
+            return
+        location_thumb = img_data.get('thumb') if img_data else 'img/media.png'
+        location_img = img_data.get('media') if img_data else 'img/media.png'
+        filename = img_data.get('filename') if img_data else ''
+        o.append(f'<a href="{location_img}" target="_blank">'
+                 f'<img src="{location_thumb}" style="max-width:100px;" alt="{filename}" title="{filename}" />'
+                 f'</a>')
 
     @view_row_decorator
     def view_lang(self, tn, un, mem, valstr, h, pid, u, o):
@@ -142,7 +150,6 @@ class RdfViews:
                 f'</div>')
 
     def resolve_image(self, tn, un, mem, valstr, h, pid, u, o, bgc):
-
         return '<div>IMG</div>'
 
     # --- Methods, which can be used inside reports select areas

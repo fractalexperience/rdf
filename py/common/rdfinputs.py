@@ -79,19 +79,19 @@ class RdfInputs:
     @input_row_decorator
     def input_ts_creation(self, tn, un, mem, valstr, h, pid, u, o):
         date_creation = valstr if valstr else datetime.datetime.now().strftime('%Y-%m-%d')
+        # Class rdf-changed is added always, but the value change is handled here
         o.append(
-            f'<input type="date" class="form-control rdf-property" style="width: 150px;" value="{date_creation}" '
+            f'<input type="date" class="form-control rdf-property rdf-changed" style="width: 150px;" value="{date_creation}" '
             f'disabled="true" '
-            f'oninput="$(this).addClass(\'rdf-changed\')" '
             f'id="{mem.name}" name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
 
     @input_row_decorator
     def input_ts_modification(self, tn, un, mem, valstr, h, pid, u, o):
         date_modification = datetime.datetime.now().strftime('%Y-%m-%d')
+        # Class rdf-changed is added always, but the value change is handled here
         o.append(
-            f'<input type="date" class="form-control rdf-property" style="width: 150px;" value="{date_modification}" '
+            f'<input type="date" class="form-control rdf-property rdf-changed" style="width: 150px;" value="{date_modification}" '
             f'disabled="true" '
-            f'oninput="$(this).addClass(\'rdf-changed\')" '
             f'id="{mem.name}" name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
 
     @input_row_decorator
@@ -162,9 +162,36 @@ class RdfInputs:
         </div>
     </div>""")
 
-    @input_row_decorator
-    def input_media(self, tn, un, mem, valstr, h, pid, u, o):
-        o.append(f'<h1>TODO: Input media {mem.name}</h1>')
+    def input_media(self, tn, un, mem, valstr, h, pid, u, o, bgc):
+        media_data = json.loads(valstr) if valstr else None
+        location_media = media_data.get('media') if media_data else 'img/media.png'
+        location_thumb = media_data.get('thumb') if media_data else 'img/media.png'
+        filename = media_data.get('filename') if media_data else ''
+
+        o.append(f"""
+        <div class="row align-items-start" style="background-color: {bgc};">
+            <div class="col-2" style="text-align: right;">
+                <div id="div_thumbnail" style="text-align: center;">
+                    <a href="{location_media}" target="_blank">
+                    <img src="{location_thumb}" alt="{filename}" title="{filename}" 
+                        height="60" id="img_thumb_{pid}" style="margin:5px;">
+                    </a>
+                </div>
+            </div>
+            <div class="col-10">
+                <span>Choose media</span>
+                <input 
+                    type="file" id="file_media_{pid}" accept="*" style="display: block;" 
+                    onchange="handle_files(this.files, \'{pid}\')"/>
+                <input 
+                    type="text" class="form-control rdf-property"
+                    value=\'{valstr}\' 
+                    oninput="$(this).addClass(\'rdf-changed\') " 
+                    name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" " 
+                    id="img_data_{pid}" disabled="true" style="display: none;"/>
+            </div>
+        </div>""")
+
 
     @input_row_decorator
     def input_lang(self, tn, un, mem, valstr, h, pid, u, o):
