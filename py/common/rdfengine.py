@@ -831,7 +831,7 @@ class RdfEngine:
         q = f"""
         SELECT r1.id as prop_id, r1.p AS prop_ndx, r1.v AS prop_value,
                r2.id AS obj_id, r2.s AS obj_type, r2.h AS objt_hash
-        FROM {tn} AS r1 INNER JOIN db0002 AS r2 ON  r1.s = r2.id
+        FROM {tn} AS r1 INNER JOIN {tn} AS r2 ON  r1.s = r2.id
         WHERE r1.v LIKE '%{src}%' {where_frag}
         LIMIT 100
         """

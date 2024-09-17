@@ -1,6 +1,9 @@
 import json
 import datetime
+import os.path
+
 import common.util as util
+import common.config as config
 
 class RdfInputs:
     """ Implements methods to generate input controls for various RDF data """
@@ -26,6 +29,7 @@ class RdfInputs:
             'current_user': self.input_current_user,
             'ts_creation': self.input_ts_creation,
             'ts_modification': self.input_ts_modification,
+            'hash': self.input_hash,
         }
 
     @staticmethod
@@ -129,7 +133,7 @@ class RdfInputs:
     @input_row_decorator
     def input_email(self, tn, un, mem, valstr, h, pid, u, o):
         o.append(
-            f'<input type="email" class="form-control rdf-property" style="width: 150px;" value="{valstr}" id="{mem.name}" '
+            f'<input type="email" class="form-control rdf-property" value="{valstr}" id="{mem.name}" '
             f'oninput="$(this).addClass(\'rdf-changed\')" '
             f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />')
 
@@ -195,15 +199,41 @@ class RdfInputs:
 
     @input_row_decorator
     def input_lang(self, tn, un, mem, valstr, h, pid, u, o):
-        o.append(f'<h1>TODO: Input lang {mem.name}</h1>')
+        with open(os.path.join(os.getcwd(), self.rdfeng.assets_folder, 'mlang.json'), 'r', encoding='utf-8') as f:
+            mlang = json.load(f)
+        langs = set([lang for ml in mlang.values() for lang in ml])
+        o2 = []
+        for lang in langs:
+            sel = ' selected="true"' if lang == valstr else ''
+            lang_name = config.LANGUAGES.get(lang, lang)
+            o2.append(f'<option{sel} value="{lang}">{lang_name}</option>')
+        langs_str = ''.join(o2)
+        o.append(f'<select class="form-select rdf-property rdf-changed" '
+                 f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" '
+                 f'>{langs_str}</select>')
 
     @input_row_decorator
     def input_role(self, tn, un, mem, valstr, h, pid, u, o):
-        o.append(f'<h1>TODO: Input role {mem.name}</h1>')
+        o2 = []
+        for role, desc in config.ROLES.items():
+            sel = ' selected="true"' if role == valstr else ''
+            o2.append(f'<option{sel} value="{role}">{desc}</option>')
+        roles_str = ''.join(o2)
+        o.append(f'<select class="form-select rdf-property rdf-changed" '
+                 f'name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" '
+                 f'>{roles_str}</select>')
 
     @input_row_decorator
     def input_db_table(self, tn, un, mem, valstr, h, pid, u, o):
-        o.append(f'<h1>TODO: Input DB table {mem.name}</h1>')
+        if valstr:
+            db = valstr
+        else:
+            db = self.rdfeng.get_autoincrement_id(tn, 'Organization', 'Database', 'db', 4)
+            self.rdfeng.create_rdf_table(db)
+        o.append(
+            f'<input type="text" class="form-control rdf-property rdf-changed" style="width: 150px;" value="{db}" '
+            f'disabled="true" '
+            f'id="{mem.name}" name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')
 
     @input_row_decorator
     def input_report_def(self, tn, un, mem, valstr, h, pid, u, o):
@@ -211,3 +241,28 @@ class RdfInputs:
             f'<textarea type="text" class="form-control rdf-property" rows="2" id="{mem.name}" '
             f'oninput="$(this).addClass(\'rdf-changed\')" '
             f'name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}">{valstr}</textarea>')
+
+
+    def input_hash(self, tn, un, mem, valstr, h, pid, u, o, bgc):
+        lbl = 'Password *'
+        o.append(f"""
+<div class="row align-items-start" style="background-color: {bgc};">        
+    <div class="col-2" style="text-align: right;">
+    <b><label for="{mem.name}" mlang="{mem.name}" class="text-primary">{lbl}</label></b>
+    </div>        
+    <div class="col-4">
+        <input type="text" class="form-control rdf-property" id="pwd_hash" disabled="true" 
+        onchange="$(this).addClass(\'rdf-changed\')" value="{valstr}"
+        name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />
+    </div>        
+    <div class="col-4">    
+        <input type="text" class="form-control" rows="2" id="pwd_native"
+        onkeyup="update_val(\'pwd_hash\', \'sha1?s=\'+$(this).val(), null); $(\'#pwd_hash\').addClass(\'rdf-changed\');"/>
+    </div>
+    <div class="col-2"> 
+        <button type="button" class="btn btn-primary "
+            onclick="var pwd=gen_pwd(10); $(\'#pwd_native\').val(pwd); update_val(\'pwd_hash\', \'sha1?s=\'+pwd, null); $(\'#pwd_hash\').addClass(\'rdf-changed\');"  
+            mlang="btn_gen_pwd">Generate password</button>
+    </div>
+</div>
+""")

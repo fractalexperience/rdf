@@ -317,8 +317,9 @@ class RdfCms:
 
     def data_summary(self, tn, cn):
         lst = self.schema.query(f'{cn}^')
-        codes = ','.join([f'\'{self.schema.get_class(t[0]).code}\'' for t in lst])
-        q = f'SELECT count(*) FROM {tn} WHERE h IS NOT NULL AND s IN ({codes})'
+        codes_str = ','.join([f'\'{self.schema.get_class(t[0]).code}\'' for t in lst])
+        codes = set([self.schema.get_class(c[0]).code for c in lst])
+        q = f'SELECT count(*) FROM {tn} WHERE h IS NOT NULL AND s IN ({codes_str})'
         num_total = self.sqleng.exec_scalar(q)
         o = [f'<div class="row">'
              f'<div class="col-6"><h1 mlang="data_summary">Data Summary</h1></div>'
@@ -348,30 +349,41 @@ class RdfCms:
              f'<th colspan="3">Objects by type</th>'
              f'</tr>']
 
-        q = f"SELECT s, count(s) FROM {tn} WHERE h IS NOT NULL AND s IN ({codes}) GROUP BY s ORDER BY s"
+        q = f"SELECT s, count(s) FROM {tn} WHERE h IS NOT NULL AND s IN ({codes_str}) GROUP BY s ORDER BY s"
         t = self.sqleng.exec_table(q)
         for r in t:
-            code = r[0]
+            code = f'{r[0]}'
+            if code in codes:
+                codes.remove(code)
             cnt = r[1]
             cdef = self.schema.get_class(code)
             if cdef is None or cdef.members is None:
                 continue
-            name = cdef.name
-            desc = cdef.description
-            o.append(f'<tr>'
-                     f'<td>'
-                     f'<button type="button" class="btn btn-primary btn-sm" style="margin-left: 5px;" '
-                     f'onclick="update_content(\'output\', \'b?cn={cdef.uri}\')" '
-                     f'id="btn_edit_{cdef.uri}" '
-                     f'mlang="btn_edit">Edit</button>'
-                     f'</td>'
-                     f'<td>{code}</td>'
-                     f'<td>{name}</td>'
-                     f'<td>{desc}</td>'
-                     f'<td style="text-align: right;">{cnt}</td>'
-                     f'</tr>')
+            self.append_code_row(o, cdef, cnt)
+
+        # Append remaining codes
+        for code in codes:
+            cdef = self.schema.get_class(code)
+            self.append_code_row(o, cdef, 0)
+
         o.append('</table>')
         return ''.join(o)
+
+    def append_code_row(self, o, cdef, cnt):
+        name = cdef.name
+        desc = cdef.description
+        o.append(f'<tr>'
+                 f'<td>'
+                 f'<button type="button" class="btn btn-primary btn-sm" style="margin-left: 5px;" '
+                 f'onclick="update_content(\'output\', \'b?cn={cdef.uri}\')" '
+                 f'id="btn_edit_{cdef.uri}" '
+                 f'mlang="btn_edit">Edit</button>'
+                 f'</td>'
+                 f'<td>{cdef.code}</td>'
+                 f'<td>{name}</td>'
+                 f'<td>{desc}</td>'
+                 f'<td style="text-align: right;">{cnt}</td>'
+                 f'</tr>')
 
     def data_export_sql(self, tn):
         q = f'SELECT * FROM {tn} ORDER BY id'
@@ -406,7 +418,7 @@ class RdfCms:
         try:
             df = pd.read_sql(q, con=self.sqleng.connection)
             path = self.get_path_temp(tn)
-            filename = 'dbexport..xlsx'
+            filename = 'dbexport.xlsx'
             filepath = os.path.join(path, filename)
             df.to_excel(filepath)
             url = '/'.join([self.base_data, tn, self.base_temp, filename])

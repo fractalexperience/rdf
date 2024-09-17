@@ -114,6 +114,21 @@ function update_content(containerId, url, callbackFunction)
     });
 }
 
+/** Updates value of a certain control with the result of a GET request */
+function update_val(containerId, url, callbackFunction)
+{
+    $.get(url, function(data, status) {
+        if (status !== 'success') {
+            alert('Error: Cannot read from '+url);
+            return;
+        }
+        $('#'+containerId).val(data);
+        if (callbackFunction !== undefined && callbackFunction !== null) {
+            callbackFunction();
+        }
+    });
+}
+
 /** Append a sub-form for a nested compound object insidean existing form
     uri: URI of the property
     puri: URI of the parent object

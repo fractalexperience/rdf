@@ -17,7 +17,7 @@ class RdfSchema:
             'object', 'property', 'ref', 'email', 'text',
             # These here require special handling in UI
             'thumbnail', 'db_table', 'lang', 'image', 'media', 'report_def',
-            'ts_creation',  'ts_modification', 'current_user')
+            'ts_creation',  'ts_modification', 'current_user', 'hash', 'user_role')
         self.errors = None
 
         self.init()

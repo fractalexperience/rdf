@@ -70,7 +70,7 @@
 		"name": "User Role",
 		"ndx": "",
 		"description": "SA - Super Admin, OA - Organization Admin, DC - Data Contributor, G-Guest",
-		"data_type": "string",
+		"data_type": "user_role",
 		"restriction": "^(SA|OA|DC|G)$",
 		"ref": "",
 		"required": "",
@@ -86,7 +86,7 @@
 		"name": "Hash",
 		"ndx": "",
 		"description": "Sha1 hash code based on some unique identifier, which iseither too long to be stored, or is private and must not t o be stored in the database such as password etc.",
-		"data_type": "string",
+		"data_type": "hash",
 		"restriction": "^[0-9abcdef]{40}$",
 		"ref": "",
 		"required": "",
@@ -412,7 +412,7 @@
 		"required": "TRUE",
 		"multiple": "",
 		"key": "",
-		"show": "TRUE",
+		"show": "",
 		"uri": ""
 	},
 	{
