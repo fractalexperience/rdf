@@ -820,7 +820,7 @@ class RdfEngine:
             ai_id = ai_id.zfill(zfill_len)
         return f'{pref}{ai_id}'
 
-    def srcbase(self, tn, src, uri, prop):
+    def srcbase(self, tn, un, src, uri, prop):
         """ Basic search for a specified object type (uri). If ur is None, we search in any object. """
         where_frag = ''
         if uri:
@@ -838,15 +838,25 @@ class RdfEngine:
         t = self.sqleng.exec_table(q)
         o = [f'<table class="table table-bordered table-hover">'
              f'<tr><th>Object type</th><th>Property</th><th>Value</th></tr>']
+        cnt = 0
         for row in t:
+            cnt += 1
+            prop_id = row[0]
             prop_ndx = row[1]
-            prop_value = row[2].replace(src, f'<span style="background-color: Yellow;">{src}</span>')
             obj_code = row[4]
             cdef = self.schema.get_class(obj_code)
             mem = cdef.members.get(f'{prop_ndx}')
+            mdef = self.schema.get_class(mem.ref)
+            u = mdef.uri if mdef else None
             h = row[5]
+            prop_value = row[2]
+            # print(cnt, '=>', len(prop_value))
+            method = self.vws.view_tab_methods.get(u) if u else None
+            v = prop_value.replace(src, f'<span style="background-color: Yellow;">{src}</span>')
+            if method:
+                v = method( tn, un, mem, prop_value, h, prop_id, u, o, 'White')
             o.append(f'<tr onclick="window.open(\'view?h={h}\')">'
-                     f'<td>{cdef.name}</td><td>{mem.name}</td><td>{prop_value}</td>'
+                     f'<td>{cdef.name}</td><td>{mem.name}</td><td>{v}</td>'
                      f'</tr>')
         o.append('</table>')
         return ''.join(o)

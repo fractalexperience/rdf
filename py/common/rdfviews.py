@@ -32,6 +32,7 @@ class RdfViews:
         self.view_tab_methods = {
             'report_def': self.resolve_report_def,
             'image': self.resolve_image,
+            'media': self.resolve_media,
         }
 
         self.complex_content_view_methods = {
@@ -150,7 +151,26 @@ class RdfViews:
                 f'</div>')
 
     def resolve_image(self, tn, un, mem, valstr, h, pid, u, o, bgc):
-        return '<div>IMG</div>'
+        o2 = []
+        img_data = json.loads(valstr) if valstr else None
+        if img_data is None:
+            return 'n.a.'
+        location_thumb = img_data.get('thumb') if img_data else 'img/picture.png'
+        location_img = img_data.get('img') if img_data else 'img/picture.png'
+        filename = img_data.get('filename') if img_data else ''
+        o2.append(f'<img src="{location_thumb}" style="max-width:80px;" alt="{filename}" title="{filename}" />')
+        return ''.join(o2)
+
+    def resolve_media(self, tn, un, mem, valstr, h, pid, u, o, bgc):
+        o2 = []
+        img_data = json.loads(valstr) if valstr else None
+        if img_data is None:
+            return 'n.a.'
+        location_thumb = img_data.get('thumb') if img_data else 'img/media.png'
+        location_img = img_data.get('media') if img_data else 'img/media.png'
+        filename = img_data.get('filename') if img_data else ''
+        o2.append(f'<img src="{location_thumb}" style="max-width:80px;" alt="{filename}" title="{filename}" />')
+        return ''.join(o2)
 
     # --- Methods, which can be used inside reports select areas
     def resolve_img(self, s):
