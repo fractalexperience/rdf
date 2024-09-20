@@ -1075,7 +1075,7 @@
 		"namespace": "",
 		"code": "",
 		"inherits": "",
-		"name": "Inventory No.",
+		"name": "Inventory Text/No.",
 		"ndx": "1",
 		"description": "The identifier of the item in the classification of the owner organization",
 		"data_type": "property",
@@ -1229,6 +1229,22 @@
 		"multiple": "",
 		"key": "",
 		"show": "TRUE",
+		"uri": ""
+	},
+	{
+		"namespace": "",
+		"code": "",
+		"inherits": "",
+		"name": "Interface to History Map",
+		"ndx": "12",
+		"description": "Flag whether to be included to history map service",
+		"data_type": "property",
+		"restriction": "",
+		"ref": "13",
+		"required": "TRUE",
+		"multiple": "",
+		"key": "",
+		"show": "",
 		"uri": ""
 	},
 	{
@@ -1612,7 +1628,7 @@
 		"required": "TRUE",
 		"multiple": "",
 		"key": "",
-		"show": "",
+		"show": "TRUE",
 		"uri": ""
 	},
 	{
@@ -1628,7 +1644,7 @@
 		"required": "TRUE",
 		"multiple": "",
 		"key": "",
-		"show": "",
+		"show": "TRUE",
 		"uri": ""
 	},
 	{
