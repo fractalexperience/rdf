@@ -99,7 +99,7 @@ class RdfCms:
         :param v: String value of the property
         """
         if not v:
-            return False, None, None, False, 'Empty value'
+            return True, None, None, False, 'Empty value'
         pdef = self.schema.get_class(puri)
         if not pdef:
             return False, None, None, False, f'Class not defined {puri}'

@@ -363,7 +363,7 @@ class RdfEngine:
 
         o.append('</div>')
 
-        for mem in cdef.members.values():
+        for mem in sorted([m for m in cdef.members.values()], key=lambda m: m.order.zfill(6)):
             self.o_edit_member(o, tn, un, mem, stack, obj, methods, grand_parent)
 
         o.append('</div>')

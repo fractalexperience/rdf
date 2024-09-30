@@ -9,6 +9,7 @@ class RdfClass:
         self.namespace = props.get('namespace')
         self.name = props.get('name')
         self.ndx = props.get('ndx')
+        self.order = props.get('order')
         self.description = props.get('description')
         self.data_type = props.get('data_type')
         self.restriction = props.get('restriction')
