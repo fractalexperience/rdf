@@ -1,0 +1,58 @@
+
+<div class="row" style="margin-top: 50px;">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-6" id="mlimport">
+        <h1 mlang="mlang_import" style="text-align: center;">Import multi-language strings</h1>
+            <span mlang="choose_import_file"><b>Choose import file</b></span>
+            <input type="file" id="file_mlimport" accept="*.xlsx" style="display: block;"/>
+        <diV mlang="mlimport_explanation" style="margin: 10px;">
+Multi-language file can be imported from an Excel file with the following structure:
+            <ul>
+            <li mlang="key_string_identifier">key - The identifier of the string</li>
+            <li mlang="en_english_translation">en - English translation</li>
+            <li mlang="de_german_translation">de - German translation</li>
+            <li mlang="fr_french_translation">fr - French translation</li>
+            <li mlang="it_italian_translation">it - Italian translation</li>
+            </ul>
+        </div>
+        <h1 mlang="mlimport_warning" style="text-align: center; margin-top: 10px;">WARNING !</h1>
+        <div class="bg-danger" style="padding:10px; color: White;">
+            After importing of the chosen file, current multi-language strings will be updated and previous values will be overridden.
+        </div>
+        <div style="margin-top: 10px; text-align: center;">
+            <button type="button" class="btn btn-primary"
+                    onclick="do_mlimport()"
+                    id="btn_do_mlang_import" mlang="do_mlang_import">Start import</button>
+        </div>
+        <div id="import_result"></div>
+    </div>
+    <div class="col-sm-3"></div>
+</div>
+
+<script>
+function do_mlimport() {
+    var files = $('#file_mlimport').prop('files');
+    if (files.length == 0)
+    {
+        alert('No file selected');
+        return;
+    }
+    var file = files[0];
+    var formData = new FormData();
+    formData.append('content', file);
+    $.ajax({
+        url: 'mlimport', // Specify the server-side script to handle the upload
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            $('#mlimport').html(response);
+            //$('#output').html(response);
+        },
+        error: function() {
+            // Error handling
+        }
+    });
+}
+</script>

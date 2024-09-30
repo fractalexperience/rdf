@@ -139,7 +139,7 @@ function gen_pwd(len) {
     var length = (len)?(len):(10);
     var string = "abcdefghijklmnopqrstuvwxyz"; //to upper
     var numeric = '0123456789';
-    var punctuation = '!@#$%^&*()_+~`|}{[]\\:;?><,./-=';
+    var punctuation = '!@#$%^*()_+~|}{[]:;?,./-=';
     var password = "";
     var character = "";
     while( password.length<length ) {

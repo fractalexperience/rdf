@@ -8,7 +8,7 @@
 	"rdf_template": {
 		"de": "RDF Demonstration",
 		"en": "<b>RDF</b><br/><small><small>(Resource Description Framework)</small></small><br/>A Lightweight implementation",
-		"fr": "RDF DГ©mo",
+		"fr": "RDF Démo",
 		"it": "RDF Demo"
 	},
 	"inventory_title": {
@@ -18,9 +18,9 @@
 		"it": "Inventario"
 	},
 	"inventory_subtitle": {
-		"de": "Die praxisorientierte Anwendung fГјr Museen, Galerien, Kunstsammlungen, Privatsammlungen und Bibliotheken",
+		"de": "Die praxisorientierte Anwendung für Museen, Galerien, Kunstsammlungen, Privatsammlungen und Bibliotheken",
 		"en": "The practical application for museums, galleries, art collections, private collections and libraries",
-		"fr": "Application orientГ©e vers la pratique pour musГ©es, galerie, collections d'art, collections privГ©e et bibliothГЁques",
+		"fr": "Application orientée vers la pratique pour musées, galerie, collections d'art, collections privée et bibliothèques",
 		"it": "Applicazione practica-orientat a per i musei, galerie, collezioni di arte, collezioni private et biblioteche"
 	},
 	"login_username": {
@@ -1489,6 +1489,180 @@
 	},
 	"legal_applicability": {
 		"en": "Legal Applicability",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"key": {
+		"en": "en",
+		"de": "de",
+		"fr": "fr",
+		"it": "it"
+	},
+	"btn_edit": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"mlang_imported": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"export_ready": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"download_json_format": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"download_excel_format": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"o_new": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"btn_delete_property": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"btn_gen_pwd": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"login_remember_me": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"inventory_copyright": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"mlang_export": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"mlang_import": {
+		"en": "Import multi-language strings",
+		"de": "Mehrsprachige Zeichenfolgen importieren",
+		"fr": "Importer des chaînes multilingues",
+		"it": "Importa stringhe multilingua"
+	},
+	"timestamp_creation": {
+		"en": "Timestamp creation",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"timestamp_modification": {
+		"en": "Timestamp modification",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"current_user": {
+		"en": "Current user",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"inventory_text_no": {
+		"en": "Inventory Text/No.",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"interface_to_history_map": {
+		"en": "Interface to History Map",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"creation_date": {
+		"en": "Creation date",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"modification_date": {
+		"en": "Modification date",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"inventor": {
+		"en": "Inventor",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"mlimport_explanation": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"key_string_identifier": {
+		"en": "key - The identifier of the string",
+		"de": "key - Die Kennung der Zeichenfolge",
+		"fr": "key - L'identifiant de la chaîne",
+		"it": "key - L'identificatore della stringa"
+	},
+	"en_english_translation": {
+		"en": "en - English translation",
+		"de": "en - Englische Übersetzung",
+		"fr": "en - traduction anglaise",
+		"it": "en - traduzione in inglese"
+	},
+	"de_german_translation": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"fr_french_translation": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"it_italian_translation": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"mlimport_warning": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"do_mlang_import": {
+		"en": "",
 		"de": "",
 		"fr": "",
 		"it": ""

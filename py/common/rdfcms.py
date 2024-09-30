@@ -1,8 +1,11 @@
 import json
 import os
 import pandas as pd
+import re
+import math
 
 import common.util as util
+import common.rdfschema as rdfschema
 from PIL import Image
 
 
@@ -96,30 +99,30 @@ class RdfCms:
         :param v: String value of the property
         """
         if not v:
-            return None, None, False, 'Empty value'
+            return False, None, None, False, 'Empty value'
         pdef = self.schema.get_class(puri)
         if not pdef:
-            return None, None, False, f'Class not defined {puri}'
+            return False, None, None, False, f'Class not defined {puri}'
         mem = pdef.members_by_name.get(cname)
         if not mem:
-            return None, None, False, f'{cname} is not defined as a property of {puri}'
+            return False, None, None, False, f'{cname} is not defined as a property of {puri}'
 
         if cid:
             q = f'UPDATE {tn} SET o=NULL, v={self.sqleng.resolve_sql_value(v)} WHERE id={cid}' \
                 if mem.data_type != 'ref' \
                 else f'UPDATE {tn} SET v=NULL, o={v} WHERE id={cid}'
             self.sqleng.exec_update(q)
-            return cid, None, True, 'Property updated'
+            return True, cid, None, True, 'Property updated'
 
         cdef = self.schema.get_class(mem.ref)
         if not cdef:
-            return None, None, False, f'Property class not defined {mem.uri}'
+            return False, None, None, False, f'Property class not defined {mem.uri}'
         ndx = mem.ndx
         if mem.multiple and mem.multiple.lower() == 'true':
             # Only insert, because multiple properties of that type are allowed
             q = f"INSERT INTO {tn} (s, p, o, v, h) VALUES({pid},{ndx},NULL,{self.sqleng.resolve_sql_value(v)},NULL)"
             i = self.sqleng.exec_insert(q)
-            return i, None, True, f'Property added {cname} to {puri}'
+            return True, i, None, True, f'Property added {cname} to {puri}'
         if cid:
             q = f"SELECT id FROM {tn} WHERE s={pid} AND p={cid}"
             i = self.sqleng.exec_scalar(q)
@@ -127,13 +130,13 @@ class RdfCms:
                 # Update
                 q = f"UPDATE {tn} SET o='{v}', v=NULL WHERE id={i}"
                 self.sqleng.exec_update(q)
-                return i, None, True, f'Property {cname} updated for {puri}'
+                return True, i, None, True, f'Property {cname} updated for {puri}'
 
         q = f"INSERT INTO {tn} (s, p, o, v, h) VALUES({pid},{ndx},NULL,{self.sqleng.resolve_sql_value(v)},NULL)" \
             if mem.data_type != 'ref' \
             else f"INSERT INTO {tn} (s, p, o, v, h) VALUES({pid},{ndx},{v},NULL,NULL)"
         i = self.sqleng.exec_insert(q)
-        return i, None, True, f'Property inserted {cname} for {puri}'
+        return True, i, None, True, f'Property inserted {cname} for {puri}'
 
     def o_read(self, tblname, obj_id, depth=0, use_ndx=False):
         if obj_id is None:
@@ -280,7 +283,7 @@ class RdfCms:
         ext = file.filename.split('.')[-1]
         new_filename = f'{util.get_id_sha1()}.{ext}'
 
-        base = self.base_image if ext.lower() in self.img_formats else  self.base_media
+        base = self.base_image if ext.lower() in self.img_formats else self.base_media
         path = os.path.join(path_user, base)
         if not os.path.exists(path):
             os.mkdir(path)
@@ -316,7 +319,7 @@ class RdfCms:
         return json.dumps(result)
 
     def data_summary(self, tn, cn):
-        lst = self.schema.query(f'{cn}^')
+        lst = self.schema.query(cn)
         codes_str = ','.join([f'\'{self.schema.get_class(t[0]).code}\'' for t in lst])
         codes = set([self.schema.get_class(c[0]).code for c in lst])
         q = f'SELECT count(*) FROM {tn} WHERE h IS NOT NULL AND s IN ({codes_str})'
@@ -456,6 +459,128 @@ class RdfCms:
             return self.data_export_sql(tn)
 
         return f'Unsupported format: {fmt}'
+
+    def mlang_import(self, tn, content):
+
+        # path_user = os.path.join(self.data_folder, tn)
+        new_filename = 'mlang_for_import.xlsx'
+        path = self.get_path_temp(tn)
+        location = os.path.join(path, new_filename)
+
+        size = 0
+        with open(location, 'wb') as out:
+            while True:
+                data = content.file.read(8192)
+                if not data:
+                    break
+                out.write(data)
+                size += len(data)
+
+        # Read existing mlang base
+        mlang_file = os.path.join(self.assets_folder, 'mlang.json')
+        with open(mlang_file, 'r', encoding="utf-8") as f:
+            ml = json.load(f)
+
+        df = pd.read_excel(location, index_col=None, header=None)
+        for row in df.iterrows():
+            print(row)
+            key = row[1][0]
+            if not key:
+                continue
+            entry = ml.setdefault(key, {})
+
+            en = row[1][1]
+            if en and en != math.nan:
+                entry['en'] = en
+
+            de = row[1][2]
+            if de and de != math.nan:
+                entry['de'] = de
+
+            fr = row[1][3]
+            if fr and fr != math.nan:
+                entry['fr'] = fr
+
+            it = row[1][4]
+            if it and it != math.nan:
+                entry['it'] = it
+
+        with open(mlang_file, 'w', encoding="utf-8") as f:
+            json.dump(ml, f)
+
+        return (f'<br/>'
+                f'<h2 mlang="mlang_imported">Multi-language strings are imported. Please reload page!</h2>')
+
+    def mlang_export(self, tn):
+        mlang_file = os.path.join(self.assets_folder, 'mlang.json')
+        with open(mlang_file, 'r', encoding="utf-8") as f:
+            keywords = json.load(f)
+        types = {'html', 'py', 'js'}
+        pattern = re.compile('mlang="(\\w+)"+')
+        self.process_path(os.path.join(self.base_rdf, 'py'), pattern, types, keywords)
+        self.process_path(os.path.join(self.base_rdf, 'js'), pattern, types, keywords)
+        self.process_path(os.path.join(self.base_rdf, 'html'), pattern, types, keywords)
+
+        schema_file = os.path.join(self.assets_folder, 'schema.json')
+        schema = rdfschema.RdfSchema(schema_file)
+        for code, cdef in schema.classes.items():
+            self.upd_kwd(keywords, util.to_snakecase(cdef.name), en=cdef.name)
+            if not cdef.members:
+                continue
+            for ndx, mem in cdef.members.items():
+                self.upd_kwd(keywords, util.to_snakecase(mem.name), en=mem.name)
+
+        m = []
+        heading = ['key', 'en', 'de', 'fr', 'it']
+        m.append(heading)
+        for k, lst in keywords.items():
+            m.append([k, lst.get('en'), lst.get('de'), lst.get('fr'), lst.get('it')])
+        # return m
+        # JSON format
+        path = self.get_path_temp(tn)
+        mlang_file_json = os.path.join(path, 'mlang.json')
+        with open(mlang_file_json, 'w') as f:
+            json.dump(keywords, f)
+        url_json = '/'.join([self.base_data, tn, self.base_temp, 'mlang.json'])
+
+        # Excel
+        mlang_file_excel = os.path.join(path, 'mlang.xlsx')
+        df = pd.DataFrame(m)
+        df.to_excel(mlang_file_excel, header=False, index=False)
+        url_excel = '/'.join([self.base_data, tn, self.base_temp, 'mlang.xlsx'])
+        return (f'<br/>'
+                f'<h1 mlang="export_ready">Export Ready</h1>'
+                f'<br/>'
+                f'<h5 mlang="download_json_format">Download JSON format: '
+                f'<a href="{url_json}" target="_blank"><img src="img/json.png" width="42"></a></h5>'
+                f'<h5 mlang="download_excel_format">Download Excel format: '
+                f'<a href="{url_excel}" target="_blank"><img src="img/xlsx.png" width="42"></a></h5>')
+
+    def upd_kwd(self, keywords, kw, en='', de='', fr='', it=''):
+        d = keywords.setdefault(kw, {})
+        if 'en' not in d:
+            d['en'] = en
+        if 'de' not in d:
+            d['de'] = de
+        if 'fr' not in d:
+            d['fr'] = fr
+        if 'it' not in d:
+            d['it'] = it
+
+    def process_path(self, path, pattern, types, keywords):
+        w = os.walk(path, topdown=True)
+        for (dirpath, dirnames, filenames) in w:
+            for filename in filenames:
+                ext = filename.split('.')[-1]
+                if ext not in types:
+                    continue
+                filepath = os.path.join(dirpath, filename)
+                with open(filepath, 'r') as f:
+                    s = f.read()
+                    lst = pattern.findall(s)
+                    for kw in lst:
+                        # print(kw)
+                        self.upd_kwd(keywords, kw, en='', de='', fr='', it='')
 
     def data_import(self, tn, content):
         o = []

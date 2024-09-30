@@ -84,7 +84,7 @@ function ui_mlang(lang)
     } else {
         $('#status_mlang').html(lang); // sets an explicit lang value
     }
-    $("h1,h2,h3,h4,h5,span,button,a,label,p,div").each(function(index){
+    $("h1,h2,h3,h4,h5,span,button,a,label,p,div,li").each(function(index){
         var key = this.getAttribute('mlang');
         if(key !== '' && key !== null) {
             if (mlang[key] !== null && mlang[key] !== undefined) {
@@ -280,14 +280,25 @@ function o_save(e=null, stack=[], lvl=0, callback=null) {
         url = 's';
         $.post(url, {data: s}, function(data, status){
             if (status === 'success') {
+                if (data.startsWith('Error')) {
+                    alert(data);
+
+                    return;
+                }
                 show_message(data);
-                if (callback !== null) { callback();}
+                if (callback !== null) {
+                    callback();
+                }
             } else {
                 alert("Error: " + status);}
         });
     }
 }
 
+function data_summary()
+{
+    update_content('output', 'summary');
+}
 
 // Update class name drop down
 function upd_class_name(add_all, callback)

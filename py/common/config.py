@@ -1,13 +1,13 @@
 
 ROLES = {
-    'SA': 'Super Admin',
+    'DC': 'Data Contributor',
     'OA': 'Organization Administrator',
-    'DC': 'Data Contributor'
+    'SA': 'Super Admin',
 }
 
 LANGUAGES = {
-    'en': 'English',
     'de': 'Deutsch',
+    'en': 'English',
     'fr': 'Française',
     'it': 'Italiana',
     'bg': 'Български',

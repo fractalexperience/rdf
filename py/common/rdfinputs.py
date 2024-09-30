@@ -196,14 +196,15 @@ class RdfInputs:
             </div>
         </div>""")
 
-
     @input_row_decorator
     def input_lang(self, tn, un, mem, valstr, h, pid, u, o):
         with open(os.path.join(os.getcwd(), self.rdfeng.assets_folder, 'mlang.json'), 'r', encoding='utf-8') as f:
             mlang = json.load(f)
         langs = set([lang for ml in mlang.values() for lang in ml])
         o2 = []
-        for lang in langs:
+        for lang in config.LANGUAGES:
+            if not lang in langs:
+                continue
             sel = ' selected="true"' if lang == valstr else ''
             lang_name = config.LANGUAGES.get(lang, lang)
             o2.append(f'<option{sel} value="{lang}">{lang_name}</option>')
@@ -242,7 +243,6 @@ class RdfInputs:
             f'oninput="$(this).addClass(\'rdf-changed\')" '
             f'name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}">{valstr}</textarea>')
 
-
     def input_hash(self, tn, un, mem, valstr, h, pid, u, o, bgc):
         lbl = 'Password *'
         o.append(f"""
@@ -250,19 +250,20 @@ class RdfInputs:
     <div class="col-2" style="text-align: right;">
     <b><label for="{mem.name}" mlang="{mem.name}" class="text-primary">{lbl}</label></b>
     </div>        
-    <div class="col-4">
-        <input type="text" class="form-control rdf-property" id="pwd_hash" disabled="true" 
-        onchange="$(this).addClass(\'rdf-changed\')" value="{valstr}"
-        name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />
-    </div>        
+       
     <div class="col-4">    
         <input type="text" class="form-control" rows="2" id="pwd_native"
         onkeyup="update_val(\'pwd_hash\', \'sha1?s=\'+$(this).val(), null); $(\'#pwd_hash\').addClass(\'rdf-changed\');"/>
     </div>
     <div class="col-2"> 
-        <button type="button" class="btn btn-primary "
+        <button type="button" class="btn btn-warning btn-sm"
             onclick="var pwd=gen_pwd(10); $(\'#pwd_native\').val(pwd); update_val(\'pwd_hash\', \'sha1?s=\'+pwd, null); $(\'#pwd_hash\').addClass(\'rdf-changed\');"  
             mlang="btn_gen_pwd">Generate password</button>
     </div>
+    <div class="col-4">
+        <input type="text" class="form-control rdf-property" id="pwd_hash" disabled="true" style="display: none;"
+        onchange="$(this).addClass(\'rdf-changed\')" value="{valstr}"
+        name="{mem.name}" h="{h}" i="{pid}" p="{mem.name}" u="{u}" />
+    </div>     
 </div>
 """)

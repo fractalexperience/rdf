@@ -4,6 +4,7 @@ import common.htmlutil as htmlutil
 from common.rdfcms import RdfCms
 from common.rdfinputs import RdfInputs
 from common.rdfviews import RdfViews
+from common.rdfvalidators import RdfValidators
 
 
 class RdfEngine:
@@ -17,6 +18,7 @@ class RdfEngine:
         self.cms = RdfCms(self.schema, self.sqleng, self.base_rdf, self.base_data, self.assets_folder, self.data_folder)
         self.inp = RdfInputs(self)
         self.vws = RdfViews(self)
+        self.vld = RdfValidators(self)
         self.bgcolors = {0: '#FFFFFF', 1: '#EBF5FB', 2: '#AED6F1', 3: '#85C1E9', 4: '#5DADE2', 5: '#3498DB'}
 
     def o_rep(self, tn, un, cn):
@@ -693,22 +695,40 @@ class RdfEngine:
             mdef = self.schema.get_class(u)
         h = None
         if not i and uri_or_hash != 'root':
+
+            validation_result = self.o_validate(tn, u, obj_data)
+            if not validation_result[0]:
+                return validation_result[0], validation_result[1], [u], None, None
+
             i, h, success, msg = self.cms.o_instantiate(tn, uri_or_hash)
             if parent_id:
                 # Save the new instantiated object as a property in the parent record
                 if p:
                     self.cms.o_associate(tn, puri, parent_id, u, i, p)
-                #
-                # ndx = cdef.idx_memuri_ndx.get(mdef.uri) if cdef else None
-                # if ndx:
-                #     q = f"INSERT INTO {tn} (s, p, o, v, h) VALUES({parent_id},{ndx},'{i}',NULL,NULL)"
-                #     self.sqleng.exec_insert(q)
 
         for nested_obj in obj_data:
-            t2 = self.o_save_recursive(tn, nested_obj, mdef, i)
-            h = t2[1]
+            save_result = self.o_save_recursive(tn, nested_obj, mdef, i)
+            if not save_result[0]:
+                return save_result  # Escape from recursion with error message
+            h = save_result[4]
 
-        return 'Data saved', [u], i, h
+        return True, 'Data saved', [u], i, h
+
+    def o_validate(self, tn, uri, obj_data):
+        cdef = self.schema.get_class(uri)
+        if not cdef:
+            return False, f'Class not found: {uri}'
+        data = dict(zip([t.get('p') for t in obj_data], [t.get('v') for t in obj_data]))
+        success, message = self.vld.v_generic(tn, cdef, data)
+        if not success:
+            return success, message
+        method = self.vld.class_validators.get(uri)
+        if method:
+            success, message = method(tn, cdef, data)
+            if not success:
+                return success, message
+
+        return True, 'Success'
 
     def o_save_instantiate(self, tn, uri):
         """ Instantiates a new compound object and returns the new id. """
