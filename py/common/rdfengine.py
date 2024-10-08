@@ -1,10 +1,13 @@
 import json
+import os
+
 import common.util as util
 import common.htmlutil as htmlutil
 from common.rdfcms import RdfCms
 from common.rdfinputs import RdfInputs
 from common.rdfviews import RdfViews
 from common.rdfvalidators import RdfValidators
+from common.rdfrep import RdfReporter
 
 
 class RdfEngine:
@@ -15,10 +18,13 @@ class RdfEngine:
         self.base_data = base_data
         self.assets_folder = assets_folder
         self.data_folder = data_folder
+
         self.cms = RdfCms(self.schema, self.sqleng, self.base_rdf, self.base_data, self.assets_folder, self.data_folder)
         self.inp = RdfInputs(self)
         self.vws = RdfViews(self)
         self.vld = RdfValidators(self)
+        self.rep = RdfReporter(self)
+
         self.bgcolors = {0: '#FFFFFF', 1: '#EBF5FB', 2: '#AED6F1', 3: '#85C1E9', 4: '#5DADE2', 5: '#3498DB'}
 
     def o_rep(self, tn, un, cn):
@@ -142,27 +148,35 @@ class RdfEngine:
         htmlutil.wrap_h(o, ['id', 'subject', 'predicate', 'object', 'value', 'hash'], 'RDF Data')
         return ''.join(o)
 
+    def check_browse_condition(self, tn, cn):
+        if not tn:
+            return False, 'No database selected'
+        if not self.sqleng.table_exists(tn):
+            return False, f'Database table does not exist {tn}'
+        cdef = self.schema.get_class(cn)
+        # This should be improved - we should be able to instantiate even a simple type
+        if not cdef.members:
+            return False, f'Class {cn} is a property'
+        return True, 'Ok'
+
     def o_browse(self, tn, cn, fi):
         """
         cn => Class name, fi => Filter
         Creates a render of all objects with a given name and filtered using a given criteria
         Filter consists of property#value pairs concatenated with "|"
         """
-        if not tn:
-            return '<h1>No database selected</h1>'
-        if not self.sqleng.table_exists(tn):
-            return f'<h1>Database table does not exist {tn}</h1>'
-        js = self.o_list(tn, cn)
-        cdef = self.schema.get_class(cn)
-        # This should be improved - we should be able to instantiate even a simple type
-        if not cdef.members:
-            return f'<h1>Class {cn} is a property</h1>'
+        success, msg = self.check_browse_condition(tn, cn)
+        if not success:
+            return f'<h1>{msg}</h1>'
 
         o = []
+        cdef = self.schema.get_class(cn)
         fields = self.get_fields_to_show(cdef)
         o.append('<thead>')
         htmlutil.wrap_tr(o, [f.name for f in fields], 'class="table-info"', is_th=True)
         o.append('</thead>')
+
+        js = self.o_list(tn, cn)
         for obj in sorted(js, key=lambda ob: ob.get('id'), reverse=True):
             obj_row = []
             h = obj.get('hash')
@@ -170,13 +184,84 @@ class RdfEngine:
             htmlutil.wrap_tr(o, obj_row, f'onclick="o_edit(\'{h}\')"')
 
         htmlutil.wrap_table(o, attr='class="table table-hover table-bordered display dataTable"')
-        o.insert(0, f'<div style="margin-top: 10px;">'
-                    f'<button id="btn_new" class="btn btn-primary" onclick="o_new(\'{cdef.uri}\')" mlang="o_new">'
+        o.insert(0, f'<div class="row" style="margin-top: 10px;">'
+                    f'<div class="col-sm-3">'
+                    f'<button id="btn_new" class="btn btn-primary" onclick="o_new(\'{cdef.uri}\')" mlang="o_new" style="margin-right: 5px;">'
                     f'New {cdef.name}'
                     f'</button>'
+                    f'</div>'
+                    f'<div class="col-sm-9" style="text-align: right;">'
+                    f'<span id="o_export_slot">'
+                    f'<button id="btn_export" class="btn btn-info btn-sm" '
+                    f'onclick="update_content(\'o_export_slot\', \'export?cn={cdef.uri}\')" mlang="o_export">'
+                    f'Export data for {cdef.name}'
+                    f'</button>'
+                    f'</span>'
+                    f'</div>'
                     f'</div>')
         htmlutil.append_interactive_table(o)
         return ''.join(o)
+
+    def o_export(self, tn, cn, fi):
+        success, msg = self.check_browse_condition(tn, cn)
+        if not success:
+            return f'<h1>{msg}</h1>'
+        js = self.o_list(tn, cn)
+        path_temp = self.cms.get_path_temp(tn)
+        filename = f'{cn}_export.json'
+        location = os.path.join(path_temp, filename)
+        with open(location, 'w') as f:
+            json.dump(js, f, indent=4)
+        url = f'{self.cms.base_data}/{tn}/{self.cms.base_temp}/{filename}'
+        return f'<span mlang="download_link">Download: </span><a href="{url}" target="_blank"><img src="img/json.png" width="32px" alt="{filename}"/></a>'
+
+    def std_reports(self, tn, un):
+        location = os.path.join(self.assets_folder, 'reports.json')
+        try:
+            with open(location, 'r') as f:
+                reps = json.load(f)
+        except:
+            return f'<h1 mlang="no_standard_reports_found">No standard reports found</h1>'
+
+        o = [f'<h1 mlang="std_reports">Standard reports</h1>'
+             f'<table class="table table-hover table-bordered display dataTable">'
+             f'<thead><tr><th>Name</th><th>Description</th><th>Definition</th></tr></thead>'
+             f'<tbody>']
+        for rep in reps:
+            name = rep.get('Name')
+            desc = rep.get('Description')
+            h = rep.get('hash')
+            o.append(f'<tr><td>{name}</td><td>{desc}</td>'
+                     f'<td>'
+                     f'<div class="bg-light">'
+                     f'<span id="view_{h}">'
+                     f'<button class="btn btn-info btn-sm" onclick="window.open(\'view_std_rep?h={h}\')" mlang="view_report">'
+                     f'View'
+                     f'</button></span>'
+                     f'<span id="export_{h}" style="margin-left: 10px;">'
+                     f'<button class="btn btn-info btn-sm" '
+                     f'onclick="update_content(\'export_{h}\', \'view_std_rep?h={h}&format=excel\')" mlang="export_excel">'
+                     f'Export to Excel'
+                     f'</button></span>'
+                     f'</div>'
+                     f'</td>'
+                     f'</tr>')
+        o.append('</tbody></table>')
+        htmlutil.append_interactive_table(o)
+        return ''.join(o)
+
+    def o_view_std_rep(self, tn, u, h, format):
+        location = os.path.join(self.assets_folder, 'reports.json')
+        try:
+            with open(location, 'r') as f:
+                reps = json.load(f)
+        except:
+            return f'<h1 mlang="no_standard_reports_found">No standard reports found</h1>'
+        rep_matching = [r for r in reps if r.get('hash') == h]
+        if not rep_matching:
+            return f'<h1 mlang="report_not_found">Report not found [{h}]</h1>'
+        rep = rep_matching[0]
+        return self.rep.r_rep(tn, format, rep)
 
     def o_populate_field_values(self, tn, obj, o):
         if obj is None:
@@ -278,7 +363,6 @@ class RdfEngine:
             t = u.get('db')
             tn = t[0]
         # TODO: Check also cross-organization situation
-
         obj, cdef = self.get_obj_and_cdef(tn, rdf_h, go)
         if obj is None:
             return '<h1>Object not found</h1>'
@@ -316,9 +400,12 @@ class RdfEngine:
 
     def o_represent_footer(self, o, obj, cdef):
         h = obj.get('hash') if obj else None
-        frag_o_save = f'o_save(null, [], 0, function() {{ o_edit(\'{h}\')}} )' \
+        frag_o_save = f'o_save(null, [], 0, false, function() {{ o_edit(\'{h}\')}} )' \
             if h \
-            else f'o_save(null, [], 0, function() {{ update_content(\'output\', \'b?cn={cdef.uri}\'); }})'
+            else f'o_save(null, [], 0, false, function() {{ update_content(\'output\', \'b?cn={cdef.uri}\'); }})'
+        frag_o_clone = f'o_save(null, [], 0, true, function() {{ update_content(\'output\', \'b?cn={cdef.uri}\'); }})' \
+            if h else f'alert("Cannot clone unsaved object");'
+
         frag_btn_save = (f'<button type="button" class="btn btn-primary" style="margin-right: 10px;" '
                          f'onclick="{frag_o_save}" '
                          f'id="btn_o_save" mlang="o_save">Save data</button>')
@@ -331,11 +418,16 @@ class RdfEngine:
                            f'onclick="update_content(\'output\',\'b?cn={cdef.uri}\')" '
                            f'id="btn_o_cancel" mlang="o_cancel">Cancel</button>')
 
+        frag_btn_clone = (f'<button type="button" class="btn btn-warning" style="margin-right: 10px;" '
+                          f'onclick="{frag_o_clone}" '
+                          f'id="btn_o_clone" mlang="o_clone">Clone</button>') if h else ''
+
         o.append('</form>'
                  '<div style="text-align: right; margin-top:10px;">')
         o.append(frag_btn_save)
         o.append(frag_btn_del)
         o.append(frag_btn_cancel)
+        o.append(frag_btn_clone)
         o.append('</div>')
 
     def o_edit_members(self, o, tn, un, stack, obj, methods, wrap_in_form, grand_parent):
@@ -874,7 +966,7 @@ class RdfEngine:
             method = self.vws.view_tab_methods.get(u) if u else None
             v = prop_value.replace(src, f'<span style="background-color: Yellow;">{src}</span>')
             if method:
-                v = method( tn, un, mem, prop_value, h, prop_id, u, o, 'White')
+                v = method(tn, un, mem, prop_value, h, prop_id, u, o, 'White')
             o.append(f'<tr onclick="window.open(\'view?h={h}\')">'
                      f'<td>{cdef.name}</td><td>{mem.name}</td><td>{v}</td>'
                      f'</tr>')

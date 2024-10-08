@@ -1,0 +1,121 @@
+[
+    {
+        "id": "rep_published_items",
+        "hash": "11a95480bdbebd40e37ecfefa71afb4a1fbf4878",
+        "code": 105,
+        "type": "Custom Report",
+        "Name": "Published Items",
+        "Description": "Displays all published items in the inventory.",
+        "Publish": "True",
+        "Definition": "{\"var\":{\"inv_no\":\"1000.1\",\"title\":\"1000.2\",\"v_name\":\"1000.3\",\"desc\":\"1000.4\",\"publish\":\"1000.11\"},\"select\":[\"inv_no\",\"title\",\"v_name\",\"desc\"],\"where\":[\"publish=='True'\"],\"order\":[\"inv_no\"]}"
+    },
+    {
+        "id": "photos",
+        "hash": "bf0edaa78f5e3f02b836b0e02122b8710f5a3559",
+        "code": 105,
+        "type": "Custom Report",
+        "Name": "Photos",
+        "Description": "Displays images for all items in a list view.",
+        "Publish": "True",
+        "Definition": "{\"var\":{\"img\":\"1000.5\",\"itm_id\":\"1000.1\",\"itm_title\":\"1000.2\"},\"select\":[\"self.resolve_img(img)\",\"itm_id\",\"itm_title\"],\"where\":[],\"order\":[\"itm_id\"]}"
+    },
+    {
+        "id": "artists",
+        "hash": "cf6630c3b802f479e325931c597c40264940332b",
+        "code": 105,
+        "type": "Custom Report",
+        "Name": "All Artists",
+        "Description": "Displays in formation for all authors",
+        "Publish": "True",
+        "Definition": "{\"var\":{\"v1\":\"1030.1\",\"v2\":\"1030.2\",\"v3\":\"1030.3\",\"v4\":\"1030.4\",\"v5\":\"1030.5\",\"v6\":\"1030.6\",\"v7\":\"1030.7\"},\"select\":[\"v1|Name of the artist\",\"v2\",\"v3\",\"v4\",\"v5\",\"v6\",\"v7\"],\"where\":[],\"order\":[\"v1:desc\"]}"
+    },
+    {
+        "id": "data_list",
+        "hash": "87e631beb9cd3c89fd77dff8e912dd92d29f97dc",
+        "code": 105,
+        "type": "Custom Report",
+        "Name": "Data List",
+        "Description": "Generic list t of all items",
+        "Definition": "{\"var\":{\"inv_no\":\"1000.1\",\"title\":\"1000.2\",\"preamble\":\"1000.8.1\"},\"select\":[\"inv_no\",\"title\",\"preamble|Preamble\"],\"where\":[],\"order\":[\"inv_no\"]}"
+    },
+    {
+        "id": "group",
+        "hash": "64292b1c2b2e13ead8788fc8a2b8edc8c1db4ecd",
+        "code": 105,
+        "type": "Custom Report",
+        "Name": "Group",
+        "Description": "Displays Classification/Group property + Inventory No. Title and remark",
+        "Publish": "True",
+        "Definition": "{\"var\":{\"inv_no\":\"1000.1\",\"title\":\"1000.2\",\"remarks\":\"1000.14\",\"context\":\"1000.16.3.1\",\"group\":\"1000.16.2.1\",\"department\":\"1000.16.1.1\"},\"select\":[\"group|Group\",\"department|Department\",\"context|Using context\",\"inv_no\",\"title\",\"remarks\"],\"where\":[],\"order\":[\"inv_no\"]}"
+    },
+    {
+        "id": "inventory_date",
+        "hash": "1257205e243f19967e144344894b510ff15f9637",
+        "code": 105,
+        "type": "Custom Report",
+        "Name": "Inventory Date",
+        "Description": "Represents containerization information",
+        "Publish": "True",
+        "Definition": "{\"var\":{\"inv_no\":\"1000.1\",\"title\":\"1000.2\",\"location\":\"1000.7.1\",\"quantity\":\"1000.10\",\"inventor\":\"1000.13.1\",\"date\":\"1000.9\"},\"select\":[\"date|Inventory Date\",\"inventor|Inventarisation\",\"inv_no\",\"title\",\"location\",\"quantity\"],\"where\":[],\"order\":[\"inv_no\"]}"
+    },
+    {
+        "id": "inventory_number",
+        "hash": "6d37cab66ea5f75e57060ad25b06577db39a44fe",
+        "code": 105,
+        "type": "Custom Report",
+        "Name": "Inventory Number",
+        "Publish": "True",
+        "Definition": "{\"var\":{\"inv_no\":\"1000.1\",\"title\":\"1000.2\",\"old_title\":\"1000.35\",\"preamble\":\"1000.8.1\",\"remarks\":\"1000.14\"},\"select\":[\"inv_no\",\"old_title\",\"title\",\"preamble\",\"remarks\"],\"where\":[],\"order\":[\"inv_no\"]}",
+        "Description": "Items by inventory number"
+    },
+    {
+        "id": "inventory_number_incl_quantity",
+        "hash": "75af71558f245840e0fd7353746a61b7ed305e7f",
+        "code": 105,
+        "type": "Custom Report",
+        "Name": "Inventory number including quantity",
+        "Description": "Same as \"Inventory number\" but with an extra column for quantity",
+        "Publish": "True",
+        "Definition": "{\"var\":{\"inv_no\":\"1000.1\",\"title\":\"1000.2\",\"old_title\":\"1000.35\",\"preamble\":\"1000.8.1\",\"quantity\":\"1000.10\",\"remarks\":\"1000.14\"},\"select\":[\"inv_no\",\"old_title\",\"title\",\"preamble\",\"quantity\"],\"where\":[],\"order\":[\"inv_no\"]}"
+    },
+    {
+        "id": "number_if_items_and_medias",
+        "hash": "6cf52a4728b2677520b429c52041465e38b491c4",
+        "code": 105,
+        "type": "Custom Report",
+        "Name": "Number of items and medias",
+        "Publish": "True",
+        "Definition": "{\"var\":{\"inv_no\":\"1000.1\",\"title\":\"1000.2\",\"preamble\":\"1000.8.1\",\"cnt_img\":\"1000.count(5)\",\"cnt_med\":\"1000.count(6)\"},\"select\":[\"inv_no\",\"title\",\"preamble\",\"cnt_img|Number of images\",\"cnt_med|Number of media objects\"],\"where\":[],\"order\":[\"inv_no\"]}",
+        "Description": "Inventory number, title, preamble and number of attached images and media files."
+    },
+    {
+        "id": "location",
+        "hash": "6469ac84a89748bb67b923c833ed0c778a17aea3",
+        "code": 105,
+        "type": "Custom Report",
+        "Name": "Location",
+        "Description": "Item location, Item Number, title and quantity",
+        "Publish": "True",
+        "Definition": "{\"var\":{\"inv_no\":\"1000.1\",\"title\":\"1000.2\",\"location\":\"1000.7.1\",\"quantity\":\"1000.10\"},\"select\":[\"location|Location\",\"inv_no\",\"title\",\"quantity\"],\"where\":[],\"order\":[\"location\"]}"
+    },
+    {
+        "id": "inventory_number_and_date",
+        "hash": "7eab3d9f26b691df43d5cf3f78aaa3d106c54dca",
+        "code": 105,
+        "type": "Custom Report",
+        "Name": "Overview of all records with acquistition and Condition",
+        "Description": "Inventory number, title, date, and purchase data",
+        "Publish": "True",
+        "Definition": "{\"var\":{\"inv_no\":\"1000.1\",\"title\":\"1000.2\",\"date\":\"1000.9\",\"ackquisition\":\"1000.36.4.1\",\"designation\":\"1000.36.6.1\",\"currency\":\"1000.36.5.2\",\"ppu\":\"1000.36.7\",\"donor\":\"1000.36.1\",\"prev_owner\":\"1000.36.2\",\"state\":\"1000.22.1.1\"},\"select\":[\"inv_no\",\"title\",\"date\",\"ackquisition|Type of acquisition\",\"designation|Value designation\",\"currency|Currency\",\"ppu|Price\",\"donor|Donor\",\"prev_owner|Previous owner\",\"state|State\"],\"where\":[],\"order\":[\"location\"]}"
+    },
+    {
+        "id": "preamble_location_remarks",
+        "hash": "3016466c2cdcda099b8e814baf31ff245789beff",
+        "code": 105,
+        "type": "Custom Report",
+        "Name": "Overview of all Records sorted by Preambles",
+        "Publish": "True",
+        "Description": "Preamble, location, remarks",
+        "Definition": "{\"var\":{\"inv_no\":\"1000.1\",\"title\":\"1000.2\",\"preamble\":\"1000.8.1\",\"location\":\"1000.7.1\",\"remarks\":\"1000.14\"},\"select\":[\"preamble|Preamble\",\"inv_no\",\"title\",\"location|Location\",\"remarks|Remarks\"],\"where\":[],\"order\":[\"preamble\"]}"
+    }
+]

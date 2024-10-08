@@ -20,6 +20,10 @@ class RdfValidators:
             'email': self.v_email,
         }
 
+        self.delete_validators = {
+            'org' : self.v_del_org
+        }
+
         self.success_message = 'Success'
 
     def v_generic(self, tn, cdef, data):
@@ -69,3 +73,8 @@ class RdfValidators:
             return False, 'Empty user name'
         valid = re.match(r'^[a-zA-Z_][\w.-]*$', value)
         return (True, self.success_message) if valid else (False, 'Invalid user name')
+
+    # On delete validators - whether an object can be deleted
+    def v_del_org(self, value):
+
+        return False, f'Organization {value} cannot be deleted!'

@@ -101,7 +101,7 @@ class RdfInputs:
     @input_row_decorator
     def input_current_user(self, tn, un, mem, valstr, h, pid, u, o):
         o.append(
-            f'<input type="text" class="form-control rdf-property" value="{un}" '
+            f'<input type="text" class="form-control rdf-property rdf-changed" value="{un}" '
             f'disabled="true" '
             f'oninput="$(this).addClass(\'rdf-changed\')" '
             f'id="{mem.name}" name="{mem.name}" i="{pid}" p="{mem.name}" u="{u}" />')

@@ -10,11 +10,6 @@ function dc_reports()
     url = 'b?cn=custom_report';
     update_content('output', url);
 }
-function dc_view_reports()
-{
-    url = 'r?cn=custom_report';
-    update_content('output', url);
-}
 
 function view_report(h)
 {
@@ -231,7 +226,7 @@ function o_delete_lst(objects, callback) {
     });
 }
 
-function o_save(e=null, stack=[], lvl=0, callback=null) {
+function o_save(e=null, stack=[], lvl=0, do_clone, callback=null) {
     // Init
     if (e === null) {
         e = $('#form_object_edit');
@@ -241,22 +236,22 @@ function o_save(e=null, stack=[], lvl=0, callback=null) {
          console.log('Initializing stack ...', stack.length);
     }
     c = stack[stack.length-1];
-    if ($(e).hasClass('rdf-property') && $(e).hasClass('rdf-changed')) {
+    if ($(e).hasClass('rdf-property') && ($(e).hasClass('rdf-changed') || do_clone)) {
         var u = $(e).attr('u');
         var p = $(e).attr('p');
-        var i = $(e).attr('i');
-        var v = $(e).attr('type') == 'checkbox' ? $(e).prop('checked') :  $(e).val();
+        var i = do_clone ? '' : $(e).attr('i');
+        var v = $(e).attr('type') == 'checkbox' ? ($(e).prop('checked') ? 'true' : 'false') :  $(e).val();
         c.data.push({p:p,i:i,v:v,u:u});
-        console.log('level='+lvl, 'container=',c.id, ' u='+u+', p='+p+', i='+i+', v=', v);
+        //console.log('level='+lvl, 'container=',c.id, ' u='+u+', p='+p+', i='+i+', v=', v);
     }
     if ($(e).hasClass('rdf-container')) {
-        var id = $(e).attr('id');
-        var i = $(e).attr('i');
+        var id = do_clone ?  $(e).attr('u') : $(e).attr('id'); // To create new instance we need to provide the uri to the server
+        var i = do_clone ? '' : $(e).attr('i');
         var u = $(e).attr('u');
         nc = {id: id, i: i, u: u, lvl: lvl, data: []};
         c.data.push(nc);
         stack.push(nc);
-        console.log('Pushing in stack new container ...', stack.length, ' level: ', lvl, ' u=', u);
+        //console.log('Pushing in stack new container ...', stack.length, ' level: ', lvl, ' u=', u);
     }
 
     // Loop
@@ -264,7 +259,7 @@ function o_save(e=null, stack=[], lvl=0, callback=null) {
     if (l.length !== 0) {
        for (var i=0; i < l.length; i++) {
            // console.log('Recursin - level', lvl+1)
-            o_save(l[i], stack, lvl+1, callback); // Recursion
+            o_save(l[i], stack, lvl+1, do_clone, callback); // Recursion
        }
     }
 
@@ -276,13 +271,12 @@ function o_save(e=null, stack=[], lvl=0, callback=null) {
     // Finalize
     if (lvl == 0) {
         s = JSON.stringify(stack[0]);
-        //alert(s);
+        alert(s);
         url = 's';
         $.post(url, {data: s}, function(data, status){
             if (status === 'success') {
                 if (data.startsWith('Error')) {
-                    alert(data);
-
+                    //alert(data);
                     return;
                 }
                 show_message(data);

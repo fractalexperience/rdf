@@ -99,7 +99,7 @@ class RdfViews:
     def view_image(self, tn, un, mem, valstr, h, pid, u, o, bgc):
         img_data = json.loads(valstr) if valstr else None
         if img_data is None:
-            o.append('<div><img src="img/unchecked.png" /></div>')
+            o.append('<div><img src="img/picture.png" width="45px" /></div>')
             return
         location_thumb = img_data.get('thumb') if img_data else 'img/picture.png'
         location_img = img_data.get('img') if img_data else 'img/picture.png'
@@ -130,7 +130,7 @@ class RdfViews:
 
     @view_row_decorator
     def view_db_table(self, tn, un, mem, valstr, h, pid, u, o):
-        o.append(f'<h1>TODO: View DB table {mem.name} - {valstr}</h1>')
+        o.append(f'<h4>{valstr}</h4>')
 
     @view_row_decorator
     def view_report_def(self, tn, mem, valstr, h, pid, u, o):
@@ -195,100 +195,6 @@ class RdfViews:
     #     # print('Looping class', cdef.name)
     #     self.populate_rep_cache(tn, cache, var[1:])
 
-    def init_rep_variables(self, tn, variables, cache, rep, roots, select, where, order):
-        # Prepare variables_by_expr
-        variables_by_expr = {}
-        for var_name, var_expr in variables.items():
-            variables_by_expr.setdefault(var_expr, []).append(var_name)
-        for root in roots:
-            objects = self.rdfeng.o_list(tn, root, True)
-            # objects = cache.get(root)
-            if not objects:
-                continue
-            for obj in objects:
-                stack, row, header, body, keys = [root], [], rep.get('header'), rep.get('body'), rep.get('keys')
-                self.loop_obj(tn, cache, obj, stack, row, variables_by_expr, select, where, order, header, body, keys)
-
-    def loop_obj(self, tn, cache, obj, stack, row, variables_by_expr, select, where, order, header, body, keys):
-        cdef = self.rdfeng.schema.get_class(obj.get('code'))
-        properties = [p for p in obj.items() if p[0] not in ['id', 'hash', 'code', 'type']]
-        self.loop_properties(tn, cache, cdef, properties, stack, row, variables_by_expr, select, where, order, header, body, keys)
-
-    def loop_properties(self, tn, cache, cdef, properties, stack, row, variables_by_expr, select, where, order, header, body, keys):
-        if len(properties) == 0:
-            # Init the variable
-            for ndx, value in row:
-                # key = f'{base}.{ndx}'
-                variable_names = variables_by_expr.get(ndx)
-                if not variable_names:
-                    continue
-                for variable_name in variable_names:
-                    if variable_name:
-                        mem = cdef.members.get(ndx.split('.')[-1])
-                        if not mem:
-                            continue
-                        property_name = mem.name
-                        header[variable_name] = property_name
-                        try:
-                            exec(f'{variable_name}=\'{value}\'')
-                        except:
-                            pass
-
-            # Evaluate order key - TODO
-            # Evaluate select expressions
-            result_row = []
-            for expr in [s.split('|')[0] for s in select]:
-                try:
-                    result_value = eval(expr)
-                    result_row.append(result_value)
-                except:
-                    result_row.append(None)
-
-            if (len(stack) == 1  # Only do this for level 1 of recursion
-                    and any(v for v in result_row if v is not None)):
-                # Evaluate where condition
-                condition = True
-                for expr in where:
-                    try:
-                        local_condition = eval(expr)
-                        if not local_condition:
-                            condition = False
-                    except:
-                        condition = False
-
-                if condition:
-                    h = util.get_sha1(''.join(f'{result_row}'))
-                    if h not in keys:
-                        body.append(result_row)
-                        keys.add(h)
-
-            return
-
-        first = properties[0]
-        ndx = first[0]
-        values = first[1]
-
-        for value in values:
-            if isinstance(value, int):  # property is a complex object
-                # Read nested object - first check in cache
-                nested_obj = cache.get(value)
-                if not nested_obj:
-                    nested_obj = self.rdfeng.cms.o_read(tn, value, use_ndx=True)
-                    cache[value] = nested_obj
-
-                if nested_obj:
-                    nested_properties = nested_obj.get('data')
-                    if nested_properties:
-                        nested_properties['code'] = nested_obj.get('code')
-                        stack.append(ndx)
-                        self.loop_obj(tn, cache, nested_properties, stack, row, variables_by_expr, select, where, order, header, body, keys)
-                        stack.pop()
-
-            # Property is simple string value
-            row.append(('.'.join(stack + [ndx]), value))
-            self.loop_properties(tn, cache, cdef, properties[1:], stack, row, variables_by_expr, select, where, order, header, body, keys)
-            # row.pop()
-
     def play_custom_report(self, tn, obj, cdef, fmt):
         if obj is None:
             return '<h1>Object not found</h1>'
@@ -299,71 +205,7 @@ class RdfViews:
         if data is None:
             return '<h1>Wrong object definition</h1>'
 
-        try:
-            rdef = json.loads(data.get('Definition')[0])
-            title = data.get('Name')[0]
-            variables = rdef.get('var')
-            if not variables:
-                return '<h1>Incorrect report definition - no variables defined.</h1>'
-            select = rdef.get('select')
-            if not select:
-                return '<h1>Incorrect report definition - no select expressions defined.</h1>'
-            where = rdef.get('where', [])
-            order = rdef.get('order', [])
-
-            ts = datetime.datetime.now()
-            # Step 1 - Prepare object cache
-            cache = {}  # Here we store raw data
-            roots = set([v.split('.')[0] for v in variables.values()])
-
-            # Step 2 - Evaluate variables
-            # header => Header captions collected from variable definitions. If no header in variable definition,
-            #           the caption is extracted from class definition.
-            # body => the report data
-            # keys => a set containing all unique hash codes generated by report rows content - only unique rows
-            #         are included
-            rep = {'header': {}, 'body': [], 'keys': set()}
-            self.init_rep_variables(tn, variables, cache, rep, roots, select, where, order)
-
-            # Step 3 - Render report
-            header = rep.get('header')
-            body = rep.get('body')
-
-            # Excel version
-            if fmt == 'excel':
-                df = pd.DataFrame(body)
-                path_temp = self.rdfeng.cms.get_path_temp(tn)
-                filename = f'r{util.to_camelcase(title)}.xlsx'
-                path = os.path.join(path_temp, filename)
-                df.to_excel(path, header=False, index=False)
-                url = f'{self.rdfeng.base_data}/{tn}/{self.rdfeng.cms.base_temp}/{filename}'
-                return f'<a href="{url}"><img src="img/xlsx.png" width="42px"/></a>'
-
-            tdiff = datetime.datetime.now() - ts
-            o = [f'<h1 style="margin-top: 30px;">{title}</h1>'
-                 f'<div>Report created in {tdiff.microseconds / 1e6} s</div>'
-                 f'<table class="table table-bordered display dataTable"><thead>'
-                 f'<tr class="table-info">']
-            for expr in select:
-                capt = expr.split('|')[1] if '|' in expr else header.get(expr, '-')
-                o.append(f'<th>{capt}</th>')
-            o.append('</tr></thead><tbody>')
-            for row in body:
-                o.append('<tr>')
-                for value in row:
-                    value_str = '&nbsp;' if value is None else value
-                    o.append(f'<td>{value_str}</td>')
-                o.append('</tr>')
-            o.append(f'</tbody></table>')
-
-            # Interactive table snippet - !! UNREM to enable interactive table !!
-            htmlutil.append_interactive_table(o)
-            return ''.join(o)
-
-        except Exception as ex:
-            return f'<h1>Incorrect object definition: {ex}</h1>'
-
-
+        return self.rdfeng.rep.r_rep(tn, fmt, data)
 
 
 
