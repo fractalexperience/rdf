@@ -1625,6 +1625,12 @@
 		"fr": "Après l'importation du fichier choisi, les chaînes multilingues actuelles seront mises à jour et les valeurs précédentes seront remplacées.",
 		"it": "Dopo l'importazione del file scelto, le stringhe multilingue correnti verranno aggiornate e i valori precedenti verranno sovrascritti."
 	},
+	"mlimport_message": {
+		"en": "Multi-language file can be imported from an Excel file with the following structure:",
+		"de": "Mehrsprachige Dateien können aus einer Excel-Datei mit folgender Struktur importiert werden:",
+		"fr": "Un fichier multilingue peut être importé à partir d'un fichier Excel avec la structure suivante :",
+		"it": "Il file multilingue può essere importato da un file Excel con la seguente struttura:"
+	},
 	"key_string_identifier": {
 		"en": "key - The identifier of the string",
 		"de": "key - Die Kennung der Zeichenfolge",

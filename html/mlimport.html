@@ -5,8 +5,8 @@
         <h1 mlang="mlang_import" style="text-align: center;">Import multi-language strings</h1>
             <span mlang="choose_import_file"><b>Choose import file</b></span>
             <input type="file" id="file_mlimport" accept="*.xlsx" style="display: block;"/>
-        <diV mlang="mlimport_explanation" style="margin: 10px;">
-Multi-language file can be imported from an Excel file with the following structure:
+        <diV style="margin: 10px;">
+            <span mlang="mlimport_message">Multi-language file can be imported from an Excel file with the following structure:</span>
             <ul>
             <li mlang="key_string_identifier">key - The identifier of the string</li>
             <li mlang="en_english_translation">en - English translation</li>
@@ -16,7 +16,7 @@ Multi-language file can be imported from an Excel file with the following struct
             </ul>
         </div>
         <h1 mlang="mlimport_warning" style="text-align: center; margin-top: 10px;">WARNING !</h1>
-        <div class="bg-danger" style="padding:10px; color: White;">
+        <div class="bg-danger" style="padding:10px; color: White;" mlang="mlimport_explanation">
             After importing of the chosen file, current multi-language strings will be updated and previous values will be overridden.
         </div>
         <div style="margin-top: 10px; text-align: center;">
