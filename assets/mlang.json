@@ -84,10 +84,10 @@
 		"it": "Non autorizzato"
 	},
 	"msg_unknown_object": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Unknown object",
+		"de": "Unbekanntes Objekt",
+		"fr": "Objet inconnu",
+		"it": "Oggetto sconosciuto"
 	},
 	"msg_todo": {
 		"en": "",
