@@ -252,220 +252,220 @@
 		"it": "Nome della classe"
 	},
 	"property_name": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Property name",
+		"de": "Eigenschaftsname",
+		"fr": "Nom de la propriété",
+		"it": "Nome della proprietà"
 	},
 	"property_value": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Property value",
+		"de": "Eigenschaftswert",
+		"fr": "Valeur de la propriété",
+		"it": "Valore della proprietà"
 	},
 	"masschg_warning": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "WARNING",
+		"de": "WARNUNG",
+		"fr": "AVERTISSEMENT",
+		"it": "AVVERTIMENTO"
 	},
 	"masschg_explanation": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "When clicking \"Apply changes\" button, the selected property value will be set to the value entered for all objects, which have this property. Note, that the change cannot be undone.",
+		"de": "Wenn Sie auf die Schaltfläche „Änderungen übernehmen“ klicken, wird der ausgewählte Eigenschaftswert für alle Objekte, die diese Eigenschaft haben, auf den eingegebenen Wert gesetzt. Beachten Sie, dass die Änderung nicht rückgängig gemacht werden kann.",
+		"fr": "Lorsque vous cliquez sur le bouton « Appliquer les modifications », la valeur de la propriété sélectionnée sera définie sur la valeur saisie pour tous les objets qui ont cette propriété. Notez que la modification ne peut pas être annulée.",
+		"it": "Quando si fa clic sul pulsante \"Applica modifiche\", il valore della proprietà selezionata verrà impostato sul valore immesso per tutti gli oggetti che hanno questa proprietà. Nota che la modifica non può essere annullata."
 	},
 	"do_masschg": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Apply mass chabges",
+		"de": "Massenänderungen anwenden",
+		"fr": "Appliquer des modifications de masse",
+		"it": "Applica modifiche di massa"
 	},
 	"btn_edit_data": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Edit data",
+		"de": "Daten bearbeiten",
+		"fr": "Modifier les données",
+		"it": "Modifica dati"
 	},
 	"btn_dc_view_data": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "View data",
+		"de": "Daten anzeigen",
+		"fr": "Afficher les données",
+		"it": "Visualizza i dati"
 	},
 	"btn_dc_reports": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Reports",
+		"de": "Berichte",
+		"fr": "Rapports",
+		"it": "Rapporti"
 	},
 	"btn_dc_view_reports": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "View reports",
+		"de": "Berichte anzeigen",
+		"fr": "Voir les rapports",
+		"it": "Visualizza i report"
 	},
 	"dc_manage_custom_repots": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Manage custom reports",
+		"de": "Verwalten benutzerdefinierter Berichte",
+		"fr": "Gérer les rapports personnalisés",
+		"it": "Gestisci report personalizzati"
 	},
 	"btn_dc_data_management": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Data management",
+		"de": "Datenmanagement",
+		"fr": "Gestion des données",
+		"it": "Gestione dei dati"
 	},
 	"data_import": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Import",
+		"de": "Import",
+		"fr": "Importer",
+		"it": "Importare"
 	},
 	"view_data": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "View data",
+		"de": "Daten anzeigen",
+		"fr": "Afficher les données",
+		"it": "Visualizza i dati"
 	},
 	"btn_org_settings": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Organization settings",
+		"de": "Organisationseinstellungen",
+		"fr": "Paramètres de l'organisation",
+		"it": "Impostazioni dell'organizzazione"
 	},
 	"btn_admin_users": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Manage users",
+		"de": "Benutzer verwalten",
+		"fr": "Gérer les utilisateurs",
+		"it": "Gestisci utenti"
 	},
 	"manage_data": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Manage data",
+		"de": "Daten verwalten",
+		"fr": "Gérer les données",
+		"it": "Gestire i dati"
 	},
 	"data_backup": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Data backup",
+		"de": "Datensicherung",
+		"fr": "Sauvegarde des données",
+		"it": "Backup dei dati"
 	},
 	"organizations": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Organizations",
+		"de": "Organisationen",
+		"fr": "Organisations",
+		"it": "Organizzazioni"
 	},
 	"users": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Users",
+		"de": "Benutzer",
+		"fr": "Utenti",
+		"it": "Utilisatrices"
 	},
 	"mlang": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Multi language strings",
+		"de": "Mehrsprachige Zeichenfolgen",
+		"fr": "Chaînes multilingues",
+		"it": "Stringhe multilingua"
 	},
 	"export_mlang": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Export multi language strings",
+		"de": "Exportieren mehrsprachiger Zeichenfolgen",
+		"fr": "Exporter des chaînes multilingues",
+		"it": "Esporta stringhe multilingua"
 	},
 	"import_mlang": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Import multi language strings",
+		"de": "Importieren mehrsprachiger Zeichenfolgen",
+		"fr": "Importer des chaînes multilingues",
+		"it": "Importa stringhe multilingua"
 	},
 	"reports": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Reports",
+		"de": "Berichte",
+		"fr": "Rapports",
+		"it": "Rapporti"
 	},
 	"sa_list_orgs": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "List organizations",
+		"de": "Organisationen auflisten",
+		"fr": "Liste des organisations",
+		"it": "Elenca le organizzazioni"
 	},
 	"sa_list_users": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "List users",
+		"de": "Auflisten von Benutzern",
+		"fr": "Liste des utilisateurs",
+		"it": "Elenca gli utenti"
 	},
 	"search": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Search",
+		"de": "Suchen",
+		"fr": "Recherche",
+		"it": "Ricerca"
 	},
 	"help": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Help",
+		"de": "Hilfe",
+		"fr": "Aide",
+		"it": "Aiuto"
 	},
 	"basic_search": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Quick search",
+		"de": "Schnellsuche",
+		"fr": "Recherche rapide",
+		"it": "Ricerca veloce"
 	},
 	"search_text": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Search text",
+		"de": "Suchtext",
+		"fr": "Texte à rechercher",
+		"it": "Cerca testo"
 	},
 	"inventory_2024": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Cultart Inventory",
+		"de": "Cultart Inventory",
+		"fr": "Cultart Inventory",
+		"it": "Cultart Inventory"
 	},
 	"login": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Login",
+		"de": "Login",
+		"fr": "Login",
+		"it": "Login"
 	},
 	"settings": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Settings",
+		"de": "Einstellungen",
+		"fr": "Paramètres",
+		"it": "Impostazioni"
 	},
 	"logout": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Logout",
+		"de": "Ausloggen",
+		"fr": "Déconnexion",
+		"it": "Esci"
 	},
 	"user_settings": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "User settings",
+		"de": "Benutzereinstellungen",
+		"fr": "Paramètres utilisateur",
+		"it": "Impostazioni utente"
 	},
 	"user_full_name": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "User full name",
+		"de": "Vollständiger Name des Benutzers",
+		"fr": "Nom complet de l'utilisateur",
+		"it": "Nome completo dell'utente"
 	},
 	"save_settings": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Save settings",
+		"de": "Einstellungen speichern",
+		"fr": "Enregistrer les paramètres",
+		"it": "Salva le impostazioni"
 	},
 	"name": {
 		"en": "Name",
@@ -1494,16 +1494,16 @@
 		"it": "Applicabilità legale"
 	},
 	"key": {
-		"en": "en",
-		"de": "de",
-		"fr": "fr",
-		"it": "it"
+		"en": "Key",
+		"de": "Schlüssel",
+		"fr": "Clé",
+		"it": "Chiave"
 	},
 	"btn_edit": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Edit",
+		"de": "Bearbeiten",
+		"fr": "Modifier",
+		"it": "Modificare"
 	},
 	"mlang_imported": {
 		"en": "",
@@ -1620,10 +1620,10 @@
 		"it": "Persona dell'inventario"
 	},
 	"mlimport_explanation": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "After importing of the chosen file, current multi-language strings will be updated and previous values will be overridden.",
+		"de": "Nach dem Importieren der ausgewählten Datei werden die aktuellen mehrsprachigen Zeichenfolgen aktualisiert und vorherige Werte überschrieben.",
+		"fr": "Après l'importation du fichier choisi, les chaînes multilingues actuelles seront mises à jour et les valeurs précédentes seront remplacées.",
+		"it": "Dopo l'importazione del file scelto, le stringhe multilingue correnti verranno aggiornate e i valori precedenti verranno sovrascritti."
 	},
 	"key_string_identifier": {
 		"en": "key - The identifier of the string",
@@ -1638,33 +1638,33 @@
 		"it": "en - traduzione in inglese"
 	},
 	"de_german_translation": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "de - German translation",
+		"de": "de - Deutsche Übersetzung",
+		"fr": "de - traduzione in tedesco",
+		"it": "de - Traduction allemande"
 	},
 	"fr_french_translation": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "fr - French translation",
+		"de": "fr - Französische Übersetzung",
+		"fr": "fr - Traduction française",
+		"it": "fr - traduzione francese"
 	},
 	"it_italian_translation": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "it - Italian translation",
+		"de": "it - Italienische Übersetzung",
+		"fr": "it - Traduction italienne",
+		"it": "it - traduzione italiana"
 	},
 	"mlimport_warning": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "WARNING",
+		"de": "WARNUNG",
+		"fr": "AVERTISSEMENT",
+		"it": "AVVERTIMENTO"
 	},
 	"do_mlang_import": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Start import",
+		"de": "Import starten",
+		"fr": "Démarrer l'importation",
+		"it": "Avvia importazione"
 	}
 }
