@@ -90,166 +90,166 @@
 		"it": "Oggetto sconosciuto"
 	},
 	"msg_todo": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "TO DO",
+		"de": "TO DO",
+		"fr": "TO DO",
+		"it": "TO DO"
 	},
 	"o_delete": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Delete",
+		"de": "Löschen",
+		"fr": "Supprimer",
+		"it": "Eliminare"
 	},
 	"o_cancel": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Cancel",
+		"de": "Stornieren",
+		"fr": "Annuler",
+		"it": "Cancellare"
 	},
 	"o_edit_members": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Edit members",
+		"de": "Mitglieder bearbeiten",
+		"fr": "Modifier les membres",
+		"it": "Modifica membri"
 	},
 	"btn_previous_object": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Previous object",
+		"de": "Vorheriges Objekt",
+		"fr": "Objet précédent",
+		"it": "Oggetto precedente"
 	},
 	"btn_next_object": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Next object",
+		"de": "Nächstes Objekt",
+		"fr": "Objet suivant",
+		"it": "Oggetto successivo"
 	},
 	"btn_view_object": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "View object",
+		"de": "Objekt anzeigen",
+		"fr": "Voir l'objet",
+		"it": "Visualizza oggetto"
 	},
 	"btn_append_property": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Append property",
+		"de": "Eigenschaft anhängen",
+		"fr": "Aggiungi proprietà",
+		"it": "Ajouter une propriété"
 	},
 	"view_report": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "View report",
+		"de": "Bericht anzeigen",
+		"fr": "Voir le rapport",
+		"it": "Visualizza il report"
 	},
 	"export_excel": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Export to Excel",
+		"de": "Nach Excel exportieren",
+		"fr": "Exporter vers Excel",
+		"it": "Esporta in Excel"
 	},
 	"change_password": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Change password",
+		"de": "Kennwort ändern",
+		"fr": "Changer le mot de passe",
+		"it": "Cambiare la password"
 	},
 	"old_password": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Old password",
+		"de": "Altes Passwort",
+		"fr": "Ancien mot de passe",
+		"it": "Vecchia password"
 	},
 	"new_password": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "New password",
+		"de": "Neues Passwort",
+		"fr": "Nouveau mot de passe",
+		"it": "Nuova password"
 	},
 	"new_password_retype": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "New password retype",
+		"de": "Neues Passwort erneut eingeben",
+		"fr": "Nouveau mot de passe à saisir à nouveau",
+		"it": "Nuova password ridigitata"
 	},
 	"dbexport": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Database export",
+		"de": "Datenbankexport",
+		"fr": "Exportation de base de données",
+		"it": "Esportazione del database"
 	},
 	"export_format": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Export format",
+		"de": "Exportformat",
+		"fr": "Format d'exportation",
+		"it": "Formato di esportazione"
 	},
 	"do_data_export": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Start data export",
+		"de": "Datenexport starten",
+		"fr": "Démarrer l'exportation des données",
+		"it": "Avvia l'esportazione dei dati"
 	},
 	"dbimport": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Database import",
+		"de": "Datenbankimport",
+		"fr": "Importation de base de données",
+		"it": "mportazione del database"
 	},
 	"choose_import_file": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Choose import file",
+		"de": "Importdatei auswählen",
+		"fr": "Choisir le fichier d'importation",
+		"it": "Scegli il file di importazione"
 	},
 	"dbimport_explanation": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Data import can be done from a previously created database dump file in JSON format. Note, that no other export formats are accepted for this operation.",
+		"de": "Der Datenimport kann aus einer zuvor erstellten Datenbank-Dumpdatei im JSON-Format erfolgen. Beachten Sie, dass für diesen Vorgang keine anderen Exportformate akzeptiert werden.",
+		"fr": "L'importation de données peut être effectuée à partir d'un fichier de vidage de base de données précédemment créé au format JSON. Notez qu'aucun autre format d'exportation n'est accepté pour cette opération.",
+		"it": "L'importazione dei dati può essere effettuata da un file dump del database creato in precedenza in formato JSON. Nota che per questa operazione non sono accettati altri formati di esportazione."
 	},
 	"dbimport_warning": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "After clicking on \"Start import\" button, all existing data from the current database will be permanently deleted. Please make sure you have backup data!",
+		"de": "Nach dem Klicken auf die Schaltfläche „Import starten“ werden alle vorhandenen Daten aus der aktuellen Datenbank unwiederbringlich gelöscht. Bitte stellen Sie sicher, dass Sie über Sicherungsdaten verfügen!",
+		"fr": "Après avoir cliqué sur le bouton Démarrer l'importation, toutes les données existantes de la base de données actuelle seront définitivement supprimées. Veuillez vous assurer que vous disposez de données de sauvegarde!",
+		"it": "Dopo aver cliccato sul pulsante \"Start import\", tutti i dati esistenti dal database corrente saranno eliminati definitivamente. Assicurati di avere i dati di backup!"
 	},
 	"do_data_import": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Start data import",
+		"de": "Datenimport starten",
+		"fr": "Démarrer l'importation des données",
+		"it": "Avvia l'importazione dei dati"
 	},
 	"email": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Email",
+		"de": "E-Mail",
+		"fr": "E-mail",
+		"it": "E-mail"
 	},
 	"enter_email": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Enter email",
+		"de": "E-Mail eingeben",
+		"fr": "Entrez l'email",
+		"it": "Inserisci l'email"
 	},
 	"reset_email": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Reset email",
+		"de": "Reset email",
+		"fr": "Reset email",
+		"it": "Reset email"
 	},
 	"lbl_remember_me": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Remember me",
+		"de": "Erinnere dich an mich",
+		"fr": "Souviens-toi de moi",
+		"it": "Ricordati di me"
 	},
 	"class_name": {
-		"en": "",
-		"de": "",
-		"fr": "",
-		"it": ""
+		"en": "Class name",
+		"de": "Klassenname",
+		"fr": "Nom de la classe",
+		"it": "Nome della classe"
 	},
 	"property_name": {
 		"en": "",
