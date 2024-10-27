@@ -1,1 +1,1754 @@
-{"key": {"en": "Key", "de": "Schl\u00fcssel", "fr": "Cl\u00e9", "it": "Chiave"}, "root": {"en": NaN, "de": NaN, "fr": NaN, "it": NaN}, "rdf_template": {"en": "<b>RDF</b><br/><small><small>(Resource Description Framework)</small></small><br/>A Lightweight implementation", "de": "RDF Demonstration", "fr": "RDF D\u00e9mo", "it": "RDF Demo"}, "inventory_title": {"en": "INVENTORY", "de": "INVENTORY", "fr": "INVENTORY", "it": "INVENTORY"}, "inventory_subtitle": {"en": "The practical application for museums, galleries, art collections, private collections and libraries", "de": "Die praxisorientierte Anwendung f\u00fcr Museen, Galerien, Kunstsammlungen, Privatsammlungen und Bibliotheken", "fr": "Application orient\u00e9e vers la pratique pour mus\u00e9es, galerie, collections d'art, collections priv\u00e9e et biblioth\u00e8ques", "it": "Applicazione practica-orientat a per i musei, galerie, collezioni di arte, collezioni private et biblioteche"}, "login_username": {"en": "User Name", "de": "Benutzername", "fr": "Nom d'utilisateur", "it": "Nome utente"}, "login_pwd": {"en": "Password", "de": "Passwort", "fr": "Mot de passe", "it": "Password"}, "submit_login": {"en": "Submit", "de": "Login", "fr": "Soumettre", "it": "Invia"}, "forgot_password": {"en": "Forgot password", "de": "Passwort vergessen", "fr": "Mot de passe oubli\u0413\u00a9", "it": "Ha dimenticato la password"}, "data_summary": {"en": "Data summary", "de": "Datenzusammenfassung", "fr": "R\u00e9sum\u00e9 des donn\u00e9es", "it": "Riepilogo dei dati"}, "data_export": {"en": "Data export", "de": "Datenexport", "fr": "Exportation de donn\u00e9es", "it": "Esportazione dati"}, "mass_changes": {"en": "Mass changes", "de": "Massen\u00e4nderungen", "fr": "Changements de masse", "it": "Cambiamenti di massa"}, "total_rows": {"en": "Total rows", "de": "Zeilen gesamt", "fr": "Nombre total de lignes", "it": "Totale righe"}, "o_save": {"en": "Save object", "de": "Objekt speichern", "fr": "Enregistrer l'objet", "it": "Salva oggetto"}, "not_authorized": {"en": "Not authorized", "de": "Nicht autorisiert", "fr": "Non autoris\u00e9", "it": "Non autorizzato"}, "msg_unknown_object": {"en": "Unknown object", "de": "Unbekanntes Objekt", "fr": "Objet inconnu", "it": "Oggetto sconosciuto"}, "msg_todo": {"en": "TO DO", "de": "TO DO", "fr": "TO DO", "it": "TO DO"}, "o_delete": {"en": "Delete", "de": "L\u00f6schen", "fr": "Supprimer", "it": "Eliminare"}, "o_cancel": {"en": "Cancel", "de": "Stornieren", "fr": "Annuler", "it": "Cancellare"}, "o_edit_members": {"en": "Enter and edit data records", "de": "Datens\u00e4tze erfassen und bearbeiten", "fr": "Saisir et modifier des enregistrements", "it": "Inserire e modificare i record di dati"}, "btn_previous_object": {"en": "Previous object", "de": "Vorheriges Objekt", "fr": "Objet pr\u00e9c\u00e9dent", "it": "Oggetto precedente"}, "btn_next_object": {"en": "Next object", "de": "N\u00e4chstes Objekt", "fr": "Objet suivant", "it": "Oggetto successivo"}, "btn_view_object": {"en": "View object", "de": "Objekt anzeigen", "fr": "Voir l'objet", "it": "Visualizza oggetto"}, "btn_append_property": {"en": "Append property", "de": "Eigenschaft anh\u00e4ngen", "fr": "Aggiungi propriet\u00e0", "it": "Ajouter une propri\u00e9t\u00e9"}, "view_report": {"en": "View report", "de": "Bericht anzeigen", "fr": "Voir le rapport", "it": "Visualizza il report"}, "export_excel": {"en": "Export to Excel", "de": "Nach Excel exportieren", "fr": "Exporter vers Excel", "it": "Esporta in Excel"}, "change_password": {"en": "Change password", "de": "Kennwort \u00e4ndern", "fr": "Changer le mot de passe", "it": "Cambiare la password"}, "old_password": {"en": "Old password", "de": "Altes Passwort", "fr": "Ancien mot de passe", "it": "Vecchia password"}, "new_password": {"en": "New password", "de": "Neues Passwort", "fr": "Nouveau mot de passe", "it": "Nuova password"}, "new_password_retype": {"en": "New password retype", "de": "Neues Passwort erneut eingeben", "fr": "Nouveau mot de passe \u00e0 saisir \u00e0 nouveau", "it": "Nuova password ridigitata"}, "dbexport": {"en": "Database export", "de": "Datenbankexport", "fr": "Exportation de base de donn\u00e9es", "it": "Esportazione del database"}, "export_format": {"en": "Export format", "de": "Exportformat", "fr": "Format d'exportation", "it": "Formato di esportazione"}, "do_data_export": {"en": "Start data export", "de": "Datenexport starten", "fr": "D\u00e9marrer l'exportation des donn\u00e9es", "it": "Avvia l'esportazione dei dati"}, "dbimport": {"en": "Database import", "de": "Datenbankimport", "fr": "Importation de base de donn\u00e9es", "it": "mportazione del database"}, "choose_import_file": {"en": "Choose import file", "de": "Importdatei ausw\u00e4hlen", "fr": "Choisir le fichier d'importation", "it": "Scegli il file di importazione"}, "dbimport_explanation": {"en": "Data import can be done from a previously created database dump file in JSON format. Note, that no other export formats are accepted for this operation.", "de": "Der Datenimport kann aus einer zuvor erstellten Datenbank-Dumpdatei im JSON-Format erfolgen. Beachten Sie, dass f\u00fcr diesen Vorgang keine anderen Exportformate akzeptiert werden.", "fr": "L'importation de donn\u00e9es peut \u00eatre effectu\u00e9e \u00e0 partir d'un fichier de vidage de base de donn\u00e9es pr\u00e9c\u00e9demment cr\u00e9\u00e9 au format JSON. Notez qu'aucun autre format d'exportation n'est accept\u00e9 pour cette op\u00e9ration.", "it": "L'importazione dei dati pu\u00f2 essere effettuata da un file dump del database creato in precedenza in formato JSON. Nota che per questa operazione non sono accettati altri formati di esportazione."}, "dbimport_warning": {"en": "After clicking on \"Start import\" button, all existing data from the current database will be permanently deleted. Please make sure you have backup data!", "de": "Nach dem Klicken auf die Schaltfl\u00e4che \u201eImport starten\u201c werden alle vorhandenen Daten aus der aktuellen Datenbank unwiederbringlich gel\u00f6scht. Bitte stellen Sie sicher, dass Sie \u00fcber Sicherungsdaten verf\u00fcgen!", "fr": "Apr\u00e8s avoir cliqu\u00e9 sur le bouton D\u00e9marrer l'importation, toutes les donn\u00e9es existantes de la base de donn\u00e9es actuelle seront d\u00e9finitivement supprim\u00e9es. Veuillez vous assurer que vous disposez de donn\u00e9es de sauvegarde!", "it": "Dopo aver cliccato sul pulsante \"Start import\", tutti i dati esistenti dal database corrente saranno eliminati definitivamente. Assicurati di avere i dati di backup!"}, "do_data_import": {"en": "Start data import", "de": "Datenimport starten", "fr": "D\u00e9marrer l'importation des donn\u00e9es", "it": "Avvia l'importazione dei dati"}, "email": {"en": "Email", "de": "E-Mail", "fr": "E-mail", "it": "E-mail"}, "enter_email": {"en": "Enter email", "de": "E-Mail eingeben", "fr": "Entrez l'email", "it": "Inserisci l'email"}, "reset_email": {"en": "Reset email", "de": "Reset email", "fr": "Reset email", "it": "Reset email"}, "lbl_remember_me": {"en": "Remember me", "de": "Erinnere dich an mich", "fr": "Souviens-toi de moi", "it": "Ricordati di me"}, "class_name": {"en": "Class name", "de": "Klassenname", "fr": "Nom de la classe", "it": "Nome della classe"}, "property_name": {"en": "Property name", "de": "Eigenschaftsname", "fr": "Nom de la propri\u00e9t\u00e9", "it": "Nome della propriet\u00e0"}, "property_value": {"en": "Property value", "de": "Eigenschaftswert", "fr": "Valeur de la propri\u00e9t\u00e9", "it": "Valore della propriet\u00e0"}, "masschg_warning": {"en": "WARNING", "de": "WARNUNG", "fr": "AVERTISSEMENT", "it": "AVVERTIMENTO"}, "masschg_explanation": {"en": "When clicking \"Apply changes\" button, the selected property value will be set to the value entered for all objects, which have this property. Note, that the change cannot be undone.", "de": "Wenn Sie auf die Schaltfl\u00e4che \u201e\u00c4nderungen \u00fcbernehmen\u201c klicken, wird der ausgew\u00e4hlte Eigenschaftswert f\u00fcr alle Objekte, die diese Eigenschaft haben, auf den eingegebenen Wert gesetzt. Beachten Sie, dass die \u00c4nderung nicht r\u00fcckg\u00e4ngig gemacht werden kann.", "fr": "Lorsque vous cliquez sur le bouton \u00ab\u00a0Appliquer les modifications\u00a0\u00bb, la valeur de la propri\u00e9t\u00e9 s\u00e9lectionn\u00e9e sera d\u00e9finie sur la valeur saisie pour tous les objets qui ont cette propri\u00e9t\u00e9. Notez que la modification ne peut pas \u00eatre annul\u00e9e.", "it": "Quando si fa clic sul pulsante \"Applica modifiche\", il valore della propriet\u00e0 selezionata verr\u00e0 impostato sul valore immesso per tutti gli oggetti che hanno questa propriet\u00e0. Nota che la modifica non pu\u00f2 essere annullata."}, "do_masschg": {"en": "Apply mass chabges", "de": "Massen\u00e4nderungen anwenden", "fr": "Appliquer des modifications de masse", "it": "Applica modifiche di massa"}, "btn_edit_data": {"en": "Edit data", "de": "Daten bearbeiten", "fr": "Modifier les donn\u00e9es", "it": "Modifica dati"}, "btn_dc_view_data": {"en": "Search", "de": "Suche", "fr": "Recherche", "it": "Ricerca"}, "btn_dc_reports": {"en": "Reports", "de": "Berichte", "fr": "Rapports", "it": "Rapporti"}, "btn_dc_view_reports": {"en": "View reports", "de": "Berichte anzeigen", "fr": "Voir les rapports", "it": "Visualizza i report"}, "dc_manage_custom_repots": {"en": "Manage custom reports", "de": "Verwalten benutzerdefinierter Berichte", "fr": "G\u00e9rer les rapports personnalis\u00e9s", "it": "Gestisci report personalizzati"}, "btn_dc_data_management": {"en": "Data management", "de": "Datenmanagement", "fr": "Gestion des donn\u00e9es", "it": "Gestione dei dati"}, "data_import": {"en": "Import", "de": "Import", "fr": "Importer", "it": "Importare"}, "view_data": {"en": "Search", "de": "Suche", "fr": "Recherche", "it": "Ricerca"}, "btn_org_settings": {"en": "Organization settings", "de": "Organisationseinstellungen", "fr": "Param\u00e8tres de l'organisation", "it": "Impostazioni dell'organizzazione"}, "btn_admin_users": {"en": "Manage users", "de": "Benutzer verwalten", "fr": "G\u00e9rer les utilisateurs", "it": "Gestisci utenti"}, "manage_data": {"en": "Manage data", "de": "Daten verwalten", "fr": "G\u00e9rer les donn\u00e9es", "it": "Gestire i dati"}, "data_backup": {"en": "Data backup", "de": "Datensicherung", "fr": "Sauvegarde des donn\u00e9es", "it": "Backup dei dati"}, "organizations": {"en": "Organizations", "de": "Organisationen", "fr": "Organisations", "it": "Organizzazioni"}, "users": {"en": "Users", "de": "Benutzer", "fr": "Utenti", "it": "Utilisatrices"}, "mlang": {"en": "Multi language strings", "de": "Mehrsprachige Zeichenfolgen", "fr": "Cha\u00eenes multilingues", "it": "Stringhe multilingua"}, "export_mlang": {"en": "Export multi language strings", "de": "Exportieren mehrsprachiger Zeichenfolgen", "fr": "Exporter des cha\u00eenes multilingues", "it": "Esporta stringhe multilingua"}, "import_mlang": {"en": "Import multi language strings", "de": "Importieren mehrsprachiger Zeichenfolgen", "fr": "Importer des cha\u00eenes multilingues", "it": "Importa stringhe multilingua"}, "reports": {"en": "Reports", "de": "Berichte", "fr": "Rapports", "it": "Rapporti"}, "sa_list_orgs": {"en": "List organizations", "de": "Organisationen auflisten", "fr": "Liste des organisations", "it": "Elenca le organizzazioni"}, "sa_list_users": {"en": "List users", "de": "Auflisten von Benutzern", "fr": "Liste des utilisateurs", "it": "Elenca gli utenti"}, "search": {"en": "Search", "de": "Suchen", "fr": "Recherche", "it": "Ricerca"}, "help": {"en": "Help", "de": "Hilfe", "fr": "Aide", "it": "Aiuto"}, "basic_search": {"en": "Quick search", "de": "Schnellsuche", "fr": "Recherche rapide", "it": "Ricerca veloce"}, "search_text": {"en": "Search text", "de": "Suchtext", "fr": "Texte \u00e0 rechercher", "it": "Cerca testo"}, "inventory_2024": {"en": "Cultart Inventory", "de": "Cultart Inventory", "fr": "Cultart Inventory", "it": "Cultart Inventory"}, "login": {"en": "Login", "de": "Login", "fr": "Login", "it": "Login"}, "settings": {"en": "Settings", "de": "Einstellungen", "fr": "Param\u00e8tres", "it": "Impostazioni"}, "logout": {"en": "Logout", "de": "Ausloggen", "fr": "D\u00e9connexion", "it": "Esci"}, "user_settings": {"en": "User settings", "de": "Benutzereinstellungen", "fr": "Param\u00e8tres utilisateur", "it": "Impostazioni utente"}, "user_full_name": {"en": "User full name", "de": "Vollst\u00e4ndiger Name des Benutzers", "fr": "Nom complet de l'utilisateur", "it": "Nome completo dell'utente"}, "save_settings": {"en": "Save settings", "de": "Einstellungen speichern", "fr": "Enregistrer les param\u00e8tres", "it": "Salva le impostazioni"}, "name": {"en": "Name", "de": "Name", "fr": "Nom", "it": "Nome"}, "nc_name": {"en": "NC Name", "de": "NC-Name", "fr": "Nom NC", "it": "Nome NC"}, "description": {"en": "Description", "de": "Beschreibung", "fr": "Description du r\u00f4le de l'utilisateur", "it": "Descrizione"}, "user_role": {"en": "User Role", "de": "Benutzer-Rolle", "fr": "R\u00f4le de l'utilisateur", "it": "Ruolo utente"}, "hash": {"en": "Hash", "de": "Hash", "fr": "Corbeille", "it": "Hash"}, "general_descriptor": {"en": "General descriptor", "de": "Allgemeiner Deskriptor", "fr": "Descripteur g\u00e9n\u00e9ral", "it": "Descrittore generale"}, "url": {"en": "URL", "de": "URL", "fr": "URL", "it": "URL"}, "media_type": {"en": "Media type", "de": "Medientyp", "fr": "Type de m\u00e9dia", "it": "Tipo di media"}, "date": {"en": "Date", "de": "Datum", "fr": "Date", "it": "Data"}, "integer": {"en": "Integer", "de": "Ganzzahl", "fr": "Entier", "it": "Numero intero"}, "decimal": {"en": "Decimal", "de": "Dezimal", "fr": "D\u00e9cimale", "it": "Decimale"}, "boolean": {"en": "Boolean", "de": "Boolescher Wert", "fr": "Bool\u00e9en", "it": "Booleano"}, "currency_code": {"en": "Currency code", "de": "W\u00e4hrungscode", "fr": "Code devise", "it": "Codice valuta"}, "image": {"en": "Image", "de": "Bild", "fr": "Image", "it": "Immagine"}, "database": {"en": "Database", "de": "Datenbank", "fr": "Base de donn\u00e9es", "it": "Database"}, "lang": {"en": "Lang", "de": "Lang", "fr": "Lang", "it": "Lang"}, "media_object": {"en": "Media object", "de": "Medienobjekt", "fr": "Objet m\u00e9dia", "it": "Oggetto multimediale"}, "report_definition": {"en": "Report definition", "de": "Bericht Definition", "fr": "D\u00e9finition du rapport", "it": "Definizione di rapporto"}, "organization": {"en": "Organization", "de": "Organisation", "fr": "Organisation", "it": "Organizzazione"}, "address": {"en": "Address", "de": "Adresse", "fr": "Adresse", "it": "Indirizzo"}, "web_page": {"en": "Web page", "de": "Web-Seite", "fr": "Page web", "it": "Pagina web"}, "picture": {"en": "Picture", "de": "Bild", "fr": "Image", "it": "Immagine"}, "user": {"en": "User", "de": "Benutzer", "fr": "Utilisateur", "it": "Utente"}, "username": {"en": "Username", "de": "Benutzername", "fr": "Nom d'utilisateur", "it": "Nome utente"}, "role": {"en": "Role", "de": "Rolle", "fr": "R\u00f4le", "it": "Ruolo"}, "password_hash": {"en": "Password hash", "de": "Passwort-Hash", "fr": "Mot de passe", "it": "Password"}, "language": {"en": "Language", "de": "Sprache", "fr": "Langue", "it": "Lingua"}, "address_line_1": {"en": "Address line 1", "de": "Adresse Zeile 1", "fr": "Adresse ligne 1", "it": "Indirizzo riga 1"}, "address_line_2": {"en": "Address line 2", "de": "Anschrift Zeile 2", "fr": "Ligne d'adresse 2", "it": "Indirizzo riga 2"}, "city": {"en": "City", "de": "Stadt", "fr": "Ville", "it": "Citt\u00e0"}, "zip_code": {"en": "ZIP code", "de": "Postleitzahl", "fr": "Code postal", "it": "Codice postale"}, "country": {"en": "Country", "de": "Land", "fr": "Pays", "it": "Paese"}, "image_extended": {"en": "Image extended", "de": "Bild erweitert", "fr": "Image \u00e9tendue", "it": "Immagine estesa"}, "location": {"en": "Location", "de": "Standort", "fr": "Emplacement", "it": "Posizione"}, "file_name": {"en": "File name", "de": "Name der Datei", "fr": "Nom du fichier", "it": "Nome del file"}, "title": {"en": "Title", "de": "Titel", "fr": "Titre de l'image", "it": "Titolo"}, "thumbnail": {"en": "Thumbnail", "de": "Vorschaubild", "fr": "Vignette", "it": "Miniatura"}, "width": {"en": "Width", "de": "Breite", "fr": "Largeur", "it": "Larghezza"}, "height": {"en": "Height", "de": "H\u00f6he", "fr": "Hauteur", "it": "Altezza"}, "media_object_extended": {"en": "Media object extended", "de": "Medienobjekt erweitert", "fr": "Objet m\u00e9dia \u00e9tendu", "it": "Oggetto multimediale esteso"}, "custom_report": {"en": "Custom Report", "de": "Benutzerdefinierter Bericht", "fr": "Rapport personnalis\u00e9", "it": "Rapporto personalizzato"}, "publish": {"en": "Publish", "de": "Ver\u00f6ffentlichen", "fr": "Publier", "it": "Pubblicare"}, "definition": {"en": "Definition", "de": "Definition", "fr": "D\u00e9finition", "it": "Definizione"}, "inventory_item": {"en": "Inventory Item", "de": "Inventarartikel", "fr": "Article d'inventaire", "it": "Voce d'inventario"}, "inventory_no": {"en": "Inventory No.", "de": "Inventar Nr.", "fr": "Num\u00e9ro d'inventaire", "it": "N. inventario"}, "vernacular_name": {"en": "Vernacular Name", "de": "Vernakul\u00e4rer Name", "fr": "Nom vernaculaire", "it": "Nome vernacolare"}, "preamble": {"en": "Preamble", "de": "Pr\u00e4ambel", "fr": "Pr\u00e9ambule", "it": "Preambolo"}, "inventory_date": {"en": "Inventory date", "de": "Datum der Bestandsaufnahme", "fr": "Date d'inventaire", "it": "Data di inventario"}, "quantity": {"en": "Quantity", "de": "Menge", "fr": "Quantit\u00e9", "it": "Quantit\u00e0"}, "publish_data": {"en": "Publish data", "de": "Daten ver\u00f6ffentlichen", "fr": "Publier les donn\u00e9es", "it": "Pubblicare i dati"}, "transfer_in_visitor_catalog": {"en": "Transfer in Visitor Catalog", "de": "\u00dcbertragung in den Besucherkatalog", "fr": "Transfert dans le catalogue des visiteurs", "it": "Trasferimento nel catalogo visitatori"}, "inventory_manager": {"en": "Inventory Manager", "de": "Inventar-Manager", "fr": "Gestionnaire d'inventaire", "it": "Gestore dell'inventario"}, "general_remarks": {"en": "General Remarks", "de": "Allgemeine Bemerkungen", "fr": "Remarques g\u00e9n\u00e9rales", "it": "Osservazioni generali"}, "dating": {"en": "Dating", "de": "Datierung", "fr": "Datation", "it": "Datazione"}, "classification": {"en": "Classification", "de": "Klassifizierung", "fr": "Classification", "it": "Classificazione"}, "origin_author": {"en": "Origin/Author", "de": "Herkunft/Urheber", "fr": "Origine/Auteur", "it": "Origine/Autore"}, "inscription": {"en": "Inscription", "de": "Aufschrift", "fr": "Inscription", "it": "Iscrizione"}, "measures": {"en": "Measures", "de": "Ma\u00dfe", "fr": "Mesures", "it": "Misure"}, "material": {"en": "Material", "de": "Material", "fr": "Mat\u00e9riau", "it": "Materiale"}, "temporary_location": {"en": "Temporary Location", "de": "Tempor\u00e4rer Standort", "fr": "Emplacement temporaire", "it": "Luogo temporaneo"}, "condition": {"en": "Condition", "de": "Zustand", "fr": "Condition d'utilisation", "it": "Condizione"}, "art_general_information": {"en": "Art - General Information", "de": "Kunst - Allgemeine Informationen", "fr": "Art - Informations g\u00e9n\u00e9rales", "it": "Arte - Informazioni generali"}, "art_exhibitions": {"en": "Art - Exhibitions", "de": "Kunst - Ausstellungen", "fr": "Art - Expositions", "it": "Arte - Mostre"}, "art_books_and_catalogues": {"en": "Art - Books and Catalogues", "de": "Kunst - B\u00fccher und Kataloge", "fr": "Art - Livres et catalogues", "it": "Arte - Libri e cataloghi"}, "artist": {"en": "Artist", "de": "K\u00fcnstler", "fr": "Artiste", "it": "Artista"}, "press_and_tv": {"en": "Press and TV", "de": "Presse und TV", "fr": "Presse et TV", "it": "Stampa e TV"}, "signature": {"en": "Signature", "de": "Unterschrift", "fr": "Signature", "it": "Firma"}, "literature_basic_info": {"en": "Literature basic info", "de": "Literatur Basisinformationen", "fr": "Informations de base sur la litt\u00e9rature", "it": "Informazioni di base sulla letteratura"}, "literature_appearance": {"en": "Literature appearance", "de": "Aussehen der Literatur", "fr": "Apparence de la litt\u00e9rature", "it": "Aspetto della letteratura"}, "literature_origin": {"en": "Literature origin", "de": "Herkunft der Literatur", "fr": "Origine de la litt\u00e9rature", "it": "Origine della letteratura"}, "literature_additional_info": {"en": "Literature additional info", "de": "Literatur Zusatzinfo", "fr": "Informations compl\u00e9mentaires sur la litt\u00e9rature", "it": "Informazioni aggiuntive sulla letteratura"}, "photography_info": {"en": "Photography info", "de": "Informationen zur Fotografie", "fr": "Informations sur la photographie", "it": "Informazioni sulla fotografia"}, "internet_site": {"en": "Internet site", "de": "Internetauftritt", "fr": "Site Internet", "it": "Sito Internet"}, "old_inventory_text_no": {"en": "Old Inventory Text / No.", "de": "Altes Inventar Text / Nr.", "fr": "Ancien inventaire Texte / No.", "it": "Vecchio inventario Testo / N."}, "purchase_value": {"en": "Purchase/Value", "de": "Kauf/Wert", "fr": "Achat/Valeur", "it": "Acquisto/Valore"}, "invenroy_manager": {"en": "Invenroy Manager", "de": "Invenroy Manager", "fr": "Gestionnaire de l'inventaire", "it": "Responsabile dell'inventario"}, "inventory_dating": {"en": "Inventory Dating", "de": "Inventar Datierung", "fr": "Datation de l'inventaire", "it": "Datazione dell'inventario"}, "date_of_work": {"en": "Date of work", "de": "Datum der Arbeit", "fr": "Date des travaux", "it": "Data del lavoro"}, "year_of": {"en": "Year of", "de": "Jahr von", "fr": "Ann\u00e9e de", "it": "Anno di"}, "year_to": {"en": "Year to", "de": "Jahr bis", "fr": "Ann\u00e9e jusqu'\u00e0", "it": "Anno a"}, "comment": {"en": "Comment", "de": "Bemerkung", "fr": "Commentaire", "it": "Commento"}, "department": {"en": "Department", "de": "Abteilung", "fr": "D\u00e9partement", "it": "Dipartimento"}, "group": {"en": "Group", "de": "Gruppe", "fr": "Groupe", "it": "Gruppo"}, "using_context": {"en": "Using context", "de": "Kontext verwenden", "fr": "Utilisation du contexte", "it": "Utilizzo del contesto"}, "abstract_function": {"en": "Abstract function", "de": "Abstrakte Funktion", "fr": "Fonction abstraite", "it": "Funzione astratta"}, "representation": {"en": "Representation", "de": "Darstellung", "fr": "Repr\u00e9sentation", "it": "Rappresentazione"}, "invenroy_classification": {"en": "Invenroy Classification", "de": "Invenroy Klassifizierung", "fr": "Invenroy Classification", "it": "Classificazione Invenroy"}, "acquisition_type": {"en": "Acquisition type", "de": "Erfassungsart", "fr": "Type d'acquisition", "it": "Tipo di acquisizione"}, "currency": {"en": "Currency", "de": "W\u00e4hrung", "fr": "Monnaie", "it": "Valuta"}, "value_designation": {"en": "Value designation", "de": "Wertbezeichnung", "fr": "D\u00e9signation de la valeur", "it": "Designazione del valore"}, "item_value": {"en": "Item Value", "de": "Gegenstand Wert", "fr": "Valeur de l'objet", "it": "Voce Valore"}, "donor": {"en": "Donor", "de": "Geber", "fr": "Donateur", "it": "Donatore"}, "previous_owner": {"en": "Previous Owner", "de": "Vorbesitzer", "fr": "Propri\u00e9taire pr\u00e9c\u00e9dent", "it": "Proprietario precedente"}, "acquisition_date": {"en": "Acquisition date", "de": "Datum der Anschaffung", "fr": "Date d'acquisition", "it": "Data di acquisizione"}, "type_of_acquisition": {"en": "Type of acquisition", "de": "Art des Erwerbs", "fr": "Type d'acquisition", "it": "Tipo di acquisizione"}, "price": {"en": "Price", "de": "Preis", "fr": "Prix de vente", "it": "Prezzo"}, "copyright": {"en": "Copyright", "de": "Urheberrecht", "fr": "Droits d'auteur", "it": "Copyright"}, "origin_location": {"en": "Origin/Location", "de": "Herkunft/Ort", "fr": "Origine/Localisation", "it": "Origine/Localit\u00e0"}, "author_producer": {"en": "Author/Producer", "de": "Autor/Produzent", "fr": "Auteur/Producteur", "it": "Autore/Produttore"}, "bibliography": {"en": "Bibliography", "de": "Literaturverzeichnis", "fr": "Bibliographie", "it": "Bibliografia"}, "type_of_inscription": {"en": "Type of inscription", "de": "Art der Inschrift", "fr": "Type d'inscription", "it": "Tipo di iscrizione"}, "inscription_type": {"en": "Inscription type", "de": "Art der Inschrift", "fr": "Type d'inscription", "it": "Tipo di iscrizione"}, "inscription_text": {"en": "Inscription text", "de": "Text der Inschrift", "fr": "Texte de l'inscription", "it": "Testo dell'iscrizione"}, "depth": {"en": "Depth", "de": "Tiefe", "fr": "Profondeur", "it": "Profondit\u00e0"}, "length": {"en": "Length", "de": "L\u00e4nge", "fr": "Longueur de l'inscription", "it": "Lunghezza"}, "diameter": {"en": "Diameter", "de": "Durchmesser", "fr": "Diam\u00e8tre", "it": "Diametro"}, "thickness": {"en": "Thickness", "de": "Dicke", "fr": "Epaisseur", "it": "Spessore"}, "weight": {"en": "Weight", "de": "Gewicht", "fr": "Poids", "it": "Peso"}, "content": {"en": "Content", "de": "Inhalt", "fr": "Contenu", "it": "Contenuto"}, "number_of_parts": {"en": "Number of parts", "de": "Anzahl der Teile", "fr": "Nombre de pi\u00e8ces", "it": "Numero di parti"}, "technical_category": {"en": "Technical Category", "de": "Technische Kategorie", "fr": "Cat\u00e9gorie technique", "it": "Categoria tecnica"}, "material_technique": {"en": "Material/Technique", "de": "Material/Technik", "fr": "Mat\u00e9riau/Technique", "it": "Materiale/Tecnica"}, "material_technique_comment": {"en": "Material/Technique Comment", "de": "Material/Technik Kommentar", "fr": "Mat\u00e9riau/Technique Commentaire", "it": "Materiale/Tecnica Commento"}, "item_temporary_location": {"en": "Item Temporary Location", "de": "Artikel Tempor\u00e4rer Standort", "fr": "Article Emplacement temporaire", "it": "Voce Posizione temporanea"}, "temporary_of": {"en": "Temporary of", "de": "Vor\u00fcbergehend von", "fr": "Temporaire de", "it": "Temporaneo di"}, "temporary_to": {"en": "Temporary to", "de": "Vor\u00fcbergehend bis", "fr": "Temporaire \u00e0", "it": "emporaneo a"}, "item_condition": {"en": "Item condition", "de": "Zustand des Artikels", "fr": "\u00c9tat de l'article", "it": "Condizione dell'articolo"}, "condition_notes": {"en": "Condition Notes", "de": "Bemerkungen zum Zustand", "fr": "Notes sur l'\u00e9tat", "it": "Note sulle condizioni"}, "art_information": {"en": "Art information", "de": "Informationen zur Kunst", "fr": "Informations sur l'art", "it": "Informazioni sull'arte"}, "archive_photo_number": {"en": "Archive photo number", "de": "Archiv-Fotonummer", "fr": "Num\u00e9ro de la photo d'archive", "it": "Numero foto archivio"}, "photo_archive": {"en": "Photo archive", "de": "Fotoarchiv", "fr": "Archives photos", "it": "Archivio fotografico"}, "illustrated_and_original_works": {"en": "Illustrated and original works", "de": "Illustrierte und Originalwerke", "fr": "\u0152uvres illustr\u00e9es et originales", "it": "Opere illustrate e originali"}, "artist_works_for": {"en": "Artist works for", "de": "K\u00fcnstler arbeitet f\u00fcr", "fr": "\u0152uvres d'artistes pour", "it": "Opere dell'artista per"}, "story": {"en": "Story", "de": "Geschichte", "fr": "Histoire", "it": "Storia"}, "texts_of_the_artist": {"en": "Texts of the artist", "de": "Texte des K\u00fcnstlers", "fr": "Textes de l'artiste", "it": "Testi dell'artista"}, "catalogue_of_works_number": {"en": "Catalogue of works number", "de": "Katalog der Werke Nummer", "fr": "Catalogue des \u0153uvres num\u00e9ro", "it": "Catalogo delle opere numero"}, "summary": {"en": "Summary", "de": "Zusammenfassung", "fr": "R\u00e9sum\u00e9", "it": "Sommario"}, "exhibitions": {"en": "Exhibitions", "de": "Ausstellungen", "fr": "Expositions", "it": "Mostre"}, "exhibitions_generic": {"en": "Exhibitions Generic", "de": "Ausstellungen allgemein", "fr": "Expositions g\u00e9n\u00e9riques", "it": "Mostre generiche"}, "collective_exhibitions": {"en": "Collective Exhibitions", "de": "Kollektive Ausstellungen", "fr": "Expositions collectives", "it": "Mostre collettive"}, "personal_exhibitions": {"en": "Personal Exhibitions", "de": "Pers\u00f6nliche Ausstellungen", "fr": "Expositions personnelles", "it": "Mostre personali"}, "image_templates": {"en": "Image Templates", "de": "Bild-Vorlagen", "fr": "Mod\u00e8les d'images", "it": "Modelli di immagine"}, "catalogues": {"en": "Catalogues", "de": "Kataloge", "fr": "Catalogues", "it": "Cataloghi"}, "general_works_and_catalogues": {"en": "General works and catalogues", "de": "Allgemeine Werke und Kataloge", "fr": "Ouvrages et catalogues g\u00e9n\u00e9raux", "it": "Opere e cataloghi generici"}, "group_exhibition_catalogues": {"en": "Group exhibition catalogues", "de": "Kataloge f\u00fcr Gruppenausstellungen", "fr": "Catalogues d'expositions collectives", "it": "Cataloghi di mostre collettive"}, "monograph": {"en": "Monograph", "de": "Monografien", "fr": "Monographie", "it": "Monografia"}, "personal_exhibition_catalogue": {"en": "Personal exhibition catalogue", "de": "Pers\u00f6nlicher Ausstellungskatalog", "fr": "Catalogue d'exposition personnel", "it": "Cataloghi di mostre personali"}, "dictionaries": {"en": "Dictionaries", "de": "W\u00f6rterb\u00fccher", "fr": "Dictionnaires", "it": "Dizionari"}, "nationality": {"en": "Nationality", "de": "Nationalit\u00e4t", "fr": "Nationalit\u00e9", "it": "Nazionalit\u00e0"}, "born_date": {"en": "Born; Date", "de": "Geboren; Datum", "fr": "Naissance ; Date", "it": "Nato; Data"}, "born_place": {"en": "Born; Place", "de": "Geboren; Ort", "fr": "Naissance ; Lieu", "it": "Nato; Luogo"}, "school_university": {"en": "School / University", "de": "Schule / Universit\u00e4t", "fr": "\u00c9cole / Universit\u00e9", "it": "Scuola / Universit\u00e0"}, "died_date": {"en": "Died; date", "de": "Gestorben; Datum", "fr": "D\u00e9c\u00e9d\u00e9 ; date", "it": "Morto; data"}, "died_place": {"en": "Died; place", "de": "Gestorben; Ort", "fr": "D\u00e9c\u00e8s ; lieu", "it": "Morto; luogo"}, "mass_media_info": {"en": "Mass Media Info", "de": "Informationen \u00fcber Massenmedien", "fr": "Informations sur les m\u00e9dias", "it": "Info sui mass media"}, "general_articles_in_art_magazines": {"en": "General articles in art magazines", "de": "Allgemeine Artikel in Kunstzeitschriften", "fr": "Articles g\u00e9n\u00e9raux dans des magazines d'art", "it": "Articoli generali su riviste d'arte"}, "general_articles_in_magazines_and_newspapers": {"en": "General articles in magazines and newspapers", "de": "Allgemeine Artikel in Zeitschriften und Zeitungen", "fr": "Articles g\u00e9n\u00e9raux dans les magazines et les journaux", "it": "Articoli generali su riviste e giornali"}, "art_magazines": {"en": "Art Magazines", "de": "Kunstmagazine", "fr": "Magazines d'art", "it": "Riviste d'arte"}, "radio_tv_movie": {"en": "Radio-TV movie", "de": "Radio-TV-Film", "fr": "Films radio-TV", "it": "Film radiotelevisivi"}, "magazines_and_newspapers": {"en": "Magazines and newspapers", "de": "Zeitschriften und Zeitungen", "fr": "Magazines et journaux", "it": "Riviste e giornali"}, "signature_type": {"en": "Signature type", "de": "Art der Unterschrift", "fr": "Type de signature", "it": "Tipo di firma"}, "signature_text": {"en": "Signature text", "de": "Text der Unterschrift", "fr": "Texte de la signature", "it": "Testo della firma"}, "number": {"en": "Number", "de": "Nummer", "fr": "Num\u00e9ro d'identification", "it": "Numero"}, "isbn_issn": {"en": "ISBN / ISSN", "de": "ISBN / ISSN", "fr": "ISBN / ISSN", "it": "ISBN / ISSN"}, "type_of_publication": {"en": "Type of Publication", "de": "Art der Ver\u00f6ffentlichung", "fr": "Type de publication", "it": "Tipo di pubblicazione"}, "medium_style": {"en": "Medium / Style", "de": "Medium / Stil", "fr": "Support / Style", "it": "Mezzo / Stile"}, "year_of_publication": {"en": "Year of publication", "de": "Jahr der Ver\u00f6ffentlichung", "fr": "Ann\u00e9e de publication", "it": "Anno di pubblicazione"}, "editions": {"en": "Editions", "de": "Ausgaben", "fr": "\u00c9ditions", "it": "Edizioni"}, "location_of_publication": {"en": "Location of Publication", "de": "Ort der Ver\u00f6ffentlichung", "fr": "Lieu de publication", "it": "Luogo di pubblicazione"}, "translator": {"en": "Translator", "de": "\u00dcbersetzer", "fr": "Traducteur", "it": "Traduttore"}, "illustrator": {"en": "Illustrator", "de": "Illustrator", "fr": "Illustrateur", "it": "Illustratore"}, "illustration_style": {"en": "Illustration style", "de": "Stil der Illustration", "fr": "Style d'illustration", "it": "Stile dell'illustrazione"}, "publisher_editor": {"en": "Publisher / Editor", "de": "Verlag / Herausgeber", "fr": "\u00c9diteur / r\u00e9dacteur en chef", "it": "Editore / curatore"}, "number_of_editions": {"en": "Number of Editions", "de": "Anzahl der Editionen", "fr": "Nombre d'\u00e9ditions", "it": "Numero di edizioni"}, "number_of_pages": {"en": "Number of Pages", "de": "Anzahl der Seiten", "fr": "Nombre de pages", "it": "Numero di pagine"}, "format": {"en": "Format", "de": "Format", "fr": "Format", "it": "Formato"}, "movie_number": {"en": "Movie Number", "de": "Film Nummer", "fr": "Num\u00e9ro du film", "it": "Numero di film"}, "scene_(description)": {"en": "Scene (description)", "de": "Szene (Beschreibung)", "fr": "Sc\u00e8ne (description)", "it": "Scena (descrizione)"}, "shooting_place": {"en": "Shooting Place", "de": "Ort der Dreharbeiten", "fr": "Lieu de la prise de vue", "it": "Luogo di ripresa"}, "date_of_recording": {"en": "Date of Recording", "de": "Datum der Aufnahme", "fr": "Date d'enregistrement", "it": "Data di registrazione"}, "legal_applicability": {"en": "Legal Applicability", "de": "Rechtliche Anwendbarkeit", "fr": "Applicabilit\u00e9 l\u00e9gale", "it": "Applicabilit\u00e0 legale"}, "btn_edit": {"en": "Edit", "de": "Bearbeiten", "fr": "Modifier", "it": "Modificare"}, "mlang_imported": {"en": NaN, "de": NaN, "fr": NaN, "it": NaN}, "export_ready": {"en": NaN, "de": NaN, "fr": NaN, "it": NaN}, "download_json_format": {"en": NaN, "de": NaN, "fr": NaN, "it": NaN}, "download_excel_format": {"en": NaN, "de": NaN, "fr": NaN, "it": NaN}, "o_new": {"en": NaN, "de": NaN, "fr": NaN, "it": NaN}, "btn_delete_property": {"en": NaN, "de": NaN, "fr": NaN, "it": NaN}, "btn_gen_pwd": {"en": NaN, "de": NaN, "fr": NaN, "it": NaN}, "login_remember_me": {"en": "Remember me", "de": "Erinnere dich an mich", "fr": "Souviens-toi de moi", "it": "Ricordati di me"}, "inventory_copyright": {"en": NaN, "de": NaN, "fr": NaN, "it": NaN}, "mlang_export": {"en": NaN, "de": NaN, "fr": NaN, "it": NaN}, "mlang_import": {"en": "Import multi-language strings", "de": "Mehrsprachige Zeichenfolgen importieren", "fr": "Importer des cha\u00eenes de caract\u00e8res multilingues", "it": "Importazione di stringhe multilingue"}, "timestamp_creation": {"en": "Timestamp creation", "de": "Datensatz-Erstellung", "fr": "Cr\u00e9ation d'un enregistrement", "it": "Creazione di record di dati"}, "timestamp_modification": {"en": "Timestamp modification", "de": "Datensatz-\u00c4nderung", "fr": "Modification de l'enregistrement", "it": "Modifica del record"}, "current_user": {"en": "Current user", "de": "Aktueller Benutzer", "fr": "Utilisateur actuel", "it": "Utente corrente"}, "inventory_text_no": {"en": "Inventory Text/No.", "de": "Inventar Text/Nr.", "fr": "Texte/num\u00e9ro d'inventaire", "it": "Inventario Testo/No."}, "interface_to_history_map": {"en": "Interface to History Map", "de": "Schnittstelle zur Geschichtskarte", "fr": "Interface avec la carte d'histoire", "it": "Interfaccia con la mappa della cronologia"}, "creation_date": {"en": "Creation date", "de": "Datum der Erstellung", "fr": "Date de cr\u00e9ation", "it": "Data di creazione"}, "modification_date": {"en": "Modification date", "de": "Datum der \u00c4nderung", "fr": "Date de modification", "it": "Data di modifica"}, "inventor": {"en": "Inventor", "de": "Inventarisierungsperson", "fr": "Personne charg\u00e9e de l'inventaire", "it": "Persona dell'inventario"}, "mlimport_explanation": {"en": "After importing of the chosen file, current multi-language strings will be updated and previous values will be overridden.", "de": "Nach dem Importieren der ausgew\u00e4hlten Datei werden die aktuellen mehrsprachigen Zeichenfolgen aktualisiert und vorherige Werte \u00fcberschrieben.", "fr": "Apr\u00e8s l'importation du fichier choisi, les cha\u00eenes multilingues actuelles seront mises \u00e0 jour et les valeurs pr\u00e9c\u00e9dentes seront remplac\u00e9es.", "it": "Dopo l'importazione del file scelto, le stringhe multilingue correnti verranno aggiornate e i valori precedenti verranno sovrascritti."}, "mlimport_message": {"en": "Multi-language file can be imported from an Excel file with the following structure:", "de": "Mehrsprachige Dateien k\u00f6nnen aus einer Excel-Datei mit folgender Struktur importiert werden:", "fr": "Un fichier multilingue peut \u00eatre import\u00e9 \u00e0 partir d'un fichier Excel avec la structure suivante\u00a0:", "it": "Il file multilingue pu\u00f2 essere importato da un file Excel con la seguente struttura:"}, "key_string_identifier": {"en": "key - The identifier of the string", "de": "key - Die Kennung der Zeichenfolge", "fr": "key - L'identifiant de la cha\u00eene", "it": "key - L'identificatore della stringa"}, "en_english_translation": {"en": "en - English translation", "de": "en - Englische \u00dcbersetzung", "fr": "en - traduction anglaise", "it": "en - traduzione in inglese"}, "de_german_translation": {"en": "de - German translation", "de": "de - Deutsche \u00dcbersetzung", "fr": "de - traduzione in tedesco", "it": "de - Traduction allemande"}, "fr_french_translation": {"en": "fr - French translation", "de": "fr - Franz\u00f6sische \u00dcbersetzung", "fr": "fr - Traduction fran\u00e7aise", "it": "fr - traduzione francese"}, "it_italian_translation": {"en": "it - Italian translation", "de": "it - Italienische \u00dcbersetzung", "fr": "it - Traduction italienne", "it": "it - traduzione italiana"}, "mlimport_warning": {"en": "WARNING", "de": "WARNUNG", "fr": "AVERTISSEMENT", "it": "AVVERTIMENTO"}, "do_mlang_import": {"en": "Start import", "de": "Import starten", "fr": "D\u00e9marrer l'importation", "it": "Avvia importazione"}, "o_export": {"en": NaN, "de": NaN, "fr": NaN, "it": NaN}, "download_link": {"en": NaN, "de": NaN, "fr": NaN, "it": NaN}, "no_standard_reports_found": {"en": NaN, "de": NaN, "fr": NaN, "it": NaN}, "std_reports": {"en": NaN, "de": NaN, "fr": NaN, "it": NaN}, "report_not_found": {"en": NaN, "de": NaN, "fr": NaN, "it": NaN}, "o_clone": {"en": NaN, "de": NaN, "fr": NaN, "it": NaN}, "btn_dc_standard_reports": {"en": "Reports", "de": "Berichte", "fr": "Rapports", "it": "Rapporti"}, "suitable_for_children": {"en": " Suitable for children", "de": NaN, "fr": NaN, "it": NaN}, "wheelchair_accessable": {"en": "Wheelchair accessable", "de": NaN, "fr": NaN, "it": NaN}, "restaurant_caf\u00e9": {"en": "Restaurant / Caf\u00e9", "de": NaN, "fr": NaN, "it": NaN}, "wc": {"en": "WC", "de": NaN, "fr": NaN, "it": NaN}, "parking": {"en": "Parking", "de": NaN, "fr": NaN, "it": NaN}, "museums_card": {"en": "Museums Card", "de": NaN, "fr": NaN, "it": NaN}}
+{
+	"key": {
+		"en": "Key",
+		"de": "Schlüssel",
+		"fr": "Clé",
+		"it": "Chiave"
+	},
+	"root": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"rdf_template": {
+		"en": "<b>RDF</b><br/><small><small>(Resource Description Framework)</small></small><br/>A Lightweight implementation",
+		"de": "RDF Demonstration",
+		"fr": "RDF Démo",
+		"it": "RDF Demo"
+	},
+	"inventory_title": {
+		"en": "INVENTORY",
+		"de": "INVENTORY",
+		"fr": "INVENTORY",
+		"it": "INVENTORY"
+	},
+	"inventory_subtitle": {
+		"en": "The practical application for museums, galleries, art collections, private collections and libraries",
+		"de": "Die praxisorientierte Anwendung für Museen, Galerien, Kunstsammlungen, Privatsammlungen und Bibliotheken",
+		"fr": "Application orientée vers la pratique pour musées, galerie, collections d'art, collections privée et bibliothèques",
+		"it": "Applicazione practica-orientat a per i musei, galerie, collezioni di arte, collezioni private et biblioteche"
+	},
+	"login_username": {
+		"en": "User Name",
+		"de": "Benutzername",
+		"fr": "Nom d'utilisateur",
+		"it": "Nome utente"
+	},
+	"login_pwd": {
+		"en": "Password",
+		"de": "Passwort",
+		"fr": "Mot de passe",
+		"it": "Password"
+	},
+	"submit_login": {
+		"en": "Submit",
+		"de": "Login",
+		"fr": "Soumettre",
+		"it": "Invia"
+	},
+	"forgot_password": {
+		"en": "Forgot password",
+		"de": "Passwort vergessen",
+		"fr": "Mot de passe oubliГ©",
+		"it": "Ha dimenticato la password"
+	},
+	"data_summary": {
+		"en": "Data summary",
+		"de": "Datenzusammenfassung",
+		"fr": "Résumé des données",
+		"it": "Riepilogo dei dati"
+	},
+	"data_export": {
+		"en": "Data export",
+		"de": "Datenexport",
+		"fr": "Exportation de données",
+		"it": "Esportazione dati"
+	},
+	"mass_changes": {
+		"en": "Mass changes",
+		"de": "Massenänderungen",
+		"fr": "Changements de masse",
+		"it": "Cambiamenti di massa"
+	},
+	"total_rows": {
+		"en": "Total rows",
+		"de": "Zeilen gesamt",
+		"fr": "Nombre total de lignes",
+		"it": "Totale righe"
+	},
+	"o_save": {
+		"en": "Save object",
+		"de": "Objekt speichern",
+		"fr": "Enregistrer l'objet",
+		"it": "Salva oggetto"
+	},
+	"not_authorized": {
+		"en": "Not authorized",
+		"de": "Nicht autorisiert",
+		"fr": "Non autorisé",
+		"it": "Non autorizzato"
+	},
+	"msg_unknown_object": {
+		"en": "Unknown object",
+		"de": "Unbekanntes Objekt",
+		"fr": "Objet inconnu",
+		"it": "Oggetto sconosciuto"
+	},
+	"msg_todo": {
+		"en": "TO DO",
+		"de": "TO DO",
+		"fr": "TO DO",
+		"it": "TO DO"
+	},
+	"o_delete": {
+		"en": "Delete",
+		"de": "Löschen",
+		"fr": "Supprimer",
+		"it": "Eliminare"
+	},
+	"o_cancel": {
+		"en": "Cancel",
+		"de": "Stornieren",
+		"fr": "Annuler",
+		"it": "Cancellare"
+	},
+	"o_edit_members": {
+		"en": "Enter and edit data records",
+		"de": "Datensätze erfassen und bearbeiten",
+		"fr": "Saisir et modifier des enregistrements",
+		"it": "Inserire e modificare i record di dati"
+	},
+	"btn_previous_object": {
+		"en": "Previous object",
+		"de": "Vorheriges Objekt",
+		"fr": "Objet précédent",
+		"it": "Oggetto precedente"
+	},
+	"btn_next_object": {
+		"en": "Next object",
+		"de": "Nächstes Objekt",
+		"fr": "Objet suivant",
+		"it": "Oggetto successivo"
+	},
+	"btn_view_object": {
+		"en": "View object",
+		"de": "Objekt anzeigen",
+		"fr": "Voir l'objet",
+		"it": "Visualizza oggetto"
+	},
+	"btn_append_property": {
+		"en": "Append property",
+		"de": "Eigenschaft anhängen",
+		"fr": "Aggiungi proprietà",
+		"it": "Ajouter une propriété"
+	},
+	"view_report": {
+		"en": "View report",
+		"de": "Bericht anzeigen",
+		"fr": "Voir le rapport",
+		"it": "Visualizza il report"
+	},
+	"export_excel": {
+		"en": "Export to Excel",
+		"de": "Nach Excel exportieren",
+		"fr": "Exporter vers Excel",
+		"it": "Esporta in Excel"
+	},
+	"change_password": {
+		"en": "Change password",
+		"de": "Kennwort ändern",
+		"fr": "Changer le mot de passe",
+		"it": "Cambiare la password"
+	},
+	"old_password": {
+		"en": "Old password",
+		"de": "Altes Passwort",
+		"fr": "Ancien mot de passe",
+		"it": "Vecchia password"
+	},
+	"new_password": {
+		"en": "New password",
+		"de": "Neues Passwort",
+		"fr": "Nouveau mot de passe",
+		"it": "Nuova password"
+	},
+	"new_password_retype": {
+		"en": "New password retype",
+		"de": "Neues Passwort erneut eingeben",
+		"fr": "Nouveau mot de passe à saisir à nouveau",
+		"it": "Nuova password ridigitata"
+	},
+	"dbexport": {
+		"en": "Database export",
+		"de": "Datenbankexport",
+		"fr": "Exportation de base de données",
+		"it": "Esportazione del database"
+	},
+	"export_format": {
+		"en": "Export format",
+		"de": "Exportformat",
+		"fr": "Format d'exportation",
+		"it": "Formato di esportazione"
+	},
+	"do_data_export": {
+		"en": "Start data export",
+		"de": "Datenexport starten",
+		"fr": "Démarrer l'exportation des données",
+		"it": "Avvia l'esportazione dei dati"
+	},
+	"dbimport": {
+		"en": "Database import",
+		"de": "Datenbankimport",
+		"fr": "Importation de base de données",
+		"it": "mportazione del database"
+	},
+	"choose_import_file": {
+		"en": "Choose import file",
+		"de": "Importdatei auswählen",
+		"fr": "Choisir le fichier d'importation",
+		"it": "Scegli il file di importazione"
+	},
+	"dbimport_explanation": {
+		"en": "Data import can be done from a previously created database dump file in JSON format. Note, that no other export formats are accepted for this operation.",
+		"de": "Der Datenimport kann aus einer zuvor erstellten Datenbank-Dumpdatei im JSON-Format erfolgen. Beachten Sie, dass für diesen Vorgang keine anderen Exportformate akzeptiert werden.",
+		"fr": "L'importation de données peut être effectuée à partir d'un fichier de vidage de base de données précédemment créé au format JSON. Notez qu'aucun autre format d'exportation n'est accepté pour cette opération.",
+		"it": "L'importazione dei dati può essere effettuata da un file dump del database creato in precedenza in formato JSON. Nota che per questa operazione non sono accettati altri formati di esportazione."
+	},
+	"dbimport_warning": {
+		"en": "After clicking on \"Start import\" button, all existing data from the current database will be permanently deleted. Please make sure you have backup data!",
+		"de": "Nach dem Klicken auf die Schaltfläche „Import starten“ werden alle vorhandenen Daten aus der aktuellen Datenbank unwiederbringlich gelöscht. Bitte stellen Sie sicher, dass Sie über Sicherungsdaten verfügen!",
+		"fr": "Après avoir cliqué sur le bouton Démarrer l'importation, toutes les données existantes de la base de données actuelle seront définitivement supprimées. Veuillez vous assurer que vous disposez de données de sauvegarde!",
+		"it": "Dopo aver cliccato sul pulsante \"Start import\", tutti i dati esistenti dal database corrente saranno eliminati definitivamente. Assicurati di avere i dati di backup!"
+	},
+	"do_data_import": {
+		"en": "Start data import",
+		"de": "Datenimport starten",
+		"fr": "Démarrer l'importation des données",
+		"it": "Avvia l'importazione dei dati"
+	},
+	"email": {
+		"en": "Email",
+		"de": "E-Mail",
+		"fr": "E-mail",
+		"it": "E-mail"
+	},
+	"enter_email": {
+		"en": "Enter email",
+		"de": "E-Mail eingeben",
+		"fr": "Entrez l'email",
+		"it": "Inserisci l'email"
+	},
+	"reset_email": {
+		"en": "Reset email",
+		"de": "Reset email",
+		"fr": "Reset email",
+		"it": "Reset email"
+	},
+	"lbl_remember_me": {
+		"en": "Remember me",
+		"de": "Erinnere dich an mich",
+		"fr": "Souviens-toi de moi",
+		"it": "Ricordati di me"
+	},
+	"class_name": {
+		"en": "Class name",
+		"de": "Klassenname",
+		"fr": "Nom de la classe",
+		"it": "Nome della classe"
+	},
+	"property_name": {
+		"en": "Property name",
+		"de": "Eigenschaftsname",
+		"fr": "Nom de la propriété",
+		"it": "Nome della proprietà"
+	},
+	"property_value": {
+		"en": "Property value",
+		"de": "Eigenschaftswert",
+		"fr": "Valeur de la propriété",
+		"it": "Valore della proprietà"
+	},
+	"masschg_warning": {
+		"en": "WARNING",
+		"de": "WARNUNG",
+		"fr": "AVERTISSEMENT",
+		"it": "AVVERTIMENTO"
+	},
+	"masschg_explanation": {
+		"en": "When clicking \"Apply changes\" button, the selected property value will be set to the value entered for all objects, which have this property. Note, that the change cannot be undone.",
+		"de": "Wenn Sie auf die Schaltfläche „Änderungen übernehmen“ klicken, wird der ausgewählte Eigenschaftswert für alle Objekte, die diese Eigenschaft haben, auf den eingegebenen Wert gesetzt. Beachten Sie, dass die Änderung nicht rückgängig gemacht werden kann.",
+		"fr": "Lorsque vous cliquez sur le bouton « Appliquer les modifications », la valeur de la propriété sélectionnée sera définie sur la valeur saisie pour tous les objets qui ont cette propriété. Notez que la modification ne peut pas être annulée.",
+		"it": "Quando si fa clic sul pulsante \"Applica modifiche\", il valore della proprietà selezionata verrà impostato sul valore immesso per tutti gli oggetti che hanno questa proprietà. Nota che la modifica non può essere annullata."
+	},
+	"do_masschg": {
+		"en": "Apply mass chabges",
+		"de": "Massenänderungen anwenden",
+		"fr": "Appliquer des modifications de masse",
+		"it": "Applica modifiche di massa"
+	},
+	"btn_edit_data": {
+		"en": "Edit data",
+		"de": "Daten bearbeiten",
+		"fr": "Modifier les données",
+		"it": "Modifica dati"
+	},
+	"btn_dc_view_data": {
+		"en": "Search",
+		"de": "Suche",
+		"fr": "Recherche",
+		"it": "Ricerca"
+	},
+	"btn_dc_reports": {
+		"en": "Reports",
+		"de": "Berichte",
+		"fr": "Rapports",
+		"it": "Rapporti"
+	},
+	"btn_dc_view_reports": {
+		"en": "View reports",
+		"de": "Berichte anzeigen",
+		"fr": "Voir les rapports",
+		"it": "Visualizza i report"
+	},
+	"dc_manage_custom_repots": {
+		"en": "Manage custom reports",
+		"de": "Verwalten benutzerdefinierter Berichte",
+		"fr": "Gérer les rapports personnalisés",
+		"it": "Gestisci report personalizzati"
+	},
+	"btn_dc_data_management": {
+		"en": "Data management",
+		"de": "Datenmanagement",
+		"fr": "Gestion des données",
+		"it": "Gestione dei dati"
+	},
+	"data_import": {
+		"en": "Import",
+		"de": "Import",
+		"fr": "Importer",
+		"it": "Importare"
+	},
+	"view_data": {
+		"en": "Search",
+		"de": "Suche",
+		"fr": "Recherche",
+		"it": "Ricerca"
+	},
+	"btn_org_settings": {
+		"en": "Organization settings",
+		"de": "Organisationseinstellungen",
+		"fr": "Paramètres de l'organisation",
+		"it": "Impostazioni dell'organizzazione"
+	},
+	"btn_admin_users": {
+		"en": "Manage users",
+		"de": "Benutzer verwalten",
+		"fr": "Gérer les utilisateurs",
+		"it": "Gestisci utenti"
+	},
+	"manage_data": {
+		"en": "Manage data",
+		"de": "Daten verwalten",
+		"fr": "Gérer les données",
+		"it": "Gestire i dati"
+	},
+	"data_backup": {
+		"en": "Data backup",
+		"de": "Datensicherung",
+		"fr": "Sauvegarde des données",
+		"it": "Backup dei dati"
+	},
+	"organizations": {
+		"en": "Organizations",
+		"de": "Organisationen",
+		"fr": "Organisations",
+		"it": "Organizzazioni"
+	},
+	"users": {
+		"en": "Users",
+		"de": "Benutzer",
+		"fr": "Utenti",
+		"it": "Utilisatrices"
+	},
+	"mlang": {
+		"en": "Multi language strings",
+		"de": "Mehrsprachige Zeichenfolgen",
+		"fr": "Chaînes multilingues",
+		"it": "Stringhe multilingua"
+	},
+	"export_mlang": {
+		"en": "Export multi language strings",
+		"de": "Exportieren mehrsprachiger Zeichenfolgen",
+		"fr": "Exporter des chaînes multilingues",
+		"it": "Esporta stringhe multilingua"
+	},
+	"import_mlang": {
+		"en": "Import multi language strings",
+		"de": "Importieren mehrsprachiger Zeichenfolgen",
+		"fr": "Importer des chaînes multilingues",
+		"it": "Importa stringhe multilingua"
+	},
+	"reports": {
+		"en": "Reports",
+		"de": "Berichte",
+		"fr": "Rapports",
+		"it": "Rapporti"
+	},
+	"sa_list_orgs": {
+		"en": "List organizations",
+		"de": "Organisationen auflisten",
+		"fr": "Liste des organisations",
+		"it": "Elenca le organizzazioni"
+	},
+	"sa_list_users": {
+		"en": "List users",
+		"de": "Auflisten von Benutzern",
+		"fr": "Liste des utilisateurs",
+		"it": "Elenca gli utenti"
+	},
+	"search": {
+		"en": "Search",
+		"de": "Suchen",
+		"fr": "Recherche",
+		"it": "Ricerca"
+	},
+	"help": {
+		"en": "Help",
+		"de": "Hilfe",
+		"fr": "Aide",
+		"it": "Aiuto"
+	},
+	"basic_search": {
+		"en": "Quick search",
+		"de": "Schnellsuche",
+		"fr": "Recherche rapide",
+		"it": "Ricerca veloce"
+	},
+	"search_text": {
+		"en": "Search text",
+		"de": "Suchtext",
+		"fr": "Texte à rechercher",
+		"it": "Cerca testo"
+	},
+	"inventory_2024": {
+		"en": "Cultart Inventory",
+		"de": "Cultart Inventory",
+		"fr": "Cultart Inventory",
+		"it": "Cultart Inventory"
+	},
+	"login": {
+		"en": "Login",
+		"de": "Login",
+		"fr": "Login",
+		"it": "Login"
+	},
+	"settings": {
+		"en": "Settings",
+		"de": "Einstellungen",
+		"fr": "Paramètres",
+		"it": "Impostazioni"
+	},
+	"logout": {
+		"en": "Logout",
+		"de": "Ausloggen",
+		"fr": "Déconnexion",
+		"it": "Esci"
+	},
+	"user_settings": {
+		"en": "User settings",
+		"de": "Benutzereinstellungen",
+		"fr": "Paramètres utilisateur",
+		"it": "Impostazioni utente"
+	},
+	"user_full_name": {
+		"en": "User full name",
+		"de": "Vollständiger Name des Benutzers",
+		"fr": "Nom complet de l'utilisateur",
+		"it": "Nome completo dell'utente"
+	},
+	"save_settings": {
+		"en": "Save settings",
+		"de": "Einstellungen speichern",
+		"fr": "Enregistrer les paramètres",
+		"it": "Salva le impostazioni"
+	},
+	"name": {
+		"en": "Name",
+		"de": "Name",
+		"fr": "Nom",
+		"it": "Nome"
+	},
+	"nc_name": {
+		"en": "NC Name",
+		"de": "NC-Name",
+		"fr": "Nom NC",
+		"it": "Nome NC"
+	},
+	"description": {
+		"en": "Description",
+		"de": "Beschreibung",
+		"fr": "Description du rôle de l'utilisateur",
+		"it": "Descrizione"
+	},
+	"user_role": {
+		"en": "User Role",
+		"de": "Benutzer-Rolle",
+		"fr": "Rôle de l'utilisateur",
+		"it": "Ruolo utente"
+	},
+	"hash": {
+		"en": "Hash",
+		"de": "Hash",
+		"fr": "Corbeille",
+		"it": "Hash"
+	},
+	"general_descriptor": {
+		"en": "General descriptor",
+		"de": "Allgemeiner Deskriptor",
+		"fr": "Descripteur général",
+		"it": "Descrittore generale"
+	},
+	"url": {
+		"en": "URL",
+		"de": "URL",
+		"fr": "URL",
+		"it": "URL"
+	},
+	"media_type": {
+		"en": "Media type",
+		"de": "Medientyp",
+		"fr": "Type de média",
+		"it": "Tipo di media"
+	},
+	"date": {
+		"en": "Date",
+		"de": "Datum",
+		"fr": "Date",
+		"it": "Data"
+	},
+	"integer": {
+		"en": "Integer",
+		"de": "Ganzzahl",
+		"fr": "Entier",
+		"it": "Numero intero"
+	},
+	"decimal": {
+		"en": "Decimal",
+		"de": "Dezimal",
+		"fr": "Décimale",
+		"it": "Decimale"
+	},
+	"boolean": {
+		"en": "Boolean",
+		"de": "Boolescher Wert",
+		"fr": "Booléen",
+		"it": "Booleano"
+	},
+	"currency_code": {
+		"en": "Currency code",
+		"de": "Währungscode",
+		"fr": "Code devise",
+		"it": "Codice valuta"
+	},
+	"image": {
+		"en": "Image",
+		"de": "Bild",
+		"fr": "Image",
+		"it": "Immagine"
+	},
+	"database": {
+		"en": "Database",
+		"de": "Datenbank",
+		"fr": "Base de données",
+		"it": "Database"
+	},
+	"lang": {
+		"en": "Lang",
+		"de": "Lang",
+		"fr": "Lang",
+		"it": "Lang"
+	},
+	"media_object": {
+		"en": "Media object",
+		"de": "Medienobjekt",
+		"fr": "Objet média",
+		"it": "Oggetto multimediale"
+	},
+	"report_definition": {
+		"en": "Report definition",
+		"de": "Bericht Definition",
+		"fr": "Définition du rapport",
+		"it": "Definizione di rapporto"
+	},
+	"organization": {
+		"en": "Organization",
+		"de": "Organisation",
+		"fr": "Organisation",
+		"it": "Organizzazione"
+	},
+	"address": {
+		"en": "Address",
+		"de": "Adresse",
+		"fr": "Adresse",
+		"it": "Indirizzo"
+	},
+	"web_page": {
+		"en": "Web page",
+		"de": "Web-Seite",
+		"fr": "Page web",
+		"it": "Pagina web"
+	},
+	"picture": {
+		"en": "Picture",
+		"de": "Bild",
+		"fr": "Image",
+		"it": "Immagine"
+	},
+	"user": {
+		"en": "User",
+		"de": "Benutzer",
+		"fr": "Utilisateur",
+		"it": "Utente"
+	},
+	"username": {
+		"en": "Username",
+		"de": "Benutzername",
+		"fr": "Nom d'utilisateur",
+		"it": "Nome utente"
+	},
+	"role": {
+		"en": "Role",
+		"de": "Rolle",
+		"fr": "Rôle",
+		"it": "Ruolo"
+	},
+	"password_hash": {
+		"en": "Password hash",
+		"de": "Passwort-Hash",
+		"fr": "Mot de passe",
+		"it": "Password"
+	},
+	"language": {
+		"en": "Language",
+		"de": "Sprache",
+		"fr": "Langue",
+		"it": "Lingua"
+	},
+	"address_line_1": {
+		"en": "Address line 1",
+		"de": "Adresse Zeile 1",
+		"fr": "Adresse ligne 1",
+		"it": "Indirizzo riga 1"
+	},
+	"address_line_2": {
+		"en": "Address line 2",
+		"de": "Anschrift Zeile 2",
+		"fr": "Ligne d'adresse 2",
+		"it": "Indirizzo riga 2"
+	},
+	"city": {
+		"en": "City",
+		"de": "Stadt",
+		"fr": "Ville",
+		"it": "Città"
+	},
+	"zip_code": {
+		"en": "ZIP code",
+		"de": "Postleitzahl",
+		"fr": "Code postal",
+		"it": "Codice postale"
+	},
+	"country": {
+		"en": "Country",
+		"de": "Land",
+		"fr": "Pays",
+		"it": "Paese"
+	},
+	"image_extended": {
+		"en": "Image extended",
+		"de": "Bild erweitert",
+		"fr": "Image étendue",
+		"it": "Immagine estesa"
+	},
+	"location": {
+		"en": "Location",
+		"de": "Standort",
+		"fr": "Emplacement",
+		"it": "Posizione"
+	},
+	"file_name": {
+		"en": "File name",
+		"de": "Name der Datei",
+		"fr": "Nom du fichier",
+		"it": "Nome del file"
+	},
+	"title": {
+		"en": "Title",
+		"de": "Titel",
+		"fr": "Titre de l'image",
+		"it": "Titolo"
+	},
+	"thumbnail": {
+		"en": "Thumbnail",
+		"de": "Vorschaubild",
+		"fr": "Vignette",
+		"it": "Miniatura"
+	},
+	"width": {
+		"en": "Width",
+		"de": "Breite",
+		"fr": "Largeur",
+		"it": "Larghezza"
+	},
+	"height": {
+		"en": "Height",
+		"de": "Höhe",
+		"fr": "Hauteur",
+		"it": "Altezza"
+	},
+	"media_object_extended": {
+		"en": "Media object extended",
+		"de": "Medienobjekt erweitert",
+		"fr": "Objet média étendu",
+		"it": "Oggetto multimediale esteso"
+	},
+	"custom_report": {
+		"en": "Custom Report",
+		"de": "Benutzerdefinierter Bericht",
+		"fr": "Rapport personnalisé",
+		"it": "Rapporto personalizzato"
+	},
+	"publish": {
+		"en": "Publish",
+		"de": "Veröffentlichen",
+		"fr": "Publier",
+		"it": "Pubblicare"
+	},
+	"definition": {
+		"en": "Definition",
+		"de": "Definition",
+		"fr": "Définition",
+		"it": "Definizione"
+	},
+	"inventory_item": {
+		"en": "Inventory Item",
+		"de": "Inventarartikel",
+		"fr": "Article d'inventaire",
+		"it": "Voce d'inventario"
+	},
+	"inventory_no": {
+		"en": "Inventory No.",
+		"de": "Inventar Nr.",
+		"fr": "Numéro d'inventaire",
+		"it": "N. inventario"
+	},
+	"vernacular_name": {
+		"en": "Vernacular Name",
+		"de": "Vernakulärer Name",
+		"fr": "Nom vernaculaire",
+		"it": "Nome vernacolare"
+	},
+	"preamble": {
+		"en": "Preamble",
+		"de": "Präambel",
+		"fr": "Préambule",
+		"it": "Preambolo"
+	},
+	"inventory_date": {
+		"en": "Inventory date",
+		"de": "Datum der Bestandsaufnahme",
+		"fr": "Date d'inventaire",
+		"it": "Data di inventario"
+	},
+	"quantity": {
+		"en": "Quantity",
+		"de": "Menge",
+		"fr": "Quantité",
+		"it": "Quantità"
+	},
+	"publish_data": {
+		"en": "Publish data",
+		"de": "Daten veröffentlichen",
+		"fr": "Publier les données",
+		"it": "Pubblicare i dati"
+	},
+	"transfer_in_visitor_catalog": {
+		"en": "Transfer in Visitor Catalog",
+		"de": "Übertragung in den Besucherkatalog",
+		"fr": "Transfert dans le catalogue des visiteurs",
+		"it": "Trasferimento nel catalogo visitatori"
+	},
+	"inventory_manager": {
+		"en": "Inventory Manager",
+		"de": "Inventar-Manager",
+		"fr": "Gestionnaire d'inventaire",
+		"it": "Gestore dell'inventario"
+	},
+	"general_remarks": {
+		"en": "General Remarks",
+		"de": "Allgemeine Bemerkungen",
+		"fr": "Remarques générales",
+		"it": "Osservazioni generali"
+	},
+	"dating": {
+		"en": "Dating",
+		"de": "Datierung",
+		"fr": "Datation",
+		"it": "Datazione"
+	},
+	"classification": {
+		"en": "Classification",
+		"de": "Klassifizierung",
+		"fr": "Classification",
+		"it": "Classificazione"
+	},
+	"origin_author": {
+		"en": "Origin/Author",
+		"de": "Herkunft/Urheber",
+		"fr": "Origine/Auteur",
+		"it": "Origine/Autore"
+	},
+	"inscription": {
+		"en": "Inscription",
+		"de": "Aufschrift",
+		"fr": "Inscription",
+		"it": "Iscrizione"
+	},
+	"measures": {
+		"en": "Measures",
+		"de": "Maße",
+		"fr": "Mesures",
+		"it": "Misure"
+	},
+	"material": {
+		"en": "Material",
+		"de": "Material",
+		"fr": "Matériau",
+		"it": "Materiale"
+	},
+	"temporary_location": {
+		"en": "Temporary Location",
+		"de": "Temporärer Standort",
+		"fr": "Emplacement temporaire",
+		"it": "Luogo temporaneo"
+	},
+	"condition": {
+		"en": "Condition",
+		"de": "Zustand",
+		"fr": "Condition d'utilisation",
+		"it": "Condizione"
+	},
+	"art_general_information": {
+		"en": "Art - General Information",
+		"de": "Kunst - Allgemeine Informationen",
+		"fr": "Art - Informations générales",
+		"it": "Arte - Informazioni generali"
+	},
+	"art_exhibitions": {
+		"en": "Art - Exhibitions",
+		"de": "Kunst - Ausstellungen",
+		"fr": "Art - Expositions",
+		"it": "Arte - Mostre"
+	},
+	"art_books_and_catalogues": {
+		"en": "Art - Books and Catalogues",
+		"de": "Kunst - Bücher und Kataloge",
+		"fr": "Art - Livres et catalogues",
+		"it": "Arte - Libri e cataloghi"
+	},
+	"artist": {
+		"en": "Artist",
+		"de": "Künstler",
+		"fr": "Artiste",
+		"it": "Artista"
+	},
+	"press_and_tv": {
+		"en": "Press and TV",
+		"de": "Presse und TV",
+		"fr": "Presse et TV",
+		"it": "Stampa e TV"
+	},
+	"signature": {
+		"en": "Signature",
+		"de": "Unterschrift",
+		"fr": "Signature",
+		"it": "Firma"
+	},
+	"literature_basic_info": {
+		"en": "Literature basic info",
+		"de": "Literatur Basisinformationen",
+		"fr": "Informations de base sur la littérature",
+		"it": "Informazioni di base sulla letteratura"
+	},
+	"literature_appearance": {
+		"en": "Literature appearance",
+		"de": "Aussehen der Literatur",
+		"fr": "Apparence de la littérature",
+		"it": "Aspetto della letteratura"
+	},
+	"literature_origin": {
+		"en": "Literature origin",
+		"de": "Herkunft der Literatur",
+		"fr": "Origine de la littérature",
+		"it": "Origine della letteratura"
+	},
+	"literature_additional_info": {
+		"en": "Literature additional info",
+		"de": "Literatur Zusatzinfo",
+		"fr": "Informations complémentaires sur la littérature",
+		"it": "Informazioni aggiuntive sulla letteratura"
+	},
+	"photography_info": {
+		"en": "Photography info",
+		"de": "Informationen zur Fotografie",
+		"fr": "Informations sur la photographie",
+		"it": "Informazioni sulla fotografia"
+	},
+	"internet_site": {
+		"en": "Internet site",
+		"de": "Internetauftritt",
+		"fr": "Site Internet",
+		"it": "Sito Internet"
+	},
+	"old_inventory_text_no": {
+		"en": "Old Inventory Text / No.",
+		"de": "Altes Inventar Text / Nr.",
+		"fr": "Ancien inventaire Texte / No.",
+		"it": "Vecchio inventario Testo / N."
+	},
+	"purchase_value": {
+		"en": "Purchase/Value",
+		"de": "Kauf/Wert",
+		"fr": "Achat/Valeur",
+		"it": "Acquisto/Valore"
+	},
+	"invenroy_manager": {
+		"en": "Invenroy Manager",
+		"de": "Invenroy Manager",
+		"fr": "Gestionnaire de l'inventaire",
+		"it": "Responsabile dell'inventario"
+	},
+	"inventory_dating": {
+		"en": "Inventory Dating",
+		"de": "Inventar Datierung",
+		"fr": "Datation de l'inventaire",
+		"it": "Datazione dell'inventario"
+	},
+	"date_of_work": {
+		"en": "Date of work",
+		"de": "Datum der Arbeit",
+		"fr": "Date des travaux",
+		"it": "Data del lavoro"
+	},
+	"year_of": {
+		"en": "Year of",
+		"de": "Jahr von",
+		"fr": "Année de",
+		"it": "Anno di"
+	},
+	"year_to": {
+		"en": "Year to",
+		"de": "Jahr bis",
+		"fr": "Année jusqu'à",
+		"it": "Anno a"
+	},
+	"comment": {
+		"en": "Comment",
+		"de": "Bemerkung",
+		"fr": "Commentaire",
+		"it": "Commento"
+	},
+	"department": {
+		"en": "Department",
+		"de": "Abteilung",
+		"fr": "Département",
+		"it": "Dipartimento"
+	},
+	"group": {
+		"en": "Group",
+		"de": "Gruppe",
+		"fr": "Groupe",
+		"it": "Gruppo"
+	},
+	"using_context": {
+		"en": "Using context",
+		"de": "Kontext verwenden",
+		"fr": "Utilisation du contexte",
+		"it": "Utilizzo del contesto"
+	},
+	"abstract_function": {
+		"en": "Abstract function",
+		"de": "Abstrakte Funktion",
+		"fr": "Fonction abstraite",
+		"it": "Funzione astratta"
+	},
+	"representation": {
+		"en": "Representation",
+		"de": "Darstellung",
+		"fr": "Représentation",
+		"it": "Rappresentazione"
+	},
+	"invenroy_classification": {
+		"en": "Invenroy Classification",
+		"de": "Invenroy Klassifizierung",
+		"fr": "Invenroy Classification",
+		"it": "Classificazione Invenroy"
+	},
+	"acquisition_type": {
+		"en": "Acquisition type",
+		"de": "Erfassungsart",
+		"fr": "Type d'acquisition",
+		"it": "Tipo di acquisizione"
+	},
+	"currency": {
+		"en": "Currency",
+		"de": "Währung",
+		"fr": "Monnaie",
+		"it": "Valuta"
+	},
+	"value_designation": {
+		"en": "Value designation",
+		"de": "Wertbezeichnung",
+		"fr": "Désignation de la valeur",
+		"it": "Designazione del valore"
+	},
+	"item_value": {
+		"en": "Item Value",
+		"de": "Gegenstand Wert",
+		"fr": "Valeur de l'objet",
+		"it": "Voce Valore"
+	},
+	"donor": {
+		"en": "Donor",
+		"de": "Geber",
+		"fr": "Donateur",
+		"it": "Donatore"
+	},
+	"previous_owner": {
+		"en": "Previous Owner",
+		"de": "Vorbesitzer",
+		"fr": "Propriétaire précédent",
+		"it": "Proprietario precedente"
+	},
+	"acquisition_date": {
+		"en": "Acquisition date",
+		"de": "Datum der Anschaffung",
+		"fr": "Date d'acquisition",
+		"it": "Data di acquisizione"
+	},
+	"type_of_acquisition": {
+		"en": "Type of acquisition",
+		"de": "Art des Erwerbs",
+		"fr": "Type d'acquisition",
+		"it": "Tipo di acquisizione"
+	},
+	"price": {
+		"en": "Price",
+		"de": "Preis",
+		"fr": "Prix de vente",
+		"it": "Prezzo"
+	},
+	"copyright": {
+		"en": "Copyright",
+		"de": "Urheberrecht",
+		"fr": "Droits d'auteur",
+		"it": "Copyright"
+	},
+	"origin_location": {
+		"en": "Origin/Location",
+		"de": "Herkunft/Ort",
+		"fr": "Origine/Localisation",
+		"it": "Origine/Località"
+	},
+	"author_producer": {
+		"en": "Author/Producer",
+		"de": "Autor/Produzent",
+		"fr": "Auteur/Producteur",
+		"it": "Autore/Produttore"
+	},
+	"bibliography": {
+		"en": "Bibliography",
+		"de": "Literaturverzeichnis",
+		"fr": "Bibliographie",
+		"it": "Bibliografia"
+	},
+	"type_of_inscription": {
+		"en": "Type of inscription",
+		"de": "Art der Inschrift",
+		"fr": "Type d'inscription",
+		"it": "Tipo di iscrizione"
+	},
+	"inscription_type": {
+		"en": "Inscription type",
+		"de": "Art der Inschrift",
+		"fr": "Type d'inscription",
+		"it": "Tipo di iscrizione"
+	},
+	"inscription_text": {
+		"en": "Inscription text",
+		"de": "Text der Inschrift",
+		"fr": "Texte de l'inscription",
+		"it": "Testo dell'iscrizione"
+	},
+	"depth": {
+		"en": "Depth",
+		"de": "Tiefe",
+		"fr": "Profondeur",
+		"it": "Profondità"
+	},
+	"length": {
+		"en": "Length",
+		"de": "Länge",
+		"fr": "Longueur de l'inscription",
+		"it": "Lunghezza"
+	},
+	"diameter": {
+		"en": "Diameter",
+		"de": "Durchmesser",
+		"fr": "Diamètre",
+		"it": "Diametro"
+	},
+	"thickness": {
+		"en": "Thickness",
+		"de": "Dicke",
+		"fr": "Epaisseur",
+		"it": "Spessore"
+	},
+	"weight": {
+		"en": "Weight",
+		"de": "Gewicht",
+		"fr": "Poids",
+		"it": "Peso"
+	},
+	"content": {
+		"en": "Content",
+		"de": "Inhalt",
+		"fr": "Contenu",
+		"it": "Contenuto"
+	},
+	"number_of_parts": {
+		"en": "Number of parts",
+		"de": "Anzahl der Teile",
+		"fr": "Nombre de pièces",
+		"it": "Numero di parti"
+	},
+	"technical_category": {
+		"en": "Technical Category",
+		"de": "Technische Kategorie",
+		"fr": "Catégorie technique",
+		"it": "Categoria tecnica"
+	},
+	"material_technique": {
+		"en": "Material/Technique",
+		"de": "Material/Technik",
+		"fr": "Matériau/Technique",
+		"it": "Materiale/Tecnica"
+	},
+	"material_technique_comment": {
+		"en": "Material/Technique Comment",
+		"de": "Material/Technik Kommentar",
+		"fr": "Matériau/Technique Commentaire",
+		"it": "Materiale/Tecnica Commento"
+	},
+	"item_temporary_location": {
+		"en": "Item Temporary Location",
+		"de": "Artikel Temporärer Standort",
+		"fr": "Article Emplacement temporaire",
+		"it": "Voce Posizione temporanea"
+	},
+	"temporary_of": {
+		"en": "Temporary of",
+		"de": "Vorübergehend von",
+		"fr": "Temporaire de",
+		"it": "Temporaneo di"
+	},
+	"temporary_to": {
+		"en": "Temporary to",
+		"de": "Vorübergehend bis",
+		"fr": "Temporaire à",
+		"it": "emporaneo a"
+	},
+	"item_condition": {
+		"en": "Item condition",
+		"de": "Zustand des Artikels",
+		"fr": "État de l'article",
+		"it": "Condizione dell'articolo"
+	},
+	"condition_notes": {
+		"en": "Condition Notes",
+		"de": "Bemerkungen zum Zustand",
+		"fr": "Notes sur l'état",
+		"it": "Note sulle condizioni"
+	},
+	"art_information": {
+		"en": "Art information",
+		"de": "Informationen zur Kunst",
+		"fr": "Informations sur l'art",
+		"it": "Informazioni sull'arte"
+	},
+	"archive_photo_number": {
+		"en": "Archive photo number",
+		"de": "Archiv-Fotonummer",
+		"fr": "Numéro de la photo d'archive",
+		"it": "Numero foto archivio"
+	},
+	"photo_archive": {
+		"en": "Photo archive",
+		"de": "Fotoarchiv",
+		"fr": "Archives photos",
+		"it": "Archivio fotografico"
+	},
+	"illustrated_and_original_works": {
+		"en": "Illustrated and original works",
+		"de": "Illustrierte und Originalwerke",
+		"fr": "Œuvres illustrées et originales",
+		"it": "Opere illustrate e originali"
+	},
+	"artist_works_for": {
+		"en": "Artist works for",
+		"de": "Künstler arbeitet für",
+		"fr": "Œuvres d'artistes pour",
+		"it": "Opere dell'artista per"
+	},
+	"story": {
+		"en": "Story",
+		"de": "Geschichte",
+		"fr": "Histoire",
+		"it": "Storia"
+	},
+	"texts_of_the_artist": {
+		"en": "Texts of the artist",
+		"de": "Texte des Künstlers",
+		"fr": "Textes de l'artiste",
+		"it": "Testi dell'artista"
+	},
+	"catalogue_of_works_number": {
+		"en": "Catalogue of works number",
+		"de": "Katalog der Werke Nummer",
+		"fr": "Catalogue des œuvres numéro",
+		"it": "Catalogo delle opere numero"
+	},
+	"summary": {
+		"en": "Summary",
+		"de": "Zusammenfassung",
+		"fr": "Résumé",
+		"it": "Sommario"
+	},
+	"exhibitions": {
+		"en": "Exhibitions",
+		"de": "Ausstellungen",
+		"fr": "Expositions",
+		"it": "Mostre"
+	},
+	"exhibitions_generic": {
+		"en": "Exhibitions Generic",
+		"de": "Ausstellungen allgemein",
+		"fr": "Expositions génériques",
+		"it": "Mostre generiche"
+	},
+	"collective_exhibitions": {
+		"en": "Collective Exhibitions",
+		"de": "Kollektive Ausstellungen",
+		"fr": "Expositions collectives",
+		"it": "Mostre collettive"
+	},
+	"personal_exhibitions": {
+		"en": "Personal Exhibitions",
+		"de": "Persönliche Ausstellungen",
+		"fr": "Expositions personnelles",
+		"it": "Mostre personali"
+	},
+	"image_templates": {
+		"en": "Image Templates",
+		"de": "Bild-Vorlagen",
+		"fr": "Modèles d'images",
+		"it": "Modelli di immagine"
+	},
+	"catalogues": {
+		"en": "Catalogues",
+		"de": "Kataloge",
+		"fr": "Catalogues",
+		"it": "Cataloghi"
+	},
+	"general_works_and_catalogues": {
+		"en": "General works and catalogues",
+		"de": "Allgemeine Werke und Kataloge",
+		"fr": "Ouvrages et catalogues généraux",
+		"it": "Opere e cataloghi generici"
+	},
+	"group_exhibition_catalogues": {
+		"en": "Group exhibition catalogues",
+		"de": "Kataloge für Gruppenausstellungen",
+		"fr": "Catalogues d'expositions collectives",
+		"it": "Cataloghi di mostre collettive"
+	},
+	"monograph": {
+		"en": "Monograph",
+		"de": "Monografien",
+		"fr": "Monographie",
+		"it": "Monografia"
+	},
+	"personal_exhibition_catalogue": {
+		"en": "Personal exhibition catalogue",
+		"de": "Persönlicher Ausstellungskatalog",
+		"fr": "Catalogue d'exposition personnel",
+		"it": "Cataloghi di mostre personali"
+	},
+	"dictionaries": {
+		"en": "Dictionaries",
+		"de": "Wörterbücher",
+		"fr": "Dictionnaires",
+		"it": "Dizionari"
+	},
+	"nationality": {
+		"en": "Nationality",
+		"de": "Nationalität",
+		"fr": "Nationalité",
+		"it": "Nazionalità"
+	},
+	"born_date": {
+		"en": "Born; Date",
+		"de": "Geboren; Datum",
+		"fr": "Naissance ; Date",
+		"it": "Nato; Data"
+	},
+	"born_place": {
+		"en": "Born; Place",
+		"de": "Geboren; Ort",
+		"fr": "Naissance ; Lieu",
+		"it": "Nato; Luogo"
+	},
+	"school_university": {
+		"en": "School / University",
+		"de": "Schule / Universität",
+		"fr": "École / Université",
+		"it": "Scuola / Università"
+	},
+	"died_date": {
+		"en": "Died; date",
+		"de": "Gestorben; Datum",
+		"fr": "Décédé ; date",
+		"it": "Morto; data"
+	},
+	"died_place": {
+		"en": "Died; place",
+		"de": "Gestorben; Ort",
+		"fr": "Décès ; lieu",
+		"it": "Morto; luogo"
+	},
+	"mass_media_info": {
+		"en": "Mass Media Info",
+		"de": "Informationen über Massenmedien",
+		"fr": "Informations sur les médias",
+		"it": "Info sui mass media"
+	},
+	"general_articles_in_art_magazines": {
+		"en": "General articles in art magazines",
+		"de": "Allgemeine Artikel in Kunstzeitschriften",
+		"fr": "Articles généraux dans des magazines d'art",
+		"it": "Articoli generali su riviste d'arte"
+	},
+	"general_articles_in_magazines_and_newspapers": {
+		"en": "General articles in magazines and newspapers",
+		"de": "Allgemeine Artikel in Zeitschriften und Zeitungen",
+		"fr": "Articles généraux dans les magazines et les journaux",
+		"it": "Articoli generali su riviste e giornali"
+	},
+	"art_magazines": {
+		"en": "Art Magazines",
+		"de": "Kunstmagazine",
+		"fr": "Magazines d'art",
+		"it": "Riviste d'arte"
+	},
+	"radio_tv_movie": {
+		"en": "Radio-TV movie",
+		"de": "Radio-TV-Film",
+		"fr": "Films radio-TV",
+		"it": "Film radiotelevisivi"
+	},
+	"magazines_and_newspapers": {
+		"en": "Magazines and newspapers",
+		"de": "Zeitschriften und Zeitungen",
+		"fr": "Magazines et journaux",
+		"it": "Riviste e giornali"
+	},
+	"signature_type": {
+		"en": "Signature type",
+		"de": "Art der Unterschrift",
+		"fr": "Type de signature",
+		"it": "Tipo di firma"
+	},
+	"signature_text": {
+		"en": "Signature text",
+		"de": "Text der Unterschrift",
+		"fr": "Texte de la signature",
+		"it": "Testo della firma"
+	},
+	"number": {
+		"en": "Number",
+		"de": "Nummer",
+		"fr": "Numéro d'identification",
+		"it": "Numero"
+	},
+	"isbn_issn": {
+		"en": "ISBN / ISSN",
+		"de": "ISBN / ISSN",
+		"fr": "ISBN / ISSN",
+		"it": "ISBN / ISSN"
+	},
+	"type_of_publication": {
+		"en": "Type of Publication",
+		"de": "Art der Veröffentlichung",
+		"fr": "Type de publication",
+		"it": "Tipo di pubblicazione"
+	},
+	"medium_style": {
+		"en": "Medium / Style",
+		"de": "Medium / Stil",
+		"fr": "Support / Style",
+		"it": "Mezzo / Stile"
+	},
+	"year_of_publication": {
+		"en": "Year of publication",
+		"de": "Jahr der Veröffentlichung",
+		"fr": "Année de publication",
+		"it": "Anno di pubblicazione"
+	},
+	"editions": {
+		"en": "Editions",
+		"de": "Ausgaben",
+		"fr": "Éditions",
+		"it": "Edizioni"
+	},
+	"location_of_publication": {
+		"en": "Location of Publication",
+		"de": "Ort der Veröffentlichung",
+		"fr": "Lieu de publication",
+		"it": "Luogo di pubblicazione"
+	},
+	"translator": {
+		"en": "Translator",
+		"de": "Übersetzer",
+		"fr": "Traducteur",
+		"it": "Traduttore"
+	},
+	"illustrator": {
+		"en": "Illustrator",
+		"de": "Illustrator",
+		"fr": "Illustrateur",
+		"it": "Illustratore"
+	},
+	"illustration_style": {
+		"en": "Illustration style",
+		"de": "Stil der Illustration",
+		"fr": "Style d'illustration",
+		"it": "Stile dell'illustrazione"
+	},
+	"publisher_editor": {
+		"en": "Publisher / Editor",
+		"de": "Verlag / Herausgeber",
+		"fr": "Éditeur / rédacteur en chef",
+		"it": "Editore / curatore"
+	},
+	"number_of_editions": {
+		"en": "Number of Editions",
+		"de": "Anzahl der Editionen",
+		"fr": "Nombre d'éditions",
+		"it": "Numero di edizioni"
+	},
+	"number_of_pages": {
+		"en": "Number of Pages",
+		"de": "Anzahl der Seiten",
+		"fr": "Nombre de pages",
+		"it": "Numero di pagine"
+	},
+	"format": {
+		"en": "Format",
+		"de": "Format",
+		"fr": "Format",
+		"it": "Formato"
+	},
+	"movie_number": {
+		"en": "Movie Number",
+		"de": "Film Nummer",
+		"fr": "Numéro du film",
+		"it": "Numero di film"
+	},
+	"scene_(description)": {
+		"en": "Scene (description)",
+		"de": "Szene (Beschreibung)",
+		"fr": "Scène (description)",
+		"it": "Scena (descrizione)"
+	},
+	"shooting_place": {
+		"en": "Shooting Place",
+		"de": "Ort der Dreharbeiten",
+		"fr": "Lieu de la prise de vue",
+		"it": "Luogo di ripresa"
+	},
+	"date_of_recording": {
+		"en": "Date of Recording",
+		"de": "Datum der Aufnahme",
+		"fr": "Date d'enregistrement",
+		"it": "Data di registrazione"
+	},
+	"legal_applicability": {
+		"en": "Legal Applicability",
+		"de": "Rechtliche Anwendbarkeit",
+		"fr": "Applicabilité légale",
+		"it": "Applicabilità legale"
+	},
+	"btn_edit": {
+		"en": "Edit",
+		"de": "Bearbeiten",
+		"fr": "Modifier",
+		"it": "Modificare"
+	},
+	"mlang_imported": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"export_ready": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"download_json_format": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"download_excel_format": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"o_new": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"btn_delete_property": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"btn_gen_pwd": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"login_remember_me": {
+		"en": "Remember me",
+		"de": "Erinnere dich an mich",
+		"fr": "Souviens-toi de moi",
+		"it": "Ricordati di me"
+	},
+	"inventory_copyright": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"mlang_export": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"mlang_import": {
+		"en": "Import multi-language strings",
+		"de": "Mehrsprachige Zeichenfolgen importieren",
+		"fr": "Importer des chaînes de caractères multilingues",
+		"it": "Importazione di stringhe multilingue"
+	},
+	"timestamp_creation": {
+		"en": "Timestamp creation",
+		"de": "Datensatz-Erstellung",
+		"fr": "Création d'un enregistrement",
+		"it": "Creazione di record di dati"
+	},
+	"timestamp_modification": {
+		"en": "Timestamp modification",
+		"de": "Datensatz-Änderung",
+		"fr": "Modification de l'enregistrement",
+		"it": "Modifica del record"
+	},
+	"current_user": {
+		"en": "Current user",
+		"de": "Aktueller Benutzer",
+		"fr": "Utilisateur actuel",
+		"it": "Utente corrente"
+	},
+	"inventory_text_no": {
+		"en": "Inventory Text/No.",
+		"de": "Inventar Text/Nr.",
+		"fr": "Texte/numéro d'inventaire",
+		"it": "Inventario Testo/No."
+	},
+	"interface_to_history_map": {
+		"en": "Interface to History Map",
+		"de": "Schnittstelle zur Geschichtskarte",
+		"fr": "Interface avec la carte d'histoire",
+		"it": "Interfaccia con la mappa della cronologia"
+	},
+	"creation_date": {
+		"en": "Creation date",
+		"de": "Datum der Erstellung",
+		"fr": "Date de création",
+		"it": "Data di creazione"
+	},
+	"modification_date": {
+		"en": "Modification date",
+		"de": "Datum der Änderung",
+		"fr": "Date de modification",
+		"it": "Data di modifica"
+	},
+	"inventor": {
+		"en": "Inventor",
+		"de": "Inventarisierungsperson",
+		"fr": "Personne chargée de l'inventaire",
+		"it": "Persona dell'inventario"
+	},
+	"mlimport_explanation": {
+		"en": "After importing of the chosen file, current multi-language strings will be updated and previous values will be overridden.",
+		"de": "Nach dem Importieren der ausgewählten Datei werden die aktuellen mehrsprachigen Zeichenfolgen aktualisiert und vorherige Werte überschrieben.",
+		"fr": "Après l'importation du fichier choisi, les chaînes multilingues actuelles seront mises à jour et les valeurs précédentes seront remplacées.",
+		"it": "Dopo l'importazione del file scelto, le stringhe multilingue correnti verranno aggiornate e i valori precedenti verranno sovrascritti."
+	},
+	"mlimport_message": {
+		"en": "Multi-language file can be imported from an Excel file with the following structure:",
+		"de": "Mehrsprachige Dateien können aus einer Excel-Datei mit folgender Struktur importiert werden:",
+		"fr": "Un fichier multilingue peut être importé à partir d'un fichier Excel avec la structure suivante :",
+		"it": "Il file multilingue può essere importato da un file Excel con la seguente struttura:"
+	},
+	"key_string_identifier": {
+		"en": "key - The identifier of the string",
+		"de": "key - Die Kennung der Zeichenfolge",
+		"fr": "key - L'identifiant de la chaîne",
+		"it": "key - L'identificatore della stringa"
+	},
+	"en_english_translation": {
+		"en": "en - English translation",
+		"de": "en - Englische Übersetzung",
+		"fr": "en - traduction anglaise",
+		"it": "en - traduzione in inglese"
+	},
+	"de_german_translation": {
+		"en": "de - German translation",
+		"de": "de - Deutsche Übersetzung",
+		"fr": "de - traduzione in tedesco",
+		"it": "de - Traduction allemande"
+	},
+	"fr_french_translation": {
+		"en": "fr - French translation",
+		"de": "fr - Französische Übersetzung",
+		"fr": "fr - Traduction française",
+		"it": "fr - traduzione francese"
+	},
+	"it_italian_translation": {
+		"en": "it - Italian translation",
+		"de": "it - Italienische Übersetzung",
+		"fr": "it - Traduction italienne",
+		"it": "it - traduzione italiana"
+	},
+	"mlimport_warning": {
+		"en": "WARNING",
+		"de": "WARNUNG",
+		"fr": "AVERTISSEMENT",
+		"it": "AVVERTIMENTO"
+	},
+	"do_mlang_import": {
+		"en": "Start import",
+		"de": "Import starten",
+		"fr": "Démarrer l'importation",
+		"it": "Avvia importazione"
+	},
+	"o_export": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"download_link": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"no_standard_reports_found": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"std_reports": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"report_not_found": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"o_clone": {
+		"en": "",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"btn_dc_standard_reports": {
+		"en": "Reports",
+		"de": "Berichte",
+		"fr": "Rapports",
+		"it": "Rapporti"
+	},
+	"suitable_for_children": {
+		"en": " Suitable for children",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"wheelchair_accessable": {
+		"en": "Wheelchair accessable",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"restaurant_café": {
+		"en": "Restaurant / Café",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"wc": {
+		"en": "WC",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"parking": {
+		"en": "Parking",
+		"de": "",
+		"fr": "",
+		"it": ""
+	},
+	"museums_card": {
+		"en": "Museums Card",
+		"de": "",
+		"fr": "",
+		"it": ""
+	}
+}
