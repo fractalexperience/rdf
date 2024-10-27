@@ -634,3 +634,69 @@ class RdfCms:
         self.sqleng.exec_update(q)
         # Maybe we shall add INSERT statements for objects, which don't have the property yet
         return f'Property value changed to: {v} in class {cdef.name}'
+
+    def get_user_data_js(self, tn, usr, pwd):
+        """ Prepares a JSON notation for user object suitable for usage in JavaScript """
+        u = self.o_seek(tn, 'user', 'Username', usr)
+
+        h_pwd = util.get_sha1(pwd)
+        h_usr = u.get('data', {}).get('Password hash')[0]
+        if h_usr != h_pwd:
+            return None
+
+        if u is not None:
+            d_usr = u.get('data', {})
+            o_id = d_usr.get('Organization')[0]
+            o = self.o_read(tn, o_id)
+            d_org = o.get('data', {})
+            u_data = {
+                'hash': u.get('hash'),
+                'username': f'{d_usr.get("Username")[0]}|{d_usr.get("Username")[1]}',
+                'role': f'{d_usr.get("Role")[0]}|{d_usr.get("Role")[1]}',
+                'name': f'{d_usr.get("Name")[0]}|{d_usr.get("Name")[1]}',
+                'email': f'{d_usr.get("Email")[0]}|{d_usr.get("Email")[1]}',
+                'lang': f'{d_usr.get("Language")[0]}|{d_usr.get("Language")[1]}',  # To improve
+                'authenticated': True,
+                'db': d_org.get('Database')
+            }
+            return u_data
+
+    def get_org_data_js(self, tn, u_hash):
+        """ Returns organization data for a specific user to be used by JavaScript """
+        o_obj = self.o_read(tn, u_hash, 0)
+        if not o_obj:
+            return None
+        o_data = o_obj.get('data')
+        if not o_data:
+            return None
+        org_hash = o_data.get('Organization', (None, None))[0]
+        if not org_hash:
+            return None
+        org_obj = self.o_read(tn, org_hash, 0)
+        if not org_obj:
+            return None
+        org_data = org_obj.get('data')
+        if not org_data:
+            return '{}'
+        org = {'hash': org_obj.get('hash')}
+        self.upd_obj_js(org_data, org, 'Name', 'name')
+        self.upd_obj_js(org_data, org, 'Description', 'description')
+        self.upd_obj_js(org_data, org, 'Suitable for children', 'children')
+        self.upd_obj_js(org_data, org, 'Wheelchair accessible', 'wheelchair')
+        self.upd_obj_js(org_data, org, 'Restaurant/Cafe', 'cafe')
+        self.upd_obj_js(org_data, org, 'WC', 'wc')
+        self.upd_obj_js(org_data, org, 'Parking', 'parking')
+        self.upd_obj_js(org_data, org, 'Museums Card', 'card')
+        address = org_data.get('Address')
+        address_data = address.get('data') if address else None
+        self.upd_obj_js(address_data, org, 'Country', 'country')
+        self.upd_obj_js(address_data, org, 'ZIP code', 'zip')
+        self.upd_obj_js(address_data, org, 'City', 'city')
+        self.upd_obj_js(address_data, org, 'Address line 2', 'address1')
+        self.upd_obj_js(address_data, org, 'Address line 1', 'address2')
+        return org
+
+    def upd_obj_js(self, obj, obj_js, caption, key):
+        """ Clips content of a tuple """
+        obj_js[key] = '|'.join([f'{p}' for p in list(obj.get(caption, ()))])
+

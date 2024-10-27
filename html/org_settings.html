@@ -1,0 +1,93 @@
+<div class="row" style="margin-top: 50px;">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-6">
+        <h3 mlang="org_settings">Organization settings</h3>
+        <form action="" id="form_object_edit" class="needs-validation" novalidate method="post">
+            <div class="form-group rdf-container">
+                <label for="Org_Full_Name" mlang="org_name">Organization name:</label>
+                <input type="text" class="form-control rdf-property" value="" h="" p="" i=""
+                       oninput="$(this).addClass('rdf-changed')"
+                       id="Org_Full_Name" name="Org_Full_Name" required>
+
+                <label for="Org_Description" mlang="org_description">Description:</label>
+                <input type="text" class="form-control rdf-property" value="" h="" p="" i=""
+                       oninput="$(this).addClass('rdf-changed')"
+                       id="Org_Description" name="Org_Description" required>
+
+                <h4 mlang="org_address">Address</h4>
+                <label for="Org_Address1" mlang="address_city">Address line 1:</label>
+                <input type="text" class="form-control rdf-property" value="" h="" p="" i=""
+                       oninput="$(this).addClass('rdf-changed')"
+                       id="Org_Address1" name="Org_Address1" required>
+
+                <label for="Org_Address2" mlang="address_city">Address line 2:</label>
+                <input type="text" class="form-control rdf-property" value="" h="" p="" i=""
+                       oninput="$(this).addClass('rdf-changed')"
+                       id="Org_Address2" name="Org_Address2" required>
+
+                <label for="Org_City" mlang="address_city">City:</label>
+                <input type="text" class="form-control rdf-property" value="" h="" p="" i=""
+                       oninput="$(this).addClass('rdf-changed')"
+                       id="Org_City" name="Org_City" required>
+
+                <label for="Org_ZIP" mlang="address_zip">ZIP Code:</label>
+                <input type="text" class="form-control rdf-property" value="" h="" p="" i=""
+                       oninput="$(this).addClass('rdf-changed')"
+                       id="Org_ZIP" name="Org_Zip" required>
+
+                <label for="Org_Country" mlang="address_country">Country:</label>
+                <input type="text" class="form-control rdf-property" value="" h="" p="" i=""
+                       oninput="$(this).addClass('rdf-changed')"
+                       id="Org_Country" name="Org_Country" required>
+
+                <h4 mlang="org_options">Options</h4>
+                <label for="Org_Children" mlang="org_suitable_for_children">Suitable for children:</label>
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input rdf-property" value="" h="" p="" i=""
+                           oninput="$(this).addClass('rdf-changed')"
+                           id="Org_Children" name="Org_Children" required>
+                </div>
+
+                <label for="Org_Wheelchair" mlang="org_wheelchair_accessible">Wheelchair accessible:</label>
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input rdf-property" value="" h="" p="" i=""
+                           oninput="$(this).addClass('rdf-changed')"
+                           id="Org_Wheelchair" name="Org_Wheelchair" required>
+                </div>
+                <label for="Org_Cafe" mlang="org_cafe">Restaurant/Cafe:</label>
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input rdf-property" value="" h="" p="" i=""
+                           oninput="$(this).addClass('rdf-changed')"
+                           id="Org_Cafe" name="Org_Cafe" required>
+                </div>
+                <label for="Org_WC" mlang="org_cafe">WC:</label>
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input rdf-property" value="" h="" p="" i=""
+                           oninput="$(this).addClass('rdf-changed')"
+                           id="Org_WC" name="Org_WC" required>
+                </div>
+                <label for="Org_Parking" mlang="org_parking">Parking:</label>
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input rdf-property" value="" h="" p="" i=""
+                           oninput="$(this).addClass('rdf-changed')"
+                           id="Org_Parking" name="Org_Parking" required>
+                </div>
+                <label for="Org_Card" mlang="org_card">Museums Card:</label>
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input rdf-property" value="" h="" p="" i=""
+                           oninput="$(this).addClass('rdf-changed')"
+                           id="Org_Card" name="Org_Card" required>
+                </div>
+
+            </div>
+            <div style="text-align: right; margin-top:10px;">
+                <button type="button" class="btn btn-primary"
+                        onclick="save_org_settings()"
+                        id="btn_save_org_settings" mlang="save_org_settings">Save organization settings</button>
+            </div>
+        </form>
+        <div id="save_message" style="background-color: #f0fff0;"></div>
+
+    </div>
+    <div class="col-sm-3"></div>
+</div>

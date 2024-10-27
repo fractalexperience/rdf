@@ -374,11 +374,11 @@ class RdfEngine:
         un = u.get('name').split('|')[0] if u else ''
         return self.o_represent(tn, un, cdef, obj, self.vws.view_methods, False)
 
-    def o_edit(self, tn, un, h_u):
+    def o_edit(self, tn, usr, h_u):
         obj, cdef = self.get_obj_and_cdef(tn, h_u, None)
-        return self.o_represent(tn, un, cdef, obj, self.inp.input_methods, True)
+        return self.o_represent(tn, usr, cdef, obj, self.inp.input_methods, True)
 
-    def o_represent(self, tn, un, cdef, obj, methods, wrap_in_form):
+    def o_represent(self, tn, usr, cdef, obj, methods, wrap_in_form):
         """ Generates an edit form for an object. It is identified by its hash code. """
         if cdef is None:
             return f'<h2><span mlang="msg_unknown_object">Unknown object</span></h2>'
@@ -389,7 +389,7 @@ class RdfEngine:
         if wrap_in_form:
             self.o_represent_header(o, obj, cdef)
         # ---
-        self.o_edit_members(o, tn, un, [cdef], obj, methods, wrap_in_form, obj)
+        self.o_edit_members(o, tn, usr, [cdef], obj, methods, wrap_in_form, obj)
         # ---
         if wrap_in_form:
             self.o_represent_footer(o, obj, cdef)
@@ -430,7 +430,7 @@ class RdfEngine:
         o.append(frag_btn_clone)
         o.append('</div>')
 
-    def o_edit_members(self, o, tn, un, stack, obj, methods, wrap_in_form, grand_parent):
+    def o_edit_members(self, o, tn, usr, stack, obj, methods, wrap_in_form, grand_parent):
         if not stack:
             return
         cdef = stack[-1]
@@ -456,7 +456,7 @@ class RdfEngine:
         o.append('</div>')
 
         for mem in sorted([m for m in cdef.members.values()], key=lambda m: m.order.zfill(6)):
-            self.o_edit_member(o, tn, un, mem, stack, obj, methods, grand_parent)
+            self.o_edit_member(o, tn, usr, mem, stack, obj, methods, grand_parent)
 
         o.append('</div>')
 
@@ -532,7 +532,8 @@ class RdfEngine:
 
         o.append('</div>')
 
-    def o_edit_member(self, o, tn, un, mem, stack, obj, methods, grand_parent):
+    def o_edit_member(self, o, tn, usr, mem, stack, obj, methods, grand_parent):
+        """ usr: User object """
         data = obj.get('data') if obj else {}
         mdef = self.schema.get_class(mem.ref)
         allow_multiple = mem and mem.multiple.lower() == 'true'
@@ -544,16 +545,16 @@ class RdfEngine:
                 if not sub_data:
                     return
                 stack.append(mdef)
-                self.o_edit_members(o, tn, un, stack, sub_data, methods, False, grand_parent)
+                self.o_edit_members(o, tn, usr, stack, sub_data, methods, False, grand_parent)
                 stack.pop(len(stack) - 1)
                 # ---
             else:  # Independent reference
-                self.o_edit_prop(o, tn, un, mem, val, stack, obj, methods)
+                self.o_edit_prop(o, tn, usr, mem, val, stack, obj, methods)
         else:
             if val is not None or not allow_multiple:
                 # If property is defined once, it should be displayed even empty.
                 # If it defined to allowed multiple occurrences, then it should be added from "Add property"
-                self.o_edit_prop(o, tn, un, mem, val, stack, obj, methods)
+                self.o_edit_prop(o, tn, usr, mem, val, stack, obj, methods)
 
     def o_edit_prop_standalone(self, o, tn, mem, val, stack, obj, methods):
         h = obj.get('hash') if obj else ''
@@ -565,19 +566,21 @@ class RdfEngine:
         method = methods.get('standalone', methods.get('string'))
         method(tn, mem, valstr, h, pid, u, o, bgc)
 
-    def o_edit_prop(self, o, tn, un, mem, val, stack, obj, methods):
+    def o_edit_prop(self, o, tn, usr, mem, val, stack, obj, methods):
         if isinstance(val, list):
             for v in val:
-                self.o_edit_prop_single(o, tn, un, mem, v, stack, obj, methods)
+                self.o_edit_prop_single(o, tn, usr, mem, v, stack, obj, methods)
             return
         # Normal case
-        self.o_edit_prop_single(o, tn, un, mem, val, stack, obj, methods)
+        self.o_edit_prop_single(o, tn, usr, mem, val, stack, obj, methods)
 
-    def o_edit_prop_single(self, o, tn, un, mem, val, stack, obj, methods):
+    def o_edit_prop_single(self, o, tn, usr, mem, val, stack, obj, methods):
         """
         :param methods: Methods collection to represent simple content properties
         :param o: Output list
-        :param mem: Ptoperty class
+        :param tn: Table name
+        :param usr: User object
+        :param mem: Property class
         :param val: Value of the property
         :param stack: list of the involved classes
         :param obj: Object instance (if any), None for new object
@@ -591,6 +594,7 @@ class RdfEngine:
         u = mdef.uri
         method_ref = 'standalone' if mdef.data_type == 'object' else mdef.data_type
         method = methods.get(method_ref, methods.get('string'))
+        un = u.get('name').split('|')[0]
         method(tn, un, mem, valstr, h, pid, u, o, bgc)
 
     def reset_rdf_table(self, tblname):
