@@ -77,21 +77,6 @@ $.get('l?q=item^', function(data, status) {
     }
 });
 */
-    function data_export()
-    {
-        update_content('output', 'chunk/dbexport');
-    }
-
-    function data_import()
-    {
-         update_content('output', 'chunk/dbimport');
-    }
-
-    function mass_changes()
-    {
-        update_content('output', 'chunk/masschg');
-    }
-
     function dc_view_custom_reports() {
         url = 'r?cn=custom_report';
         update_content('output', url);

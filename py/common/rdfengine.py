@@ -148,7 +148,7 @@ class RdfEngine:
         htmlutil.wrap_h(o, ['id', 'subject', 'predicate', 'object', 'value', 'hash'], 'RDF Data')
         return ''.join(o)
 
-    def check_browse_condition(self, tn, cn):
+    def check_browse_condition(self, tn, usr, cn):
         if not tn:
             return False, 'No database selected'
         if not self.sqleng.table_exists(tn):
@@ -157,15 +157,37 @@ class RdfEngine:
         # This should be improved - we should be able to instantiate even a simple type
         if not cdef.members:
             return False, f'Class {cn} is a property'
+        if cn == 'user':
+            if usr.get('role').split('|')[0] not in ['SA', 'OA']:
+                return False, 'Not enough rights for this operation'
+
         return True, 'Ok'
 
-    def o_browse(self, tn, cn, fi):
+    def check_visibility_condition(self, tn, usr, obj, cn):
+        if cn == 'user':
+            obj_user_name = obj.get('Username')
+            obj_org = self.cms.o_read(tn, obj.get('Organization'))
+            obj_org_hash = obj_org.get('hash')
+            user_role = usr.get('role').split('|')[0]
+            user_name = usr.get('username')
+            if user_role == 'DC':
+                if obj_user_name != user_name:
+                    return False, 'Not enough rights'
+            if user_role == 'OA':
+                org = usr.get('org')
+                org_hash = org.get('hash')
+                if obj_org_hash != org_hash:
+                    return False, 'Not enough rights'  # Company admin cannot read users from other organizations
+
+        return True, 'Ok'
+
+    def o_browse(self, tn, usr, cn, fi):
         """
         cn => Class name, fi => Filter
         Creates a render of all objects with a given name and filtered using a given criteria
         Filter consists of property#value pairs concatenated with "|"
         """
-        success, msg = self.check_browse_condition(tn, cn)
+        success, msg = self.check_browse_condition(tn, usr, cn)
         if not success:
             return f'<h1>{msg}</h1>'
 
@@ -178,10 +200,14 @@ class RdfEngine:
 
         js = self.o_list(tn, cn)
         for obj in sorted(js, key=lambda ob: ob.get('id'), reverse=True):
+            visible, msg = self.check_visibility_condition(tn, usr, obj, cn)
+            if not visible:  # Some objects are not visible for users with less rights
+                continue
+
             obj_row = []
             h = obj.get('hash')
             self.o_populate_field_values(tn, obj, obj_row)
-            htmlutil.wrap_tr(o, obj_row, f'onclick="o_edit(\'{h}\')"')
+            htmlutil.wrap_tr(o, obj_row, f'onclick="o_edit(\'{h}\', \'{tn}\')"')
 
         htmlutil.wrap_table(o, attr='class="table table-hover table-bordered display dataTable"')
         o.insert(0, f'<div class="row" style="margin-top: 10px;">'
@@ -191,19 +217,21 @@ class RdfEngine:
                     f'</button>'
                     f'</div>'
                     f'<div class="col-sm-9" style="text-align: right;">'
-                    f'<span id="o_export_slot">'
+                    
+                    f'<span id="o_export_slot" style="visibility: hidden;">'                    
                     f'<button id="btn_export" class="btn btn-info btn-sm" '
                     f'onclick="update_content(\'o_export_slot\', \'export?cn={cdef.uri}\')" mlang="o_export">'
                     f'Export data for {cdef.name}'
                     f'</button>'
                     f'</span>'
+                    
                     f'</div>'
                     f'</div>')
         htmlutil.append_interactive_table(o)
         return ''.join(o)
 
-    def o_export(self, tn, cn, fi):
-        success, msg = self.check_browse_condition(tn, cn)
+    def o_export(self, tn, usr, cn, fi):
+        success, msg = self.check_browse_condition(tn, usr, cn)
         if not success:
             return f'<h1>{msg}</h1>'
         js = self.o_list(tn, cn)
@@ -269,7 +297,7 @@ class RdfEngine:
             return
         cdef = self.schema.get_class(obj.get('code'))
         fields = self.get_fields_to_show(cdef)
-        for mem in fields:
+        for mem in sorted(fields, key=lambda m: m.order.zfill(5)):
             mdef = self.schema.get_class(mem.ref)
             prop_val = obj.get(mem.name)
             prop_val_resolved = prop_val[0] if isinstance(prop_val, tuple) else prop_val
@@ -297,8 +325,8 @@ class RdfEngine:
         if cdef is None:
             return None
         fields_show, fields_all = [], []
-        for mem_ndx in cdef.members.keys():
-            mem = cdef.members.get(mem_ndx)
+        for mem in sorted(cdef.members.values(), key=lambda m: m.order.zfill(5)):
+            # mem = cdef.members.get(mem_ndx)
             fields_all.append(mem)
             if mem.show.lower() == 'true':
                 fields_show.append(mem)
@@ -354,13 +382,13 @@ class RdfEngine:
         return ''.join(o)
         # return self.o_get_html(tn, obj, cdef, obj_parent, self.inp.input_methods)
 
-    def o_view(self, u, h_u, go, format):
+    def o_view(self, usr, h_u, go, format):
         rdf_h = h_u[0:40] if len(h_u) > 40 else h_u
         tn = h_u[40:] if len(h_u) > 40 else None
         if tn is None:
-            if u is None:  # Not logged in
+            if usr is None:  # Not logged in
                 return '<h1 mlang="not_authorized">Not authorized</h1>'
-            t = u.get('db')
+            t = usr.get('db')
             tn = t[0]
         # TODO: Check also cross-organization situation
         obj, cdef = self.get_obj_and_cdef(tn, rdf_h, go)
@@ -371,14 +399,19 @@ class RdfEngine:
         if method is not None:
             return method(tn, obj, cdef, format)
 
-        un = u.get('name').split('|')[0] if u else ''
-        return self.o_represent(tn, un, cdef, obj, self.vws.view_methods, False)
+        un = usr.get('name').split('|')[0] if usr else ''
+        return self.o_represent(tn, usr, cdef, obj, self.vws.view_methods, False)
 
-    def o_edit(self, tn, usr, h_u):
+    def o_edit(self, tn, usr, h_u, allow_delete=True, allow_clone=True):
         obj, cdef = self.get_obj_and_cdef(tn, h_u, None)
-        return self.o_represent(tn, usr, cdef, obj, self.inp.input_methods, True)
 
-    def o_represent(self, tn, usr, cdef, obj, methods, wrap_in_form):
+        # Some special cases - maybe this should be externalized
+        if cdef.uri == 'org':
+            allow_delete = False
+            allow_clone = False
+        return self.o_represent(tn, usr, cdef, obj, self.inp.input_methods, True, allow_delete, allow_clone)
+
+    def o_represent(self, tn, usr, cdef, obj, methods, wrap_in_form, allow_delete=True, allow_clone=True):
         """ Generates an edit form for an object. It is identified by its hash code. """
         if cdef is None:
             return f'<h2><span mlang="msg_unknown_object">Unknown object</span></h2>'
@@ -392,15 +425,15 @@ class RdfEngine:
         self.o_edit_members(o, tn, usr, [cdef], obj, methods, wrap_in_form, obj)
         # ---
         if wrap_in_form:
-            self.o_represent_footer(o, obj, cdef)
+            self.o_represent_footer(tn, o, obj, cdef, allow_delete, allow_clone)
         return ''.join(o)
 
     def o_represent_header(self, o, obj, cdef):
         o.append(f'<form action="" id="form_object_edit" class="needs-validation" novalidate method="post"> ')
 
-    def o_represent_footer(self, o, obj, cdef):
+    def o_represent_footer(self, tn, o, obj, cdef, allow_delete=True, allow_clone=True):
         h = obj.get('hash') if obj else None
-        frag_o_save = f'o_save(null, [], 0, false, function() {{ o_edit(\'{h}\')}} )' \
+        frag_o_save = f'o_save(null, [], 0, false, function() {{ o_edit(\'{h}\', \'{tn}\')}} )' \
             if h \
             else f'o_save(null, [], 0, false, function() {{ update_content(\'output\', \'b?cn={cdef.uri}\'); }})'
         frag_o_clone = f'o_save(null, [], 0, true, function() {{ update_content(\'output\', \'b?cn={cdef.uri}\'); }})' \
@@ -409,18 +442,20 @@ class RdfEngine:
         frag_btn_save = (f'<button type="button" class="btn btn-primary" style="margin-right: 10px;" '
                          f'onclick="{frag_o_save}" '
                          f'id="btn_o_save" mlang="o_save">Save data</button>')
-
-        frag_btn_del = (f'<button type="button" class="btn btn-danger" style="margin-right: 10px;" '
-                        f'onclick="o_delete(function() {{update_content(\'output\', \'b?cn={cdef.uri}\', null)}})" '
-                        f'id="btn_o_delete" mlang="o_delete">Delete</button>') if obj else ''
+        frag_btn_del = ''
+        if allow_delete:
+            frag_btn_del = (f'<button type="button" class="btn btn-danger" style="margin-right: 10px;" '
+                            f'onclick="o_delete(function() {{update_content(\'output\', \'b?cn={cdef.uri}\', null)}})" '
+                            f'id="btn_o_delete" mlang="o_delete">Delete</button>') if obj else ''
 
         frag_btn_cancel = (f'<button type="button" class="btn btn-info" style="margin-right: 10px;" '
-                           f'onclick="update_content(\'output\',\'b?cn={cdef.uri}\')" '
+                           f'onclick="update_content(\'output\',\'b?cn={cdef.uri}&db={tn}\')" '
                            f'id="btn_o_cancel" mlang="o_cancel">Cancel</button>')
-
-        frag_btn_clone = (f'<button type="button" class="btn btn-warning" style="margin-right: 10px;" '
-                          f'onclick="{frag_o_clone}" '
-                          f'id="btn_o_clone" mlang="o_clone">Clone</button>') if h else ''
+        frag_btn_clone = ''
+        if allow_clone:
+            frag_btn_clone = (f'<button type="button" class="btn btn-warning" style="margin-right: 10px;" '
+                              f'onclick="{frag_o_clone}" '
+                              f'id="btn_o_clone" mlang="o_clone">Clone</button>') if h else ''
 
         o.append('</form>'
                  '<div style="text-align: right; margin-top:10px;">')
@@ -444,7 +479,7 @@ class RdfEngine:
         bgc = self.bgcolors.get(len(stack), self.bgcolors.get(0))
         o.append(f'<div class="form-group rdf-container" id="{div_id}" i="{i}" u="{u}">')
         o.append(f'<div class="row align-items-start" style="padding-bottom: 20px;background-color: {bgc};">')
-        o.append(f'<div class="col-11"><h4 mlang="o_edit_members">{cdef.name}</h4></div>')
+        o.append(f'<div class="col-11"><h4 mlang="{util.to_snakecase(cdef.name)}">{cdef.name}</h4></div>')
 
         if obj is not None:
             if len(stack) < 2:
@@ -465,7 +500,7 @@ class RdfEngine:
         h_gp = grand_parent.get('hash')
         o.append(f'<div class="col-1" style="text-align: right;">'
                  f'<button type="button" class="btn btn-danger btn-sm" mlang="btn_delete_property" '
-                 f'onclick="o_delete_id(\'{h}\', function() {{ o_edit(\'{h_gp}\')}} )" '
+                 f'onclick="o_delete_id(\'{h}\', function() {{ o_edit(\'{h_gp}\', \'{tn}\')}} )" '
                  f'id="btn_delete_property"> x </button>'
                  f'</div>')
 
@@ -491,7 +526,7 @@ class RdfEngine:
             o_temp.append(
                 f'<a class="dropdown-item" '
                 f'href="javascript:add_property_panel(\'{uri}\', \'{cdef.uri}\', \'{mem.name}\', \'{obj.get("hash")}\', {frag_multiple})" '
-                f'id="add_prop_{mem.name}" mlang="add_prop_{mem.name}"  '
+                f'id="add_prop_{mem.name}" mlang="add_prop_{util.to_snakecase(mem.name)}"  '
                 f'p="{mem.name}" u="{cdef.uri}" i="{obj_id}">{mem.name}</a>')
             cnt += 1
         if cnt == 0:
@@ -594,7 +629,7 @@ class RdfEngine:
         u = mdef.uri
         method_ref = 'standalone' if mdef.data_type == 'object' else mdef.data_type
         method = methods.get(method_ref, methods.get('string'))
-        un = u.get('name').split('|')[0]
+        un = usr.get('name').split('|')[0]
         method(tn, un, mem, valstr, h, pid, u, o, bgc)
 
     def reset_rdf_table(self, tblname):

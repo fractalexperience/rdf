@@ -35,12 +35,16 @@ class RdfInputs:
     @staticmethod
     def input_row_decorator(method):
         def wrapper(self, tn, un, mem, valstr, h, pid, u, o, bgc):
-            lbl = f'<b>{mem.name} *</b> ' if mem.required and mem.required.lower() == 'true' else mem.name
+            # lbl = f'<b>{mem.name} *</b> ' if mem.required and mem.required.lower() == 'true' else mem.name
+            lbl = mem.name
+            is_required = mem.required and mem.required.lower() == 'true'
+            frag_weight = ' style="font-weight: bold;"' if is_required else ''
+            frag_required = ' *' if is_required else ''
             o.append(f'<div class="row align-items-start" style="background-color: {bgc};">')
-            o.append('<div class="col-2" style="text-align: right;">')
-            o.append(f'<label for="{mem.name}" mlang="{mem.name}" class="text-primary">{lbl}</label>')
+            o.append('<div class="col-3" style="text-align: right;">')
+            o.append(f'<label for="{mem.name}" mlang="{util.to_snakecase(mem.name)}" class="text-primary" {frag_weight}>{lbl}</label><span>{frag_required}</span>')
             o.append('</div>')
-            o.append('<div class="col-10">')
+            o.append('<div class="col-9">')
             method(self, tn, un, mem, valstr, h, pid, u, o)
             o.append('</div></div>')
         return wrapper

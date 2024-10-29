@@ -81,81 +81,18 @@ function handle_settings() {
 }
 /** Requests display of user settings dialog */
 function handle_org_settings() {
-    update_content('output', 'chunk?name=org_settings', function() {
-        var msg = '';
-        $.get('org', function(data, status) {
-            if (status === 'success') {
-                alert(data);
-                var org = JSON.parse(data);
-                if (org === null) {
-                    msg += 'Unknown organization!';
-                    $('#login_message').html(msg);
-                } else {
-                    $('#Org_Full_Name').val(org.name.split('|')[0]);
-                    $('#Org_Description').val(org.description.split('|')[0]);
-
-                    $('#Org_Children').val(org.children.split('|')[0]);
-                    $('#Org_Children').attr('checked', org.children.split('|')[0]);
-
-                    $('#Org_Wheelchair').val(org.wheelchair.split('|')[0]);
-                    $('#Org_Cafe').val(org.cafe.split('|')[0]);
-                    $('#Org_WC').val(org.wc.split('|')[0]);
-                    $('#Org_Parking').val(org.parking.split('|')[0]);
-                    $('#Org_Card').val(org.card.split('|')[0]);
-
-                    $('#Org_Address1').val(org.address1.split('|')[0]);
-                    $('#Org_Address2').val(org.address2.split('|')[0]);
-                    $('#Org_City').val(org.city.split('|')[0]);
-                    $('#Org_ZIP').val(org.zip.split('|')[0]);
-                    $('#Org_Country').val(org.country.split('|')[0]);
-
-                    $('#Org_Full_Name').attr('p', 'Name');
-                    $('#Org_Description').attr('p', 'Description');
-                    $('#Org_Children').attr('p', 'Suitable for children');
-                    $('#Org_Wheelchair').attr('p', 'Wheelchair accessible');
-                    $('#Org_Cafe').attr('p', 'Restaurant/Cafe');
-                    $('#Org_WC').attr('p', 'WC');
-                    $('#Org_Parking').attr('p', 'Parking');
-                    $('#Org_Card').attr('p', 'Museums Card');
-                    $('#Org_Address1').attr('p', 'Address line 1');
-                    $('#Org_Address2').attr('p', 'Address line 2');
-                    $('#Org_City').attr('p', 'City');
-                    $('#Org_ZIP').attr('p', 'ZIP code');
-                    $('#Org_Country').attr('p', 'Country');
-
-                    $('#Org_Full_Name').attr('u', 'name');
-                    $('#Org_Description').attr('u', 'description');
-                    $('#Org_Children').attr('h', org.hash);
-                    $('#Org_Wheelchair').attr('h', org.hash);
-                    $('#Org_Cafe').attr('h', org.hash);
-                    $('#Org_WC').attr('h', org.hash);
-                    $('#Org_Parking').attr('h', org.hash);
-                    $('#Org_Card').attr('h', org.hash);
-                    $('#Org_Address1').attr('h', org.hash);
-                    $('#Org_Address2').attr('h', org.hash);
-                    $('#Org_City').attr('h', org.hash);
-                    $('#Org_ZIP').attr('h', org.hash);
-                    $('#Org_Country').attr('h', org.hash);
-
-                    $('#Org_Full_Name').attr('i', org.name.includes('|') ? org.name.split('|')[1] : null);
-                    $('#Org_Description').attr('i', org.description.includes('|') ? org.description.split('|')[1] : null);
-                    $('#Org_Children').attr('i', org.children.includes('|') ? org.children.split('|')[1] : null);
-                    $('#Org_Wheelchair').attr('i', org.wheelchair.includes('|') ? org.wheelchair.split('|')[1] : null);
-                    $('#Org_Cafe').attr('i', org.cafe.includes('|') ? org.cafe.split('|')[1] : null);
-                    $('Org_WC').attr('i', org.wc.includes('|') ? org.wc.split('|')[1] : null);
-                    $('Org_Parking').attr('i', org.parking.includes('|') ? org.parking.split('|')[1] : null);
-                    $('Org_Card').attr('i', org.card.includes('|') ? org.card.split('|')[1] : null);
-                    $('Org_Address1').attr('i', org.address1.includes('|') ? org.address1.split('|')[1] : null);
-                    $('Org_Address2').attr('i', org.address2.includes('|') ? org.address2.split('|')[1] : null);
-                    $('Org_City').attr('i', org.city.includes('|') ? org.city.split('|')[1] : null);
-                    $('Org_ZIP').attr('i', org.zip.includes('|') ? org.zip.split('|')[1] : null);
-                    $('Org_Country').attr('i', org.country.includes('|') ? org.country.split('|')[1] : null);
-                }
+    $.get('org', function(data, status) {
+        if (status === 'success') {
+            var org = JSON.parse(data);
+            if (org === null) {
+                msg += 'Unknown organization!';
+                $('#login_message').html(msg);
             } else {
-                alert("ERROR: " + status);
+                var h = org['hash'];
+                update_content('output', 'e?db=root&h='+h, null);
             }
-        });
-    })
+        }
+    });
 }
 
 function save_user_settings() {
@@ -204,6 +141,11 @@ function manage_organizations() {
 function manage_users() {
     show_message('');
     update_content("output", "b?cn=user", null)
+}
+function manage_users_oa() {
+    // Manage users feature for organization admin
+    show_message('');
+    update_content("output", "b?cn=user&db=root", null)
 }
 
 function sa_list_orgs() {

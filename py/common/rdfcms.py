@@ -649,6 +649,7 @@ class RdfCms:
             o_id = d_usr.get('Organization')[0]
             o = self.o_read(tn, o_id)
             d_org = o.get('data', {})
+            d_org['hash'] = o.get('hash')
             u_data = {
                 'hash': u.get('hash'),
                 'username': f'{d_usr.get("Username")[0]}|{d_usr.get("Username")[1]}',
@@ -657,6 +658,7 @@ class RdfCms:
                 'email': f'{d_usr.get("Email")[0]}|{d_usr.get("Email")[1]}',
                 'lang': f'{d_usr.get("Language")[0]}|{d_usr.get("Language")[1]}',  # To improve
                 'authenticated': True,
+                'org': d_org,
                 'db': d_org.get('Database')
             }
             return u_data

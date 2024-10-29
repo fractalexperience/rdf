@@ -177,8 +177,8 @@ function format_message(m) {
 }
 
 /** Calls the "e" method with a given object hash */
-function o_edit(h) {
-    update_content("output", "e?h="+h, null);
+function o_edit(h, tn) {
+    update_content("output", "e?h="+h+ (tn == null ? '' : '&db='+tn), null);
 }
 
 /** Calls the "view" method with a given object hash */
@@ -271,7 +271,7 @@ function o_save(e=null, stack=[], lvl=0, do_clone, callback=null) {
     // Finalize
     if (lvl == 0) {
         s = JSON.stringify(stack[0]);
-        alert(s);
+        //alert(s);
         url = 's';
         $.post(url, {data: s}, function(data, status){
             if (status === 'success') {
@@ -336,4 +336,18 @@ function upd_property_name(add_all, callback)
             alert("ERROR: " + status);
         }
     });
+}
+
+function data_export()
+{
+    update_content('output', 'chunk/dbexport');
+}
+
+function data_import()
+{
+     update_content('output', 'chunk/dbimport');
+}
+function mass_changes()
+{
+    update_content('output', 'chunk/masschg');
 }
