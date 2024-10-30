@@ -19,7 +19,7 @@ assets_folder = os.path.join(base_rdf, 'assets')
 data_folder = os.path.join(base_rdf, 'data')
 rdfeng = RdfEngine(sh, sqleng, base_rdf, base_data, assets_folder, data_folder)
 
-obj = rdfeng.cms.o_read('db0002', '1c8d8c4f45f6920431c5bed92ff9a0fff7164e6b')
+obj = rdfeng.cms.o_read('root', 'da7aeca5df3d3dc14f00c58b3e4376b475230d5d')
 print(json.dumps(obj, indent=4))
 
 # # Get definition of a specific user
