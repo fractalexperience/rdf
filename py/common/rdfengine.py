@@ -433,10 +433,10 @@ class RdfEngine:
 
     def o_represent_footer(self, tn, o, obj, cdef, allow_delete=True, allow_clone=True):
         h = obj.get('hash') if obj else None
-        frag_o_save = f'o_save(null, [], 0, false, function() {{ o_edit(\'{h}\', \'{tn}\')}} )' \
+        frag_o_save = f'o_save(\'{tn}\', null, [], 0, false, function() {{ o_edit(\'{h}\', \'{tn}\')}} )' \
             if h \
-            else f'o_save(null, [], 0, false, function() {{ update_content(\'output\', \'b?cn={cdef.uri}\'); }})'
-        frag_o_clone = f'o_save(null, [], 0, true, function() {{ update_content(\'output\', \'b?cn={cdef.uri}\'); }})' \
+            else f'o_save(\'{tn}\', null, [], 0, false, function() {{ update_content(\'output\', \'b?cn={cdef.uri}\'); }})'
+        frag_o_clone = f'o_save(\'{tn}\', null, [], 0, true, function() {{ update_content(\'output\', \'b?cn={cdef.uri}\'); }})' \
             if h else f'alert("Cannot clone unsaved object");'
 
         frag_btn_save = (f'<button type="button" class="btn btn-primary" style="margin-right: 10px;" '

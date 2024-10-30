@@ -226,7 +226,7 @@ function o_delete_lst(objects, callback) {
     });
 }
 
-function o_save(e=null, stack=[], lvl=0, do_clone, callback=null) {
+function o_save(db, e=null, stack=[], lvl=0, do_clone, callback=null) {
     // Init
     if (e === null) {
         e = $('#form_object_edit');
@@ -259,7 +259,7 @@ function o_save(e=null, stack=[], lvl=0, do_clone, callback=null) {
     if (l.length !== 0) {
        for (var i=0; i < l.length; i++) {
            // console.log('Recursin - level', lvl+1)
-            o_save(l[i], stack, lvl+1, do_clone, callback); // Recursion
+            o_save(db, l[i], stack, lvl+1, do_clone, callback); // Recursion
        }
     }
 
@@ -273,7 +273,7 @@ function o_save(e=null, stack=[], lvl=0, do_clone, callback=null) {
         s = JSON.stringify(stack[0]);
         //alert(s);
         url = 's';
-        $.post(url, {data: s}, function(data, status){
+        $.post(url, {'db': db, data: s}, function(data, status){
             if (status === 'success') {
                 if (data.startsWith('Error')) {
                     //alert(data);
