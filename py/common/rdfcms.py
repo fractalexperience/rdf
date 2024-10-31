@@ -337,9 +337,9 @@ class RdfCms:
              f'</div>'
              f'<table class="table table-bordered">'
              f'<tr class="table-info">'
-             f'<th style="width: 40px;">Action</th>'
-             f'<th style="width: 60px;">Code</th>'
+             f'<th style="width: 40px;">Action</th>'            
              f'<th>Object name</th>'
+             f'<th style="width: 60px;">Code</th>'
              f'<th>Object description</th>'
              f'<th style="text-align: right;">Count</th></tr>',
              f'<tr>'
@@ -354,6 +354,7 @@ class RdfCms:
 
         q = f"SELECT s, count(s) FROM {tn} WHERE h IS NOT NULL AND s IN ({codes_str}) GROUP BY s ORDER BY s"
         t = self.sqleng.exec_table(q)
+        cdefs = set()
         for r in t:
             code = f'{r[0]}'
             if code in codes:
@@ -362,6 +363,10 @@ class RdfCms:
             cdef = self.schema.get_class(code)
             if cdef is None or cdef.members is None:
                 continue
+            cdefs.add((cdef, cnt))
+        for pair in sorted(cdefs, key= lambda p: p[0].name):
+            cdef = pair[0]
+            cnt = pair[1]
             self.append_code_row(o, cdef, cnt)
 
         # Append remaining codes
@@ -381,9 +386,9 @@ class RdfCms:
                  f'onclick="update_content(\'output\', \'b?cn={cdef.uri}\')" '
                  f'id="btn_edit_{cdef.uri}" '
                  f'mlang="btn_edit">Edit</button>'
-                 f'</td>'
+                 f'</td>'                
+                 f'<td nowrap>{name}</td>'
                  f'<td>{cdef.code}</td>'
-                 f'<td>{name}</td>'
                  f'<td>{desc}</td>'
                  f'<td style="text-align: right;">{cnt}</td>'
                  f'</tr>')

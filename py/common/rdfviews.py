@@ -45,7 +45,7 @@ class RdfViews:
             o.append(f'<div class="row align-items-start">')
             o.append('<div class="col-2" style="text-align: right;">')
             o.append(
-                f'<label for="{mem.name}" mlang="{mem.name}" class="text-primary">{mem.name}</label>')
+                f'<label for="{mem.name}" mlang="{util.to_snakecase(mem.name)}" class="text-primary">{mem.name}</label>')
             o.append('</div>')
             o.append('<div class="col-10">')
             method(self, tn, un, mem, valstr, h, pid, u, o)
