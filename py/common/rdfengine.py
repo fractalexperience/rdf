@@ -433,9 +433,13 @@ class RdfEngine:
 
     def o_represent_footer(self, tn, o, obj, cdef, allow_delete=True, allow_clone=True):
         h = obj.get('hash') if obj else None
+        # frag_o_save = f'o_save(\'{tn}\', null, [], 0, false, function() {{ o_edit(\'{h}\', \'{tn}\')}} )' \
+        #     if h \
+        #     else f'o_save(\'{tn}\', null, [], 0, false, function() {{ update_content(\'output\', \'b?cn={cdef.uri}\'); }})'
         frag_o_save = f'o_save(\'{tn}\', null, [], 0, false, function() {{ o_edit(\'{h}\', \'{tn}\')}} )' \
             if h \
-            else f'o_save(\'{tn}\', null, [], 0, false, function() {{ update_content(\'output\', \'b?cn={cdef.uri}\'); }})'
+            else f'o_save(\'{tn}\', null, [], 0, false, null)'
+
         frag_o_clone = f'o_save(\'{tn}\', null, [], 0, true, function() {{ update_content(\'output\', \'b?cn={cdef.uri}\'); }})' \
             if h else f'alert("Cannot clone unsaved object");'
 
@@ -801,7 +805,7 @@ class RdfEngine:
             self.sqleng.exec_insert(q)
         return obj_id
 
-    def o_save_recursive(self, tn, data, cdef=None, parent_id=None):
+    def o_save_recursive(self, tn, data, cdef=None, parent_id=None, depth=0):
         """ Version of save, where we have data as nested objects. """
         obj = json.loads(data) if isinstance(data, str) else data
         # Container identifier - it is the has of the object, if it is already instantiated, otherwise the class uri
@@ -838,10 +842,11 @@ class RdfEngine:
                     self.cms.o_associate(tn, puri, parent_id, u, i, p)
 
         for nested_obj in obj_data:
-            save_result = self.o_save_recursive(tn, nested_obj, mdef, i)
+            save_result = self.o_save_recursive(tn, nested_obj, mdef, i, depth+1)
             if not save_result[0]:
                 return save_result  # Escape from recursion with error message
-            h = save_result[4]
+            if depth == 0:
+                h = save_result[4]
 
         return True, 'Data saved', [u], i, h
 

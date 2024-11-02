@@ -279,7 +279,12 @@ function o_save(db, e=null, stack=[], lvl=0, do_clone, callback=null) {
                     //alert(data);
                     return;
                 }
-                show_message(data);
+                if (data.length == 40) {
+                    o_edit(data, db);
+                } else {
+                    show_message('Data saved');
+                }
+
                 if (callback !== null) {
                     callback();
                 }
