@@ -276,7 +276,7 @@ function o_save(db, e=null, stack=[], lvl=0, do_clone, callback=null) {
         $.post(url, {'db': db, data: s}, function(data, status){
             if (status === 'success') {
                 if (data.startsWith('Error')) {
-                    //alert(data);
+                    alert(data);
                     return;
                 }
                 if (data.length == 40) {
