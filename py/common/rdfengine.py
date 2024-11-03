@@ -483,7 +483,7 @@ class RdfEngine:
         bgc = self.bgcolors.get(len(stack), self.bgcolors.get(0))
         o.append(f'<div class="form-group rdf-container" id="{div_id}" i="{i}" u="{u}">')
         o.append(f'<div class="row align-items-start" style="padding-bottom: 20px;background-color: {bgc};">')
-        o.append(f'<div class="col-11"><h4 mlang="{util.to_snakecase(cdef.name)}">{cdef.name}</h4></div>')
+        o.append(f'<div class="col-6"><h4 mlang="{util.to_snakecase(cdef.name)}">{cdef.name}</h4></div>')
 
         if obj is not None:
             if len(stack) < 2:
@@ -493,7 +493,6 @@ class RdfEngine:
                     self.add_delete_button(o, tn, cdef, obj, grand_parent)
 
         o.append('</div>')
-
         for mem in sorted([m for m in cdef.members.values()], key=lambda m: m.order.zfill(6)):
             self.o_edit_member(o, tn, usr, mem, stack, obj, methods, grand_parent)
 
@@ -502,7 +501,7 @@ class RdfEngine:
     def add_delete_button(self, o, tn, cdef, obj, grand_parent):
         h = obj.get('hash')
         h_gp = grand_parent.get('hash')
-        o.append(f'<div class="col-1" style="text-align: right;">'
+        o.append(f'<div class="col-6" style="text-align: right;">'
                  f'<button type="button" class="btn btn-danger btn-sm" mlang="btn_delete_property" '
                  f'onclick="o_delete_id(\'{h}\', function() {{ o_edit(\'{h_gp}\', \'{tn}\')}} )" '
                  f'id="btn_delete_property"> x </button>'
@@ -538,7 +537,7 @@ class RdfEngine:
 
         # Add property button
         h = obj.get('hash')
-        o.append('<div class="col-4" style="text-align: right;">')
+        o.append('<div class="col-6" style="text-align: right;">')
 
         if not wrap_in_form:
             o.append('<button type="button" class="btn btn-light" style="margin-right: 5px;" '
@@ -553,7 +552,7 @@ class RdfEngine:
         if wrap_in_form:
             o.append('<button type="button" class="btn btn-primary" style="margin-right: 5px;" '
                      'id="btn_view_object" '
-                     f'onclick="location.replace(\'view?h={h}\');" '
+                     f'onclick="window.open(\'view?h={h}\');" '
                      'mlang="btn_view_object">View Object</button>')
 
             o.append('<div class="btn-group">'
