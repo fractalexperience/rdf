@@ -262,15 +262,28 @@ class RdfEngine:
             o.append(f'<tr><td>{name}</td><td>{desc}</td>'
                      f'<td>'
                      f'<div class="bg-light">'
-                     f'<span id="view_{h}">'
-                     f'<button class="btn btn-info btn-sm" onclick="window.open(\'view_std_rep?h={h}\')" mlang="view_report">'
-                     f'View'
-                     f'</button></span>'
+                     f'<a href="view_std_rep?h={h}" target="_blank">'
+                     f'<img src="img/html.png" width="42px" alt="View HTML"/>'
+                     f'</a>'  
+                     
                      f'<span id="export_{h}" style="margin-left: 10px;">'
-                     f'<button class="btn btn-info btn-sm" '
-                     f'onclick="update_content(\'export_{h}\', \'view_std_rep?h={h}&format=excel\')" mlang="export_excel">'
-                     f'Export to Excel'
-                     f'</button></span>'
+                     f'<img src="img/xlsx-grey.png" width="42px" '
+                     f'onclick="update_content(\'export_{h}\', \'view_std_rep?h={h}&format=excel\')" mlang="export_excel" />'
+                     
+                     f'</span>'
+
+                     )
+                     #
+                     # f'<span id="view_{h}">'
+                     # f'<button class="btn btn-info btn-sm" onclick="window.open(\'view_std_rep?h={h}\')" mlang="view_report">'
+                     # f'View'
+                     # f'</button></span>'
+                     # f'<span id="export_{h}" style="margin-left: 10px;">'
+                     # f'<button class="btn btn-info btn-sm" '
+                     # f'onclick="update_content(\'export_{h}\', \'view_std_rep?h={h}&format=excel\')" mlang="export_excel">'
+                     # f'Export to Excel'
+                     # f'</button></span>'
+            o.append(
                      f'</div>'
                      f'</td>'
                      f'</tr>')
